@@ -7,13 +7,14 @@ import * as Font from 'expo-font';
 
 export default function PriceInformation({navigation, route}){
 
-    // == Today date 
+    // ==== Today Date ==== // 
+
     const Day = new Date().getDate() ;
     const Month = new Date().getMonth() + 1 ; 
     const Year = new Date().getFullYear() ; 
     const Date_data = Day + "-" + Month + '-' + Year ; 
 
-    // == Other Price
+    // ==== Other Price input ==== // 
 
     const [price_24K, set_price_24K] = useState('') ; 
     const [price_22K, set_price_22K] = useState('') ;
@@ -24,7 +25,7 @@ export default function PriceInformation({navigation, route}){
     const [load_yesterday_price, set_yesterday_price] = useState(false) ; 
     const [date_information, set_date_information] = useState(''); 
 
-    // == Check Font loaded or not 
+    // ==== Load font ==== // 
 
     const [loadFontValue, setLoadFontValue] = useState(false);
 
@@ -38,13 +39,20 @@ export default function PriceInformation({navigation, route}){
             })
 
             setLoadFontValue(true); 
-              
-            set_price_24K(route.params.Price[0][0]["24K_price"]) ;
-            set_price_22K(route.params.Price[0][0]["22K_price"]) ; 
-            set_price_18K(route.params.Price[0][0]["18K_price"]) ; 
-            set_price_916(route.params.Price[0][0]["916_price"]) ; 
-            set_silver_price(route.params.Price[0][0]['Silver_price']) ;  
-            set_date_information(Date_data) ; 
+             
+            // ==== Set Price ==== // 
+
+            try{
+
+                set_price_24K(route.params.Price[0][0]["24K_price"]) ;
+                set_price_22K(route.params.Price[0][0]["22K_price"]) ; 
+                set_price_18K(route.params.Price[0][0]["18K_price"]) ; 
+                set_price_916(route.params.Price[0][0]["916_price"]) ; 
+                set_silver_price(route.params.Price[0][0]['Silver_price']) ;  
+                set_date_information(Date_data) ; 
+            }catch{
+                
+            }
         }; 
 
         loadFont() ; 
@@ -52,132 +60,26 @@ export default function PriceInformation({navigation, route}){
 
     }, []);
 
-    // == Previous data Price loader 
+    
 
-    const Previous_day_price_handler = async () => {
-        
-        // == Set ActivityIndicator 
-        set_yesterday_price(true) ; 
-
-        // == Today date
-        const Day = new Date().getDate() - 1 ;
-        const Month = new Date().getMonth() + 1 ; 
-        const Year = new Date().getFullYear() ; 
-        const Date_data = Day + "-" + Month + '-' + Year ; 
-        set_date_information(Date_data) ; 
-
-        try{
-
-            let Fetch_price_url = URL.RequestAPI ; 
-            let Fetch_price_data = {
-                'Check_status': 'Get_gold_price',
-                'Date': Date_data
-            }; 
-            let Fetch_price_option = {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(Fetch_price_data)
-            }; 
-
-            let Fetch_price_request = await fetch(Fetch_price_url, Fetch_price_option); 
-            let Fetch_price_response = await Fetch_price_request.json() ; 
-
-            if (Fetch_price_response.Status == "Fetch"){
-                set_price_24K(Fetch_price_response.Price[0]["24K_price"]); 
-                set_price_22K(Fetch_price_response.Price[0]["22K_price"]); 
-                set_price_18K(Fetch_price_response.Price[0]['18K_price']); 
-                set_price_916(Fetch_price_response.Price[0]['916_price']); 
-                set_silver_price(Fetch_price_response.Price[0]['Silver_price']); 
-            }
-            else{
-                set_price_24K("Not available");
-                set_price_22K("Not available");  
-                set_price_18K("Not available"); 
-                set_price_916("Not available"); 
-                set_silver_price("Not available"); 
-                set_yesterday_price(false) ; 
-            }
-
-        }catch{
-            ToastAndroid.show("Network request failed", ToastAndroid.BOTTOM, ToastAndroid.SHORT); 
-        }
-
-        set_yesterday_price(false) ; 
-    }
-
-    // == Today Price loader 
-
-    const Today_price_handler = async () => {
-
-        // == SetActivity Indicator
-        set_today_price(true) ; 
-
-        // == Today date
-
-        const Day = new Date().getDate() ;
-        const Month = new Date().getMonth() + 1 ; 
-        const Year = new Date().getFullYear() ; 
-        const Date_data = Day + "-" + Month + '-' + Year ; 
-
-        set_date_information(Date_data) ; 
-
-        try{
-
-            let Fetch_price_url = URL.RequestAPI ; 
-            let Fetch_price_data = {
-                'Check_status': 'Get_gold_price',
-                'Date': Date_data
-            }; 
-            let Fetch_price_option = {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(Fetch_price_data)
-            }; 
-
-            let Fetch_price_request = await fetch(Fetch_price_url, Fetch_price_option); 
-            let Fetch_price_response = await Fetch_price_request.json() ; 
-            
-            if (Fetch_price_response.Status == "Fetch"){
-                set_price_24K(Fetch_price_response.Price[0]["24K_price"]);
-                set_price_22K(Fetch_price_response.Price[0]['22K_price']);  
-                set_price_18K(Fetch_price_response.Price[0]['18K_price']); 
-                set_price_916(Fetch_price_response.Price[0]['916_price']); 
-                set_silver_price(Fetch_price_response.Price[0]['Silver_price']); 
-            }
-            else{
-                set_price_24K("Not available");
-                set_price_22K("Not available");  
-                set_price_18K("Not available"); 
-                set_price_916("Not available"); 
-                set_silver_price("Not available"); 
-                set_today_price(false); 
-            }
-
-        }catch{
-            ToastAndroid.show("Network request failed", ToastAndroid.BOTTOM, ToastAndroid.SHORT); 
-        }
-
-        // == Remove SetActivity Indicator 
-        set_today_price(false) ; 
-    }
-
+    // === Back Handler === // 
+    
     const Back_Handler = () => {
         navigation.navigate("Home") ; 
     }
 
+    // === Layout === // 
+
     if (loadFontValue){
         return(
+
             <View style={PriceInformationStyle.PriceInformationScreen}>
           
                 <StatusBar
                     backgroundColor={colorCode.SignupColorCode.ButtonColor}
                 />
                 
-                {/* == Back Option Layout ==  */}
+                {/* ==== Back Option Layout ====  */}
 
                 <View style={PriceInformationStyle.BackImageContainer}>
 
@@ -270,45 +172,7 @@ export default function PriceInformation({navigation, route}){
                 
                 </View>
 
-                {/* Today Price information option  */}
-
-                {load_today_price?<>
-
-                    <View style={[PriceInformationStyle.PreviousPriceLayout, {padding:0, backgroundColor: 'transparent'}]}>
-                        <ActivityIndicator
-                            color = "black"
-                            size= "large"
-                        />
-                    </View>
-                </>:<>
-
-                    <Pressable style={PriceInformationStyle.PreviousPriceLayout}
-                        android_ripple={{color: '#a6b2fd'}}
-                        onPress={Today_price_handler}>
-
-                        <Text style={PriceInformationStyle.PreviousPriceTitle}> Today price</Text>
-                    
-                    </Pressable>
-
-                </>}
                 
-                {load_yesterday_price?<>
-                    <View style={[PriceInformationStyle.PreviousPriceLayout, {padding:0, backgroundColor: 'transparent'}]}>
-                        <ActivityIndicator
-                            color = "black"
-                            size= "large"
-                        />
-                    </View>
-                </>:<>
-
-                    <Pressable style={PriceInformationStyle.PreviousPriceLayout}
-                        android_ripple={{color: '#a6b2fd'}}
-                        onPress={Previous_day_price_handler}>
-
-                        <Text style={PriceInformationStyle.PreviousPriceTitle}> Yesterday price</Text>
-                    
-                    </Pressable>
-                </>}
 
                 {/* Show Price day price information option  */}
                 

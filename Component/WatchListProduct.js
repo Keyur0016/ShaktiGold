@@ -4,14 +4,17 @@ import { useState, useEffect } from "react";
 import * as Font from 'expo-font' ; 
 import * as colorCode from './Information/ColorCode'; 
 import * as URL from './Information/RequestURL' ; 
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import BlurViewLayout from "./OtherComponent/BlurViewLayout";
+import {WebView} from 'react-native-webview' ; 
+import LoadData from './OtherComponent/LoadingData' ; 
 
 export default function WatchListProduct({navigation, route}){
     
-    // == User Table name 
-    const Table_name = "ctldsfbzmyrnxoh" ; 
+    // --- User Table name --- // 
+
+    const {Table_name} = route.params ; 
     
-    // == WatchList Product 
+    // --- Watch list product information --- //  
     const [watchlist_product, set_watchlist_product] = useState([]) ; 
     const [watchlist_product_all_data, set_watchlist_product_all_data] = useState([]) ; 
     
@@ -24,9 +27,67 @@ export default function WatchListProduct({navigation, route}){
     // == Disable Navigation bar color
     const [navigation_bar_color, set_navigation_bar_color] = useState(colorCode.SignupColorCode.ButtonColor) ; 
 
-    // == Check Font loaded or not 
+    // === Load font === // 
     const [loadFontValue, setLoadFontValue] = useState(false);
+
+
+    // ***** Start Load Watchlist and Cart Product id ***** // 
+
+    const [webview_layout, set_webview_layout] = useState(true) ; 
+    const [web_view_url, set_web_view_url] = useState('') ;
+    const [webview_value, set_webview_value] = useState(0) ;
     
+    const Load_product_list = (event) => {
+        let Temp_data = event.nativeEvent.data ;
+        set_webview_layout(true) ;
+
+        try{
+
+            Temp_data = JSON.parse(Temp_data) ; 
+
+            if (Temp_data.Status == "Fetch"){
+                set_watchlist_product([...Temp_data.Watchlist]) ;
+                set_cart_product_item_id([...Temp_data.Cart_item]) ;  
+            }
+
+        }catch{
+            ToastAndroid.show("Network request failed", ToastAndroid.BOTTOM, ToastAndroid.SHORT) ; 
+        }
+    }
+
+    // **** Stop load Watchlist and Cart Product id **** // 
+
+
+    // **** Start load watchlist product data request **** // 
+
+    const [watchlist_product_layout, set_watchlist_product_layout] = useState(true) ; 
+    const [watchlist_product_view_url, set_watchlist_product_view_url] = useState('') ; 
+    const [watchlist_product_view_value, set_watchlist_product_view_value] = useState(0) ; 
+    const [operation_product_id, set_operation_product_id] = useState('') ; 
+    const [load_watchlist_product_layout, set_load_watchlist_product_layout] = useState(true) ; 
+
+    const Load_watchlist_product_data_handling = (event) => {
+        let Temp_data = event.nativeEvent.data ; 
+        set_watchlist_product_layout(true) ; 
+        set_load_watchlist_product_layout(false) ; 
+
+        try{
+
+            Temp_data = JSON.parse(Temp_data) ;
+
+            if (Temp_data.Status == "Fetch"){
+                set_watchlist_product_all_data([...Temp_data.Data]) ; 
+            }
+
+        }catch{
+            ToastAndroid.show("Network request failed", ToastAndroid.BOTTOM, ToastAndroid.SHORT) ; 
+        }
+    }
+
+    // **** Close load watchlist product data request **** // 
+
+
+
     useEffect(() => {
     
         const loadFont = async () => {
@@ -41,41 +102,55 @@ export default function WatchListProduct({navigation, route}){
     
         loadFont() ; 
 
+        // --- load watchlist and cart product id request --- // 
+
+        const Load_watchlist_product_id = async () => {
+            try{
+
+                let Fetch_watchlist_product_data = {
+                    "Table_name": Table_name,
+                    "Check_status": "Fetch_watchlist_product"
+                };
+                
+                // Set URL to webview 
+                set_web_view_url("") ;
+                set_webview_layout(false) ; 
+                set_webview_value(webview_value + 1) ; 
+
+                let web_url = URL.RequestAPI + "?data=" + JSON.stringify(Fetch_watchlist_product_data) ; 
+
+                set_web_view_url(web_url) ; 
+
+                
+            }catch{
+                 
+                ToastAndroid.show("Network request failed", ToastAndroid.BOTTOM, ToastAndroid.SHORT) ; 
+
+            }
+        }
+       
+        // --- Load watchlist product data request --- // 
+
         const Load_watchlist_productData = async () => {
             
             try{
 
-                // == Set Watchlist Product id in useState 
-    
-                var Watchlist_data = await AsyncStorage.getItem("Watchlist_product");
-                Watchlist_data = JSON.parse(Watchlist_data) ; 
-                set_watchlist_product([...Watchlist_data.Data]) ; 
-    
-                // == Set Cart item Product id in useState 
-    
-                var Cart_Product_data = await AsyncStorage.getItem("Cart_product") ; 
-                Cart_Product_data = JSON.parse(Cart_Product_data) ; 
-                set_cart_product_item_id([...Cart_Product_data.Data]); 
-
-                let WatchList_product_url = URL.RequestAPI ; 
                 let WatchList_product_data = {
                     "Table_name": Table_name,
                     "Check_status": "Fetch_watchlist_product_data"
                 } ; 
-                let Watchlist_product_option = {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(WatchList_product_data)
-                }; 
-    
-                let Watchlist_product_request = await fetch(WatchList_product_url, Watchlist_product_option) ; 
-                let Watchlist_product_response = await Watchlist_product_request.json() ; 
-                  
-                if (Watchlist_product_response.Status == "Fetch"){
-                   set_watchlist_product_all_data([...Watchlist_product_response.Data]) ; 
-                }
+
+                // Set URL to webview 
+                set_watchlist_product_view_url("") ;
+                set_watchlist_product_layout(false) ; 
+                set_watchlist_product_view_value(watchlist_product_view_value + 1) ; 
+                set_load_watchlist_product_layout(true) ; 
+
+                let web_url = URL.RequestAPI + "?data=" + JSON.stringify(WatchList_product_data) ; 
+
+                set_watchlist_product_view_url(web_url) ; 
+
+                
 
             }catch{
                
@@ -84,24 +159,195 @@ export default function WatchListProduct({navigation, route}){
 
         }
 
-        Load_watchlist_productData() ; 
+
+        setTimeout(() => {
+            Load_watchlist_product_id() ; 
+            Load_watchlist_productData() ;
+        }, 500);
+
     }, [])
 
-    // == Set Loading Layout 
+     
+    // ****** Start Add to watchlist Request Handler ****** // 
 
-    const Set_loading_layout_handler = () => {
-        set_loading_layout(true) ; 
-        set_navigation_bar_color(colorCode.HomeScreenColor.LoadingNavigationBarColor) ;
+    const [add_watchlist_layout, set_add_watchlist_layout] = useState(true);
+    const [add_watchlist_view_url, set_add_watchlist_view_url] = useState('') ; 
+    const [add_watchlist_view_value, set_add_watchlist_view_value] = useState(0); 
+
+    const Add_to_watchlist_handling = (event) => {
+
+        let Temp_data = event.nativeEvent.data ; 
+        set_add_watchlist_layout(true) ; 
+        
+        try{
+
+            Temp_data = JSON.parse(Temp_data) ; 
+
+            if (Temp_data.Status == "Insert"){
+        
+                Disable_loading_layout_handler(); 
+    
+                ToastAndroid.show("Insert product in watchlist", ToastAndroid.BOTTOM, ToastAndroid.SHORT ); 
+                set_watchlist_product([...watchlist_product,operation_product_id]); 
+    
+            }
+            else{
+                
+                Disable_loading_layout_handler() ; 
+            }
+
+        }catch{
+            ToastAndroid.show("Network request failed", ToastAndroid.BOTTOM, ToastAndroid.SHORT) ; 
+        }
+
+        Disable_loading_layout_handler() ; 
     }
 
-    // == Disable Loading Layout 
+    const Insert_watchlist = async (element) => {
 
-    const Disable_loading_layout_handler = () => {
-        set_loading_layout(false); 
-        set_navigation_bar_color(colorCode.SignupColorCode.ButtonColor) ; 
+        Set_loading_layout_handler() ; 
+
+        try{
+            let Insert_watchlist_data = {
+                "Check_status": "Insert_watchlist_product",
+                "Table_name" : Table_name, 
+                "Product_id" : element.Product_id,
+                "Category_id": element.Category_id
+            }; 
+
+            // Set URL to webview 
+            set_add_watchlist_view_url("") ;
+            set_add_watchlist_layout(false) ; 
+            set_add_watchlist_view_value(add_watchlist_view_value + 1) ; 
+            set_operation_product_id(element.Product_id) ; 
+
+            let web_url = URL.RequestAPI + "?data=" + JSON.stringify(Insert_watchlist_data) ; 
+
+            set_add_watchlist_view_url(web_url) ; 
+            
+            
+        }catch{
+            
+            Disable_loading_layout_handler() ; 
+            ToastAndroid.show("Network request failed", ToastAndroid.BOTTOM, ToastAndroid.SHORT); 
+        }
+
+
+    }
+   
+    // ****** Stop Add to watchlist Request Handler ****** // 
+    
+
+    // ****** Start Remove product from watchlist Request Handler ******* // 
+    
+    const [remove_watchlist_layout, set_remove_watchlist_layout] = useState(true) ; 
+    const [remove_watchlist_view_url, set_remove_watchlist_view_url] = useState('') ; 
+    const [remove_watchlist_view_value, set_remove_watchlist_view_value] = useState(0) ; 
+
+    const Remove_to_watchlist_handling = (event) => {
+        let Temp_data = event.nativeEvent.data ; 
+        set_remove_watchlist_layout(true) ; 
+
+        try{
+            Temp_data = JSON.parse(Temp_data) ; 
+
+            if (Temp_data.Status == "Delete"){
+
+                Disable_loading_layout_handler() ; 
+
+                ToastAndroid.show("Delete product from watchlist", ToastAndroid.BOTTOM, ToastAndroid.SHORT); 
+
+                for(let i = 0; i<watchlist_product.length; i++){
+                    if (watchlist_product[i] == operation_product_id){
+                        watchlist_product.splice(i, 1); 
+                    }
+                }
+                set_watchlist_product([...watchlist_product]); 
+
+            }
+            else{
+
+                Disable_loading_layout_handler() ; 
+            }
+        }catch{
+            Disable_loading_layout_handler() ; 
+            ToastAndroid.show("Network request failed", ToastAndroid.BOTTOM, ToastAndroid.SHORT) ; 
+        }
+
+
     }
 
-    // == Insert Product into cart Handler 
+    const Remove_watchlist = async (element) => {
+
+        Set_loading_layout_handler() ; 
+
+        try{
+
+            let Remove_watchlist_data = {
+                "Check_status": "Delete_watchlist_product",
+                "Table_name": Table_name,
+                "Product_id": element.Product_id 
+            };
+
+            // Set URL to webview 
+            set_remove_watchlist_view_url("") ;
+            set_remove_watchlist_layout(false) ; 
+            set_remove_watchlist_view_value(remove_watchlist_view_value + 1) ; 
+            set_operation_product_id(element.Product_id) ; 
+
+            let web_url = URL.RequestAPI + "?data=" + JSON.stringify(Remove_watchlist_data) ; 
+            set_remove_watchlist_view_url(web_url) ;
+            
+            
+        }catch{
+
+            Disable_loading_layout_handler() ; 
+
+            ToastAndroid.show("Network request failed", ToastAndroid.BOTTOM, ToastAndroid.SHORT); 
+        }
+
+    }
+
+    // ****** Close Remove product from watchlist Request Handler ******* // 
+
+
+    // ***** Start Add to cart request Handler ***** // 
+
+    const [add_cart_layout, set_add_cart_layout] = useState(true) ; 
+    const [add_cart_view_url, set_add_cart_view_url] = useState('') ; 
+    const [add_cart_view_value, set_add_cart_view_value] = useState(0) ; 
+    
+    const Add_to_cart_handling = (event) => {
+
+        let Temp_data = event.nativeEvent.data ; 
+
+        try{
+
+            Temp_data = JSON.parse(Temp_data); 
+            set_add_cart_layout(true) ; 
+
+            if (Temp_data.Status == "Insert"){
+                
+                set_cart_product_item_id([...cart_product_item_id, operation_product_id]) ; 
+
+                Disable_loading_layout_handler() ;
+
+                ToastAndroid.show("Insert product into cart", ToastAndroid.BOTTOM, ToastAndroid.SHORT) ; 
+
+            }
+            else{
+
+                Disable_loading_layout_handler() ; 
+
+            }
+            
+        }catch{
+            ToastAndroid.show("Network request failed", ToastAndroid.BOTTOM, ToastAndroid.SHORT) ; 
+
+        }
+
+        Disable_loading_layout_handler() ; 
+    }
 
     const Insert_into_cart = async (element) => {
 
@@ -109,77 +355,56 @@ export default function WatchListProduct({navigation, route}){
 
         try {
             
-            let Insert_cart_url = URL.RequestAPI ; 
             let Insert_cart_data = {
                 "Check_status":"Insert_cart_item", 
                 "Table_name": Table_name, 
                 "Product_id": element.Product_id,
                 "Category_id": element.Category_id
             }; 
-            let Insert_cart_option = {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(Insert_cart_data)
-            }; 
 
-            let Insert_cart_request = await fetch(Insert_cart_url, Insert_cart_option); 
-            let Insert_cart_response = await Insert_cart_request.json() ; 
+            // Set URL to webview 
+            set_add_cart_view_url("") ;
+            set_add_cart_layout(false) ; 
+            set_add_cart_view_value(add_cart_view_value + 1) ; 
+            set_operation_product_id(element.Product_id) ; 
 
-            if (Insert_cart_response.Status == "Insert"){
+            let web_url = URL.RequestAPI + "?data=" + JSON.stringify(Insert_cart_data) ; 
 
-                Disable_loading_layout_handler() ; 
+            set_add_cart_view_url(web_url) ;
 
-                cart_product_item_id([...cart_product_item_id, element.Product_id])
-
-                ToastAndroid.show("Insert Product into cart", ToastAndroid.BOTTOM, ToastAndroid.SHORT) ; 
-            }
-            else{
-
-                Disable_loading_layout_handler() ; 
-            }
+            
         } catch{
             
             Disable_loading_layout_handler() ; 
+
             ToastAndroid.show('Network request failed', ToastAndroid.BOTTOM, ToastAndroid.SHORT) ; 
         }
 
-        Disable_loading_layout_handler() ; 
     }
 
-    // == Remove Product from cart Handler 
+    // ***** Stop Add to cart Request Handler ****** // 
 
-    const Remove_into_cart = async (element) => {
 
-        Set_loading_layout_handler() ; 
+    // ***** Stop Remove from cart Request Handler ***** //
 
-        try {
-            
-            let Remove_cart_url = URL.RequestAPI;
-            let Remove_cart_data = {
-                "Check_status":"Delete_cart_item", 
-                "Table_name": Table_name, 
-                "Product_id": element.Product_id,
-                "Category_id":  element.Category_id
-            };  
-            let Remove_cart_option = {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(Remove_cart_data)
-            }; 
+    const [remove_cart_layout, set_remove_cart_layout] = useState(true) ; 
+    const [remove_cart_view_url, set_remove_cart_view_url] = useState('') ; 
+    const [remove_cart_view_value, set_remove_cart_view_value] = useState(0) ; 
+    
+    const Remove_to_cart_handling = (event) => {
+        let Temp_data = event.nativeEvent.data ; 
+        set_remove_cart_layout(true) ; 
 
-            let Remove_cart_request = await fetch(Remove_cart_url, Remove_cart_option); 
-            let Remove_cart_response = await Remove_cart_request.json() ; 
+        try{
 
-            if (Remove_cart_response.Status == "Delete"){
+            Temp_data = JSON.parse(Temp_data) ; 
+
+            if (Temp_data.Status == "Delete"){
 
                 Disable_loading_layout_handler() ; 
 
                 for(let i = 0 ; i<cart_product_item_id.length; i++){
-                    if (cart_product_item_id[i] == Product_id){
+                    if (cart_product_item_id[i] == operation_product_id){
                         cart_product_item_id.splice(i, 1) ;
                     }
                 }
@@ -193,6 +418,36 @@ export default function WatchListProduct({navigation, route}){
                 Disable_loading_layout_handler() ; 
             }
 
+        }catch{
+            ToastAndroid.show("Network request failed", ToastAndroid.BOTTOM, ToastAndroid.SHORT) ; 
+        }
+    }
+    
+    const Remove_into_cart = async (element) => {
+
+        Set_loading_layout_handler() ; 
+
+        try {
+            
+            let Remove_cart_data = {
+                "Check_status":"Delete_cart_item", 
+                "Table_name": Table_name, 
+                "Product_id": element.Product_id,
+                "Category_id":  element.Category_id
+            };  
+
+            // Set URL to webview 
+            set_remove_cart_view_url("") ;
+            set_remove_cart_layout(false) ; 
+            set_remove_cart_view_value(remove_cart_view_value + 1) ; 
+            set_operation_product_id(element.Product_id) ; 
+
+            let web_url = URL.RequestAPI + "?data=" + JSON.stringify(Remove_cart_data) ; 
+
+            set_remove_cart_view_url(web_url) ;
+
+            
+
         } catch (error) {
             
             Disable_loading_layout_handler() ; 
@@ -200,125 +455,138 @@ export default function WatchListProduct({navigation, route}){
             ToastAndroid.show("Network request failed", ToastAndroid.BOTTOM, ToastAndroid.SHORT);
         }
 
-        Disable_loading_layout_handler() ; 
 
     }
-
-    // == Insert Product into watchlist Handler 
     
-    const Insert_watchlist = async (element) => {
+    // ***** Close Remove from cart Request Handler ***** // 
 
-        Set_loading_layout_handler() ; 
 
-        try{
-            let Insert_watchlist_product_url = URL.RequestAPI ; 
-            let Insert_watchlist_data = {
-                "Check_status": "Insert_watchlist_product",
-                "Table_name" : Table_name, 
-                "Product_id" : element.Product_id,
-                "Category_id": element.Category_id
-            }; 
-            let Insert_watchlist_option = {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(Insert_watchlist_data)
-            }; 
-    
-            let Insert_watchlist_request = await fetch(Insert_watchlist_product_url, Insert_watchlist_option); 
-            let Insert_watchlist_response = await Insert_watchlist_request.json(); 
-            
-            if (Insert_watchlist_response.Status == "Insert"){
-    
-                Disable_loading_layout_handler(); 
+    const Set_loading_layout_handler = () => {
 
-                ToastAndroid.show("Insert product in watchlist", ToastAndroid.BOTTOM, ToastAndroid.SHORT ); 
-                set_watchlist_product([...watchlist_product,Product_id]); 
-
-                // == Update in Local Storage 
-                await AsyncStorage.setItem("Watchlist_product" , JSON.stringify({"Data": [...watchlist_product]})) ; 
-            }
-            else{
-                
-                Disable_loading_layout_handler() ; 
-            }
-        }catch{
-            
-            Disable_loading_layout_handler() ; 
-            ToastAndroid.show("Network request failed", ToastAndroid.BOTTOM, ToastAndroid.SHORT); 
-        }
-
-        Disable_loading_layout_handler() ; 
-
+        set_loading_layout(true) ; 
+        set_navigation_bar_color(colorCode.HomeScreenColor.LoadingNavigationBarColor) ;
     }
 
-    // == Remove Product into watchlist Handler
-     
-    const Remove_watchlist = async (element) => {
-        console.warn(element.Product_id);
 
-        Set_loading_layout_handler() ; 
+    const Disable_loading_layout_handler = () => {
 
-        try{
-
-            let Remove_watchlist_url = URL.RequestAPI ;
-            let Remove_watchlist_data = {
-                "Check_status": "Delete_watchlist_product",
-                "Table_name": Table_name,
-                "Product_id": element.Product_id 
-            };
-            let Remove_watchlist_option = {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(Remove_watchlist_data)
-            }
-
-            let Remove_watchlist_request = await fetch(Remove_watchlist_url, Remove_watchlist_option);
-            let Remove_watchlist_response = await Remove_watchlist_request.json(); 
-            
-            if (Remove_watchlist_response.Status == "Delete"){
-
-                Disable_loading_layout_handler() ; 
-
-                ToastAndroid.show("Delete product from watchlist", ToastAndroid.BOTTOM, ToastAndroid.SHORT); 
-
-                for(let i = 0; i<watchlist_product.length; i++){
-                    if (watchlist_product[i] == Product_id){
-                        watchlist_product.splice(i, 1); 
-                    }
-                }
-                set_watchlist_product([...watchlist_product]); 
-
-                // == Update in Local Storage 
-                await AsyncStorage.setItem("Watchlist_product" , JSON.stringify({"Data": [...watchlist_product]})) ; 
-            }
-            else{
-
-                Disable_loading_layout_handler() ; 
-            }
-        }catch{
-
-            Disable_loading_layout_handler() ; 
-
-            ToastAndroid.show("Network request failed", ToastAndroid.BOTTOM, ToastAndroid.SHORT); 
-        }
-
-        Disable_loading_layout_handler() ; 
+        set_loading_layout(false); 
+        set_navigation_bar_color(colorCode.SignupColorCode.ButtonColor) ; 
     }
 
     // == Open Product Image Handler 
 
     const Open_product_image = (product_url) => {
+
         Linking.openURL(product_url)
     }
+
+    // == Back handler
+
+    const Back_Handler = () => {
+        navigation.goBack() ; 
+    }
+
+    // === layout === // 
 
     if (loadFontValue){
         return(
             <View style={WatchListScreenStyle.WatchListProductScreen}>
                  
+                {loading_layout?<>
+                   <BlurViewLayout/>
+                </>:<></>}
+
+                {!webview_layout?<>
+                    <View
+                        style={{
+                            height: "0%", 
+                            width: "0%", 
+                            opacity: 0.90
+                        }}>
+                            <WebView
+                            key = {webview_value}
+                            source={{uri:web_view_url}}
+                            onMessage={Load_product_list}
+                            ></WebView>
+                    </View>
+                </>:<></>}
+
+                {!watchlist_product_layout?<>
+                    <View
+                        style={{
+                            height: "0%", 
+                            width: "0%", 
+                            opacity: 0.90
+                        }}>
+                            <WebView
+                            key = {watchlist_product_view_value}
+                            source={{uri:watchlist_product_view_url}}
+                            onMessage={Load_watchlist_product_data_handling}
+                            ></WebView>
+                    </View>
+                </>:<></>}
+
+                {!add_watchlist_layout?<>
+                    <View
+                        style={{
+                            height: "0%", 
+                            width: "0%", 
+                            opacity: 0.90
+                        }}>
+                            <WebView
+                            key = {add_watchlist_view_value}
+                            source={{uri:add_watchlist_view_url}}
+                            onMessage={Add_to_watchlist_handling}
+                            ></WebView>
+                    </View>
+                </>:<></>}
+
+                {!remove_watchlist_layout?<>
+                    <View
+                        style={{
+                            height: "0%", 
+                            width: "0%", 
+                            opacity: 0.90
+                        }}>
+                            <WebView
+                            key = {remove_watchlist_view_value}
+                            source={{uri:remove_watchlist_view_url}}
+                            onMessage={Remove_to_watchlist_handling}
+                            ></WebView>
+                    </View>
+                </>:<></>}
+                
+                {!remove_cart_layout?<>
+                    <View
+                        style={{
+                            height: "0%", 
+                            width: "0%", 
+                            opacity: 0.90
+                        }}>
+                            <WebView
+                            key = {remove_cart_view_value}
+                            source={{uri:remove_cart_view_url}}
+                            onMessage={Remove_to_cart_handling}
+                            ></WebView>
+                    </View>
+                </>:<></>}
+
+                {!add_cart_layout?<>
+                    <View
+                        style={{
+                            height: "0%", 
+                            width: "0%", 
+                            opacity: 0.90
+                        }}>
+                            <WebView
+                            key = {add_cart_view_value}
+                            source={{uri:add_cart_view_url}}
+                            onMessage={Add_to_cart_handling}
+                            ></WebView>
+                    </View>
+                </>:<></>}
+
                 <StatusBar
                     backgroundColor={navigation_bar_color}
                 />
@@ -328,6 +596,7 @@ export default function WatchListProduct({navigation, route}){
                 
                     <Pressable style={[WatchListScreenStyle.BackImageContainer, 
                         {paddingLeft: 0 , paddingTop: 0 ,paddingBottom: 0  }]}
+                        onPress={Back_Handler}
                         >
                     
                         <Image
@@ -343,153 +612,170 @@ export default function WatchListProduct({navigation, route}){
                 
                 {/* == ProductList Layout ==  */}
 
-                <View style={WatchListScreenStyle.PopularProductMainLayout}>
+                {load_watchlist_product_layout?<>
+                    <LoadData/>
+                </>:<>
+                    <View style={WatchListScreenStyle.PopularProductMainLayout}>
 
-                    <ScrollView  showsVerticalScrollIndicator={false}>
-                         
-                        {watchlist_product_all_data.map((element, index) => {
+                        <ScrollView  showsVerticalScrollIndicator={false}>
 
-                            return(
-                                <View style={[WatchListScreenStyle.PopularProductLayout]} 
-                                    key={index}>
+                            {watchlist_product_all_data.length > 0 ?<>
 
-                                    <Pressable style={WatchListScreenStyle.PopularProductPressableLayout}
-                                        android_ripple={{color:colorCode.HomeScreenColor.ProductLayoutRippler}}
-                                        >
+                                {watchlist_product_all_data.map((element, index) => {
 
-                                        {/* Product image */}
+                                    return(
+                                        <View style={[WatchListScreenStyle.PopularProductLayout]} 
+                                            key={index}>
 
-                                        <Pressable style={WatchListScreenStyle.ImagePressableOption}
-                                            onPress={() => Open_product_image(element.Product_image1)}>
+                                            <Pressable style={WatchListScreenStyle.PopularProductPressableLayout}
+                                                android_ripple={{color:colorCode.HomeScreenColor.ProductLayoutRippler}}
+                                                >
 
-                                            <Image
-                                                source={{uri:element.Product_image1}}
-                                                style = {WatchListScreenStyle.PopularProductImage}
-                                            />
+                                                {/* Product image */}
 
-                                        </Pressable>    
+                                                <Pressable style={WatchListScreenStyle.ImagePressableOption}
+                                                    onPress={() => Open_product_image(element.Product_image1)}>
 
-                                        <View style={WatchListScreenStyle.ProductInfoData}>
+                                                    <Image
+                                                        source={{uri:element.Product_image1}}
+                                                        style = {WatchListScreenStyle.PopularProductImage}
+                                                    />
 
-                                            {/* Product information  */}
-                                            <Text style={WatchListScreenStyle.ProductInformation}>{element.Product_information}</Text>
-                                            
-                                            {/* Weight and Size information layout   */}
+                                                </Pressable>    
 
-                                            <View style={WatchListScreenStyle.WeightSizeLayout}>
-                                        
-                                                {/* Weight information  */}
+                                                <View style={WatchListScreenStyle.ProductInfoData}>
 
-                                                <View style={WatchListScreenStyle.WeightLayout}>
+                                                    {/* Product information  */}
+                                                    <Text style={WatchListScreenStyle.ProductInformation}>{element.Product_information}</Text>
+                                                    
+                                                    {/* Weight and Size information layout   */}
 
-                                                    <Text style={WatchListScreenStyle.WeightSizeTitle}>Weight |</Text>
-
-                                                    <Text style={WatchListScreenStyle.WeightSizeInformation}>{element.Product_weight}</Text>
+                                                    <View style={WatchListScreenStyle.WeightSizeLayout}>
                                                 
+                                                        {/* Weight information  */}
+
+                                                        <View style={WatchListScreenStyle.WeightLayout}>
+
+                                                            <Text style={WatchListScreenStyle.WeightSizeTitle}>Weight |</Text>
+
+                                                            <Text style={WatchListScreenStyle.WeightSizeInformation}>{element.Product_weight}</Text>
+                                                        
+                                                        </View>
+                                                        
+                                                        {/* Size information */}
+
+                                                        <View style={[WatchListScreenStyle.SizeLayout]}>
+                                                            
+                                                            <Text style={WatchListScreenStyle.WeightSizeTitle}>Size |</Text>
+                                                        
+                                                            <Text style={WatchListScreenStyle.WeightSizeInformation}>{element.Product_size}</Text>
+                                                        
+                                                        </View>
+
+                                                    </View>
+
+                                                    {/* Price information layout  */}
+                                                    
+                                                    <View style={WatchListScreenStyle.PriceInformationLayout}>
+                                                        
+                                                        <Text style={[WatchListScreenStyle.WeightLayout, 
+                                                            {marginRight: 0, 
+                                                            fontFamily: "Mukta",
+                                                            fontSize: 18}]}>Price</Text>
+
+                                                        <Text style={WatchListScreenStyle.RetailPrice}>₹{element.Product_retail_price}</Text>
+                                                        
+                                                        <Text style={WatchListScreenStyle.DiscountPrice} numberOfLines={1}>₹{element.Product_discount_price}</Text>    
+                                                    
+                                                    </View>
+
+                                                    {/* Share Option layout  */}
+
+                                                    <View style={WatchListScreenStyle.ShareTypeOption}>
+
+                                                        {/* Add to cart option  */}
+
+                                                        {cart_product_item_id.includes(element.Product_id)?<>
+                                                            <Pressable style={[WatchListScreenStyle.OptionPressableLayout, {backgroundColor:"transparent"}]}
+                                                                android_ripple={{color: "#ffa3a3"}}
+                                                                onPress = {() => Remove_into_cart(element)}>
+                                                                
+                                                                <Image
+                                                                    source={require('../assets/Image/Delete.png')}
+                                                                    style={WatchListScreenStyle.OptionImage}
+                                                                />
+                                                            
+                                                            </Pressable>
+
+                                                        </>:<>
+                                                            <Pressable style={WatchListScreenStyle.OptionPressableLayout}
+                                                                android_ripple={{color:colorCode.HomeScreenColor.PriceLayoutColor}}
+                                                                onPress={() => Insert_into_cart(element)}>
+
+                                                                <Image
+                                                                    source={require('../assets/Image/Cart_add.png')}
+                                                                    style={WatchListScreenStyle.OptionImage}
+                                                                />
+                                                            
+                                                            </Pressable>
+                                                        </>}
+                                                        
+                                                        {watchlist_product.includes(element.Product_id) ?
+                                                            <>
+                                                            {/* Watchlist option  */}
+
+                                                            <Pressable style={[WatchListScreenStyle.OptionPressableLayout, {backgroundColor:'transparent'}]}
+                                                                android_ripple={{color:colorCode.HomeScreenColor.PriceLayoutColor}}
+                                                                onPress={() => Remove_watchlist(element)}>
+
+                                                                <Image
+                                                                    source={require('../assets/Image/Save_watchlist.png')}
+                                                                    style={WatchListScreenStyle.OptionImage}
+                                                                />
+                                                
+                                                            </Pressable>
+                                                            </>
+                                                            :<>
+                                                                {/* Watchlist option  */}
+
+                                                                <Pressable style={[WatchListScreenStyle.OptionPressableLayout, {backgroundColor:"transparent"}]}
+                                                                    android_ripple={{color:colorCode.HomeScreenColor.PriceLayoutColor}}
+                                                                    onPress={() => Insert_watchlist(element)}>
+
+                                                                    <Image
+                                                                        source={require('../assets/Image/Watchlist.png')}
+                                                                        style={WatchListScreenStyle.OptionImage}
+                                                                    />
+                                                    
+                                                                </Pressable>
+
+                                                            </>
+                                                        }
+                                                        
+
+                                                    </View>
+
                                                 </View>
-                                                
-                                                {/* Size information */}
 
-                                                <View style={[WatchListScreenStyle.SizeLayout]}>
-                                                    
-                                                    <Text style={WatchListScreenStyle.WeightSizeTitle}>Size |</Text>
-                                                
-                                                    <Text style={WatchListScreenStyle.WeightSizeInformation}>{element.Product_size}</Text>
-                                                
-                                                </View>
+                                            </Pressable>
 
-                                            </View>
+                                        </View> 
+                                    )
+                                })} 
 
-                                            {/* Price information layout  */}
-                                            
-                                            <View style={WatchListScreenStyle.PriceInformationLayout}>
-                                                
-                                                <Text style={[WatchListScreenStyle.WeightLayout, 
-                                                    {marginRight: 0, 
-                                                    fontFamily: "Mukta",
-                                                    fontSize: 18}]}>Price</Text>
+                            </>:<>
 
-                                                <Text style={WatchListScreenStyle.RetailPrice}>₹{element.Product_retail_price}</Text>
-                                                
-                                                <Text style={WatchListScreenStyle.DiscountPrice}>₹{element.Product_discount_price}</Text>    
-                                            
-                                            </View>
+                                <Text style={{fontFamily:"Ubuntu", fontSize:19, width:"100%", 
+                                marginLeft:"auto", marginRight:"auto", marginTop:20, textAlign:"center"}}>Not available any Product</Text>
+                            </> }
+                            
+                            
+                            
+                        </ScrollView>
 
-                                            {/* Share Option layout  */}
+                    </View> 
+                </>}
 
-                                            <View style={WatchListScreenStyle.ShareTypeOption}>
-
-                                                {/* Add to cart option  */}
-
-                                                {cart_product_item_id.includes(element.Product_id)?<>
-                                                    <Pressable style={WatchListScreenStyle.RemoveFromCartLayout}
-                                                        android_ripple={{color: "#ffa3a3"}}
-                                                        onPress = {() => Remove_into_cart(element)}>
-
-                                                        <Text style={WatchListScreenStyle.RemoveFromCartOptionText}>Remove from cart</Text>
-                                                    
-                                                    </Pressable>
-
-                                                </>:<>
-                                                    <Pressable style={WatchListScreenStyle.OptionPressableLayout}
-                                                        android_ripple={{color:colorCode.HomeScreenColor.PriceLayoutColor}}
-                                                        onPress={() => Insert_into_cart(element)}>
-
-                                                        <Image
-                                                            source={require('../assets/Image/Cart_add.png')}
-                                                            style={WatchListScreenStyle.OptionImage}
-                                                        />
-                                                    
-                                                    </Pressable>
-                                                </>}
-                                                
-                                                {watchlist_product.includes(element.Product_id) ?
-                                                    <>
-                                                    {/* Watchlist option  */}
-
-                                                    <Pressable style={[WatchListScreenStyle.OptionPressableLayout, {backgroundColor:'transparent'}]}
-                                                        android_ripple={{color:colorCode.HomeScreenColor.PriceLayoutColor}}
-                                                        onPress={() => Remove_watchlist(element)}>
-
-                                                        <Image
-                                                            source={require('../assets/Image/Save_watchlist.png')}
-                                                            style={WatchListScreenStyle.OptionImage}
-                                                        />
-                                        
-                                                    </Pressable>
-                                                    </>
-                                                    :<>
-                                                        {/* Watchlist option  */}
-
-                                                        <Pressable style={[WatchListScreenStyle.OptionPressableLayout, {backgroundColor:"transparent"}]}
-                                                            android_ripple={{color:colorCode.HomeScreenColor.PriceLayoutColor}}
-                                                            onPress={() => Insert_watchlist(element)}>
-
-                                                            <Image
-                                                                source={require('../assets/Image/Watchlist.png')}
-                                                                style={WatchListScreenStyle.OptionImage}
-                                                            />
-                                            
-                                                        </Pressable>
-
-                                                    </>
-                                                }
-                                                
-
-                                            </View>
-
-                                        </View>
-
-                                    </Pressable>
-
-                                </View> 
-                            )
-                        })}  
-                        
-                        
-                    </ScrollView>
-
-                </View> 
 
             </View>
         )
@@ -509,7 +795,8 @@ const WatchListScreenStyle = StyleSheet.create({
         flexDirection: 'row',
         backgroundColor: colorCode.SignupColorCode.ButtonColor, 
         paddingTop: 12, 
-        paddingBottom: 12
+        paddingBottom: 12, 
+        paddingLeft:8
     }, 
 
     BackImage:{

@@ -1,6 +1,6 @@
 import { View , StyleSheet, StatusBar, Pressable, Image, Text, 
-    ScrollView, ToastAndroid, Linking, Animated, Button } from "react-native";
-import { useState, useEffect, useRef } from "react";
+    ScrollView, ToastAndroid, Linking, BackHandler, Alert } from "react-native";
+import { useState, useEffect, useRef} from "react";
 import * as colorCode from './Information/ColorCode';
 import * as Font from 'expo-font'; 
 import * as URL from './Information/RequestURL' ; 
@@ -8,42 +8,150 @@ import {FlatListSlider} from 'react-native-flatlist-slider';
 import HomePreview from "./Information/HomePreview";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as NavigationBar from 'expo-navigation-bar' ; 
+import {WebView} from 'react-native-webview' ; 
+import { PacmanIndicator } from "react-native-indicators";
+import { useIsFocused } from "@react-navigation/native";
 
 export default function Home({navigation}){
 
-    // == User Table name 
+    // ==== User Table name ==== // 
+
     const [TableName, setTableName] = useState("") ; 
 
-    // == Today Date 
+    const isScreenFocus = useIsFocused() ; 
+
+    // ==== Fetch today date ==== // 
+
     const Day = new Date().getDate() ; 
     const Month = new Date().getMonth() + 1 ; 
     const Year = new Date().getFullYear() ; 
     const Today_date = Day + "-" + Month + "-" + Year ;
 
-    // == Gold and Silver Price 
+    // ==== Gold and Sliver Price information ==== // 
+
     const [gold_price, set_gold_price] = useState('') ; 
     const [silver_price, set_silver_price] = useState('') ; 
     const [price_data, set_price_data] = useState([]); 
 
-    // == Banner Data 
+    // ==== Banner Image list ==== // 
+
     const [Banner_data, set_Banner_data] = useState([]) ; 
 
-    // Gold and Silver Category 
+    // ==== Gold and Sliver Product category list ==== //  
+    
     const [Gold_category, set_Gold_category] = useState([]); 
     const [Silver_category, set_Silver_category] = useState([]);
 
-    // == Shop location 
+    // ==== Shop location layout ==== //
+
     const [shop_location_layout, set_shop_location_layout] = useState(false) ; 
 
-    // == Checkout Font loaded or not 
+    // ==== Status bar color ==== // 
+
+    const [status_bar_color, set_status_bar_color] = useState(colorCode.SignupColorCode.ButtonColor) ; 
+    
+    // ==== Load font ==== //  
+    
     const [loadFontValue, setLoadFontValue] = useState(false); 
 
-    // == Status bar color 
-    const [status_bar_color, set_status_bar_color] = useState(colorCode.SignupColorCode.ButtonColor) ; 
+    // **** Start Load Banner Request Handler **** //
+
+    const [webview_layout, set_webview_layout] = useState(true) ; 
+    const [web_view_url, set_web_view_url] = useState('') ;
+    const [webview_value, set_webview_value] = useState(0) ;
+    
+    const Load_banner_data = async (event) => {
+
+        let Temp_data = event.nativeEvent.data ; 
+        set_webview_layout(true) ; 
+
+        try{
+
+            Temp_data = JSON.parse(Temp_data) ; 
+
+            let Fetch_banner_STATUS = Temp_data.Status ; 
+    
+            if (Fetch_banner_STATUS == "Fetch"){
+                set_Banner_data([...Temp_data.Data]); 
+            }
+
+
+        }catch{
+            ToastAndroid.show("Network request failed", ToastAndroid.BOTTOM, ToastAndroid.SHORT) ; 
+        }
+
+
+    }
+
+    // **** Stop Load Banner Request Handler **** // 
+
+
+    // **** Start load category Request Handler **** // 
+      
+    const [load_category_view_layout, set_load_category_view_layout] = useState(true) ; 
+    const [load_category_view_url, set_load_category_view_url] = useState('') ; 
+    const [load_category_view_value, set_load_category_view_value] = useState(0) ; 
+    const [load_gold_product_layout, set_load_gold_product_layout] = useState(true) ; 
+    const [load_silver_product_layout, set_silver_product_layout] = useState(true) ; 
+
+    const Load_category_handling = (event) => {
+        let Temp_data = event.nativeEvent.data ; 
+        set_load_category_view_layout(true) ; 
+
+        try{
+          
+            Temp_data = JSON.parse(Temp_data) ; 
+
+            let Fetch_category_STATUS = Temp_data.Status ; 
+
+            if (Fetch_category_STATUS == "Fetch"){
+                set_load_gold_product_layout(false) ; 
+                set_Gold_category([...Temp_data.Gold_category]);
+
+                set_silver_product_layout(false) ; 
+                set_Silver_category([...Temp_data.Silver_category]); 
+            }
+
+
+        }catch{
+            ToastAndroid.show("Network request failed", ToastAndroid.BOTTOM, ToastAndroid.SHORT) ; 
+        }
+    }
+
+    // ***** Stop load category Request Handler ***** // 
+
+    // ***** Start load price request Handler ***** // 
+
+    const [load_price_view_layout, set_load_price_view_layout] = useState(true) ; 
+    const [load_price_view_url, set_load_price_view_url] = useState('') ; 
+    const [load_price_view_value, set_load_price_view_value] = useState(0) ; 
+
+    const Load_price_handling = (event) => {
+        let Temp_data = event.nativeEvent.data ; 
+        set_load_price_view_layout(true) ; 
+
+        try{
+
+            Temp_data = JSON.parse(Temp_data) ; 
+
+            if (Temp_data.Status == "Not set price"){
+                set_gold_price("Not available") ; 
+                set_silver_price("Not available") ; 
+            }
+            else{
+               set_gold_price(Temp_data.Price[0]["24K_price"]); 
+               set_silver_price(Temp_data.Price[0]["Silver_price"]) ; 
+               set_price_data([Temp_data.Price]) ; 
+            }
+
+        }catch{
+            ToastAndroid.show("Network request failed", ToastAndroid.BOTTOM, ToastAndroid.SHORT) ; 
+        }
+    }
+
+    // ***** Stop load price request Handler ***** // 
 
     useEffect(() => {
-        
-        // -- Load Font 
 
         const loadFont = async () => {
             await Font.loadAsync({
@@ -61,132 +169,114 @@ export default function Home({navigation}){
         loadFont() ; 
 
 
-        // -- Load Other data 
-
         const Load_other_data = async () => {
 
             try{
-               
-                // == Load Banner Image 
+                   
+                // --- Start load banner request --- // 
 
-                let Fetch_banner_url = URL.RequestAPI; 
                 let Fetch_banner_data = {
                     "Check_status": "Fetch_banner", 
                     "Option": "Banner"                
                 }; 
-                let Fetch_banner_option = {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(Fetch_banner_data)
-                }; 
-    
-                let Fetch_banner_request = await fetch(Fetch_banner_url, Fetch_banner_option); 
-                let Fetch_banner_response = await Fetch_banner_request.json() ; 
-                let Fetch_banner_STATUS = Fetch_banner_response.Status ; 
-    
-                if (Fetch_banner_STATUS == "Fetch"){
-                    set_Banner_data([...Fetch_banner_response.Data]); 
-                }
 
-                // == Load Gold and Sliver Category 
+                // Set URL to webview 
+                set_web_view_url("") ;
+                set_webview_layout(false) ; 
+                set_webview_value(webview_value + 1) ; 
+                
+                let web_url = URL.RequestAPI + "?data=" + JSON.stringify(Fetch_banner_data) ; 
+                
+                set_web_view_url(web_url) ; 
 
-                let Fetch_category_url = URL.RequestAPI ; 
+                
+                // --- Start load category request --- // 
+
                 let Fetch_category_data = {
                     "Check_status" : "Get_category"
                 }; 
-                let Fetch_category_option = {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(Fetch_category_data)
-                }; 
 
-                let Fetch_category_request = await fetch(Fetch_category_url, Fetch_category_option) ; 
-                let Fetch_category_response = await Fetch_category_request.json() ; 
-                let Fetch_category_STATUS = Fetch_category_response.Status ; 
-
-                if (Fetch_category_STATUS == "Fetch"){
-                    set_Gold_category([...Fetch_category_response.Gold_category]);
-                    set_Silver_category([...Fetch_category_response.Silver_category]); 
-                }
+                // Set URL to webview 
+                set_load_category_view_url("") ;
+                set_load_category_view_layout(false) ; 
+                set_load_category_view_value(load_category_view_value + 1) ; 
+                
+                let category_product_url = URL.RequestAPI + "?data=" + JSON.stringify(Fetch_category_data) ; 
+                
+                set_load_category_view_url(category_product_url) ; 
 
             }catch{
                
                 ToastAndroid.show("Check your internet connection", ToastAndroid.BOTTOM, ToastAndroid.SHORT) ; 
 
             }
-
-            // == Load Gold and Silver Price 
+          
+            // --- Start load price request --- // 
 
             try{
 
-                let Fetch_price_url = URL.RequestAPI ; 
                 let Fetch_price_data = {
                     'Check_status': "Get_gold_price", 
                     'Date': Today_date
                 }; 
-                let Fetch_price_option = {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(Fetch_price_data)
-                }; 
 
-                let Fetch_price_request = await fetch(Fetch_price_url, Fetch_price_option) ; 
-                let Fetch_price_response = await Fetch_price_request.json() ; 
+                // Set URL to webview 
+                set_load_price_view_url("") ;
+                set_load_price_view_layout(false) ; 
+                set_load_price_view_value(load_price_view_url + 1) ; 
 
-                if (Fetch_price_response.Status == "Not set price"){
-                    set_gold_price("Not available") ; 
-                    set_silver_price("Not available") ; 
-                }
-                else{
-                   set_gold_price(Fetch_price_response.Price[0]["24K_price"]); 
-                   set_silver_price(Fetch_price_response.Price[0]["Silver_price"]) ; 
-                   set_price_data([Fetch_price_response.Price]) ; 
-                }
+                let web_url = URL.RequestAPI + "?data=" + JSON.stringify(Fetch_price_data) ; 
+
+                set_load_price_view_url(web_url) ; 
+
                 
             }catch{
                 ToastAndroid.show("Network request failed") ; 
             }
+
            
         }; 
 
-        Load_other_data() ; 
+        setTimeout(() => {
+            Load_other_data() ; 
+        }, 500);
 
-
+        
     }, []);
 
-    // == Banner image opener
+    // ==== Banner Image Handler ==== // 
+
     const Banner_Image_Opener = (element) => {
+
         Linking.openURL(element.image) ; 
     }
 
-    // == View more price opener
+    // ==== Latest product handler ==== // 
+    const Status_image_opener = () => {
+        navigation.navigate("StatusView")
+    }
+
+    // ==== View more price opener ==== // 
+
     const View_more_price_handler = () => {
         navigation.navigate("PriceInformation", {"Price": price_data}) ; 
 
     }
 
-    // == Status image opener 
-    const Status_image_opener = () => {
-        navigation.navigate("StatusView")
-    }
-
-    // == Category ProductList Opener
+    // ==== Category product list opener ==== // 
 
     const Category_product_opener = (category_id, category_name) => {
         navigation.navigate("HomeProductList", {"Category_id":category_id, "Category_name":category_name, "UserTable":TableName}) ; 
     }
 
     // == WatchList Product Viewer 
+
     const Watchlist_product_opener = () => {
+        navigation.navigate("WatchListProduct", {"Table_name":TableName}) ; 
     }
 
     // == Cart Product Opener Handler 
+
     const Cart_product_Handler = () => {
         navigation.navigate("Cart", {"Table_name":TableName}) ; 
     }
@@ -194,22 +284,27 @@ export default function Home({navigation}){
     const [opacity_value, set_opacity_value] = useState(0) ; 
 
     // == Set Slider menu Layout 
+
     const Set_Slider_menu_layout = async () => {
         
         set_status_bar_color(colorCode.HomeScreenColor.PriceLayoutColor) ; 
         set_opacity_value(1) ;
         await NavigationBar.setBackgroundColorAsync(colorCode.HomeScreenColor.PriceLayoutColor) ; 
-         
     }
-     
+
     // == Disable Slider menu layout
     const Disable_slider_menu_layout = async () => {
         
         set_status_bar_color(colorCode.SignupColorCode.ButtonColor) ; 
         set_opacity_value(0); 
-        await NavigationBar.setBackgroundColorAsync("white") ;  
-        
-        
+        await NavigationBar.setBackgroundColorAsync("white") ;     
+    }
+
+    // === Open update mobile number layout 
+    
+    const Update_mobile_number_layout = () => {
+        Disable_slider_menu_layout(); 
+        navigation.navigate("UpdateMobile"); 
     }
 
     // == Slider menu Home option 
@@ -227,11 +322,13 @@ export default function Home({navigation}){
     const Slider_menu_shop_location_option = () => {
         Disable_slider_menu_layout() ; 
         set_shop_location_layout(true) ; 
+        set_status_bar_color(colorCode.HomeScreenColor.PriceLayoutColor) ; 
     }
 
     // == Close Shop location option
     const Close_shop_location_layout = () => {
-        set_shop_location_layout(false) ; 
+        set_shop_location_layout(false) ;     
+        set_status_bar_color(colorCode.SignupColorCode.ButtonColor) ; 
     }
 
     // == Slider menu Check out order option 
@@ -242,7 +339,83 @@ export default function Home({navigation}){
 
     // == Slider menu Admin login option
     const Slider_menu_admin_login = () => {
-        navigation.navigate("AdminLogin"); 
+        Disable_slider_menu_layout() ; 
+        navigation.navigate("AdminLogin", {"Back":"0"}); 
+    }
+
+    const Shop_location_opener = (url) => {
+        Linking.openURL(url) ; 
+    }
+
+
+    const [back_press_value, set_back_press_value] = useState(0) ; 
+
+    useEffect(() => {
+        if (isScreenFocus == false){
+
+            set_back_press_value(0) ; 
+        }
+      
+    }, [isScreenFocus, back_press_value])
+
+    useEffect(() => {
+        navigation.addListener('beforeRemove', (e) => {
+            e.preventDefault();
+            
+            if (isScreenFocus == true){
+
+                if (opacity_value == 1){
+                    set_back_press_value(0) ; 
+                    Disable_slider_menu_layout() ; 
+                }
+                else if (shop_location_layout == 1){
+                    set_back_press_value(0); 
+                    Close_shop_location_layout() ; 
+                }
+                else if ((opacity_value == 0) && (shop_location_layout == 0) && (isScreenFocus == true) && (back_press_value == 1)){
+                   set_back_press_value(0) ; 
+                    Alert.alert("Exit!!", "Are you sure you want to exit?", 
+                        [
+                            {
+                                text:"Yes",
+                                onPress : () => BackHandler.exitApp() 
+                            }, 
+                            {
+                                text: "No", 
+                                onPress: () => null
+                            }
+                        ])
+                }
+                else if ((back_press_value == 0) && (isScreenFocus == true)){
+                    set_back_press_value(1) ; 
+
+                }
+            }
+        });
+    }, [navigation, opacity_value, shop_location_layout, isScreenFocus, back_press_value]);
+
+    
+    const Logout_handler = async () => {
+
+        await AsyncStorage.setItem("Table", '') ; 
+
+        // navigation.navigate("SplashScreen") ;  
+        BackHandler.exitApp() ; 
+    }
+
+    const Logout_premission_asker = () => {
+        Alert.alert("Logout",
+            "Are you sure you want to logout from this account?", 
+            [
+                {
+                    text: "Yes", 
+                    onPress: () => Logout_handler()
+                }, 
+                {
+                    text: "No", 
+                    onPress: () => null
+                }
+            ])
     }
 
     if (loadFontValue){
@@ -254,11 +427,57 @@ export default function Home({navigation}){
                     backgroundColor= {status_bar_color}
                 />
 
+                {!webview_layout?<>
+                    <View
+                        style={{
+                            height: "0%", 
+                            width: "0%", 
+                            opacity: 0.90
+                        }}>
+                            <WebView
+                            key = {webview_value}
+                            source={{uri:web_view_url}}
+                            onMessage={Load_banner_data}
+                            ></WebView>
+                    </View>
+                </>:<></>}
+
+                {!load_category_view_layout?<>
+                    <View
+                        style={{
+                            height: "0%", 
+                            width: "0%", 
+                            opacity: 0.90
+                        }}>
+                            <WebView
+                            key = {load_category_view_value}
+                            source={{uri:load_category_view_url}}
+                            onMessage={Load_category_handling}
+                            ></WebView>
+                    </View>
+                </>:<></>}
+
+                {!load_price_view_layout?<>
+                    <View
+                        style={{
+                            height: "0%", 
+                            width: "0%", 
+                            opacity: 0.90
+                        }}>
+                            <WebView
+                            key = {load_price_view_value}
+                            source={{uri:load_price_view_url}}
+                            onMessage={Load_price_handling}
+                            ></WebView>
+                    </View>
+                </>:<></>}
+
                 {opacity_value?<>
 
-                    <View style={[HomeStyle.SliderMenuLayout]}>
+                    <Pressable style={[HomeStyle.SliderMenuLayout]}>
 
-                        <View style={HomeStyle.SliderOptionLayout}>
+                        <View style={[HomeStyle.SliderOptionLayout, {zIndex:10}]}
+                            >
                             
                             {/* Shree Shakti gold information title layout  */}
 
@@ -299,14 +518,6 @@ export default function Home({navigation}){
 
                             </Pressable>
                             
-                            {/* Contact us layout  */}
-
-                            <Pressable style={HomeStyle.SliderOptionPressableLayout}
-                                android_ripple={{color:colorCode.HomeScreenColor.PriceInformationTitleColor}}>
-
-                                <Text style={HomeStyle.SliderPressableOptionText}>Contact us</Text>
-
-                            </Pressable>
 
                             {/* Check it order layout  */}
 
@@ -315,6 +526,16 @@ export default function Home({navigation}){
                                 onPress={Slider_check_out_order_option}>
 
                                 <Text style={HomeStyle.SliderPressableOptionText}>Check out Order</Text>
+
+                            </Pressable>
+
+                            {/* Update mobile number option  */}
+
+                            <Pressable style={HomeStyle.SliderOptionPressableLayout}
+                                android_ripple={{color:colorCode.HomeScreenColor.PriceInformationTitleColor}}
+                                onPress={() => Update_mobile_number_layout()}>
+
+                                <Text style={HomeStyle.SliderPressableOptionText}>Update mobile number</Text>
 
                             </Pressable>
                             
@@ -346,7 +567,8 @@ export default function Home({navigation}){
                             {/* Logout option  */}
 
                             <Pressable style={[HomeStyle.LogoutOptionLayout]}
-                                android_ripple={{color:colorCode.HomeScreenColor.PriceInformationTitleColor}}>
+                                android_ripple={{color:colorCode.HomeScreenColor.PriceInformationTitleColor}}
+                                onPress = {Logout_premission_asker}>
 
                                 <Image
                                     source={require('../assets/Image/Logout.png')}
@@ -361,12 +583,14 @@ export default function Home({navigation}){
 
                         </View>
                     
-                    </View>
+                    </Pressable>
+
                 </>:<></>}
                
                 {/* ShopLocation information layout  */}
                 
                 {shop_location_layout?<>
+
                     <View style={HomeStyle.LocationMainLayout}>
 
                         <View style={HomeStyle.LocationLayout}>
@@ -386,32 +610,44 @@ export default function Home({navigation}){
 
                             </View>        
 
+                            {/* Shop location 1 information layout  */}
+
                             <View style={HomeStyle.BrachLayout}>
                                 
-                                <Text style={{fontFamily:"Ubuntu", fontSize:16, paddingLeft:10}}>Area = Mota varachha</Text>
+                                <Text style={{fontFamily:"Mukta", fontSize:20, paddingLeft:10}}>Area = Mota varachha</Text>
+                                <Text style={{fontFamily:"Sans", fontSize:18, paddingLeft:10, color:"#5c5c5c"}}>24,25 ABC central,abc chowk,near sudama chowk, vadi, opp. Khodiyar nagar</Text>
                                 
                                 <Image
                                     source={require('../assets/Image/Shop1.png')}
-                                    style={{width:"100%", height:170, resizeMode:"contain", marginTop:10, marginBottom:10}}
+                                    style={{width:"100%", height:150, resizeMode:"contain", marginTop:10, marginBottom:10}}
                                 />
 
-                                <Pressable style={HomeStyle.ShopLocationPressable}>
-                                    <Text style={{fontFamily:"Ubuntu", fontSize:17, color:"white"}}>Shop location</Text>
+                                <Pressable style={HomeStyle.ShopLocationPressable}
+                                    android_ripple={{color:colorCode.HomeScreenColor.PriceLayoutColor}}
+                                    onPress = {() => Shop_location_opener("https://goo.gl/maps/hek8PSDwFgvYf2QHA")}>
+                                    <Text style={{fontFamily:"Ubuntu", fontSize:18, color:"white"}}>Shop location</Text>
                                 </Pressable>
 
                             </View>
 
+                            {/* Shop location 2 information layout  */}
+
                             <View style={HomeStyle.BrachLayout}>
                                 
-                                <Text style={{fontFamily:"Ubuntu", fontSize:16, paddingLeft:10}}>Area = Mota varachha</Text>
-                                
+                                <Text style={{fontFamily:"Mukta", fontSize:20, paddingLeft:10}}>Area = Mota varachha</Text>
+                                <Text style={{fontFamily:"Sans", fontSize:18, paddingLeft:10, color:"#5c5c5c"}}>
+                                     B-13, Janta Apartment, Lambe Hanuman Road, Gayatri-Ramnagar T.P Road, Opp. Gayatri Society, Janata Nagar Society 
+                                </Text>
+
                                 <Image
                                     source={require('../assets/Image/Shop1.png')}
-                                    style={{width:"100%", height:170, resizeMode:"contain", marginTop:10, marginBottom:10}}
+                                    style={{width:"100%", height:150, resizeMode:"contain", marginTop:10, marginBottom:10}}
                                 />
 
-                                <Pressable style={HomeStyle.ShopLocationPressable}>
-                                    <Text style={{fontFamily:"Ubuntu", fontSize:17, color:"white"}}>Shop location</Text>
+                                <Pressable style={HomeStyle.ShopLocationPressable}
+                                    android_ripple={{color:colorCode.HomeScreenColor.PriceLayoutColor}}
+                                    onPress = {() => Shop_location_opener("https://goo.gl/maps/oJSWsTjTpVQVK1mD7")}>
+                                    <Text style={{fontFamily:"Mukta", fontSize:18, color:"white"}}>Shop location</Text>
                                 </Pressable>
 
                             </View>
@@ -422,11 +658,11 @@ export default function Home({navigation}){
                 </>:<></>}
 
                 
-                {/*  == Header Layout ==  */}
+                {/*  ==== Start Header Layout ====  */}
 
                 <View style={HomeStyle.HomeOption}>
                      
-                    {/* Menu Option  */}
+                    {/* ** Menu Option **  */}
 
                     <Pressable style={HomeStyle.HomeOptionPressable}
                         android_ripple={{color:colorCode.SignupColorCode.ButtonRippleColor}}
@@ -442,8 +678,8 @@ export default function Home({navigation}){
                     {/* Shakti gold title  */}
     
                     <Text style={HomeStyle.HomeScreenTitle}>Shakti Gold</Text>
-                    
-                    {/* Heart and Cart option layout  */}
+
+                    {/* ==== Heart, Cart, Location layout option ==== */}
 
                     <View style={HomeStyle.Cart_Watchlist_layout}>
                       
@@ -459,7 +695,8 @@ export default function Home({navigation}){
                      
                         {/* Heart option  */}
  
-                        <Pressable style={[HomeStyle.HomeOptionPressable, {marginLeft:5, marginRight:5}]}>
+                        <Pressable style={[HomeStyle.HomeOptionPressable, {marginLeft:5, marginRight:5}]}
+                            onPress={Watchlist_product_opener}>
                             <Image
                                 source={require('../assets/Image/Heart.png')}
                                 style = {HomeStyle.HomeOptionImage}
@@ -468,7 +705,8 @@ export default function Home({navigation}){
 
                         {/* Location option  */}
 
-                        <Pressable style={[HomeStyle.HomeOptionPressable, {marginLeft:5, marginRight:5}]}>
+                        <Pressable style={[HomeStyle.HomeOptionPressable, {marginLeft:5, marginRight:5}]}
+                            onPress= { () => Slider_menu_shop_location_option()}>
                             <Image
                                 source={require('../assets/Image/Location.png')}
                                 style = {HomeStyle.HomeOptionImage}
@@ -478,10 +716,12 @@ export default function Home({navigation}){
                     </View>
                 
                 </View>
+
+                {/* ==== Close Header Layout ====  */}
                
                 <ScrollView>
 
-                {/* == Banner images == */}
+                {/* ==== Start Banner Image layout ==== */}
 
                 <View style={HomeStyle.BannerLayout}>
 
@@ -497,7 +737,10 @@ export default function Home({navigation}){
 
                 </View>
 
-                {/* == Latest Product View Option ==   */}
+                {/* ==== Close Banner Image layout ====  */}
+
+
+                {/* ==== Start latest product option layout ==== */}
 
                 <Pressable style={HomeStyle.LatestProductLayout}
                     android_ripple={{color:colorCode.SignupColorCode.ButtonRippleColor}}
@@ -512,7 +755,10 @@ export default function Home({navigation}){
 
                 </Pressable>
 
-                {/* == Gold Price Information layout ==  */}
+                {/* ==== Close latest product option layout ====  */}
+
+
+                {/* ==== Start Gold Price Information layout ====  */}
                 
                 <View style={HomeStyle.PriceInformationLayout}>
                        
@@ -546,7 +792,10 @@ export default function Home({navigation}){
                 
                 </View>
 
-                {/* == Gold Price Category list title layout ==  */}
+                {/* ==== Close Gold Price Information layout ====  */}
+
+
+                {/* === Gold Product category title === */}
 
                 <View style={HomeStyle.CategoryOptionText}>
 
@@ -554,41 +803,60 @@ export default function Home({navigation}){
 
                 </View>
 
-                {/* == Gold Product sub category == */}
+                {/* ==== Start Gold product category layout  ==== */}
 
                 <View style={HomeStyle.AllCategoryOptionMainLayout}>
+                    
+                    {load_gold_product_layout?<>
+                        <View style={
+                            {height:160,
+                            width:'95%', 
+                            marginLeft:"auto", 
+                            marginRight:"auto", 
+                            display:"flex", 
+                            flex:1,
+                            justifyContent:"center"}} >
+                            <PacmanIndicator color={colorCode.HomeScreenColor.PriceLayoutColor}></PacmanIndicator>  
+                        </View>
+                    </>:<>
 
-                    <ScrollView  horizontal showsHorizontalScrollIndicator={false}>
+                        <ScrollView  horizontal showsHorizontalScrollIndicator={false}>
 
-                        {Gold_category.map((element, index) => {
-                            return(
-                                 
-                                <View style={HomeStyle.CategoryOptionLayout} 
-                                    key={index}>
+                            {Gold_category.map((element, index) => {
+                                return(
+                                    
+                                    <View style={HomeStyle.CategoryOptionLayout} 
+                                        key={index}>
 
-                                    <Pressable style={HomeStyle.CategoryPressableLayout}
-                                        android_ripple={{color:colorCode.SignupColorCode.ButtonColor}}
-                                        onPress={() => Category_product_opener(element.Category_table, element.Category_name)}>
+                                        <Pressable style={HomeStyle.CategoryPressableLayout}
+                                            android_ripple={{color:colorCode.SignupColorCode.ButtonColor}}
+                                            onPress={() => Category_product_opener(element.Category_table, element.Category_name)}>
 
-                                        <Image
-                                            source={{uri:element.Category_image}}
-                                            style = {HomeStyle.CategoryImage}
-                                        />
-                                        
-                                        <Text style={HomeStyle.CategoryOptionTextButton}>{element.Category_name}</Text>
-                                 
-                                    </Pressable>
+                                            <Image
+                                                source={{uri:element.Category_image}}
+                                                style = {HomeStyle.CategoryImage}
+                                            />
+                                            
+                                            <Text style={HomeStyle.CategoryOptionTextButton}>{element.Category_name}</Text>
+                                    
+                                        </Pressable>
 
-                                </View> 
+                                    </View> 
 
-                            )
-                        })} 
-                 
-                    </ScrollView>
+                                )
+                            })} 
+                    
+                        </ScrollView>
+                    
+                    </>}
+
 
                 </View>
+
+                {/* ==== Close Gold product category layout ====  */}
                   
-                {/* == Silver Price information layout == */}
+
+                {/* ==== Start Silver Price information layout ==== */}
 
                 <View style={HomeStyle.PriceInformationLayout}>
                        
@@ -613,8 +881,11 @@ export default function Home({navigation}){
                     </View>
                 
                 </View>
+
+                {/* ==== Close Silver price information layout ====  */}
+
           
-                {/* == Silver sub category title == */}
+                {/* ==== Silver product category title ==== */}
 
                 <View style={HomeStyle.CategoryOptionText}>
 
@@ -622,40 +893,57 @@ export default function Home({navigation}){
 
                 </View>
 
-                {/* == Silver Product sub category == */}
+                {/* ==== Start Silver category product layout ==== */}
 
                 <View style={HomeStyle.AllCategoryOptionMainLayout}>
 
-                    <ScrollView  horizontal showsHorizontalScrollIndicator={false}>
+                    {load_silver_product_layout?<>
+                        <View style={
+                            {height:160,
+                            width:'95%', 
+                            marginLeft:"auto", 
+                            marginRight:"auto", 
+                            display:"flex", 
+                            flex:1,
+                            justifyContent:"center"}} >
+                            <PacmanIndicator color={colorCode.HomeScreenColor.PriceLayoutColor}></PacmanIndicator>  
+                        </View>    
+                    </>:<>
+                        <ScrollView  horizontal showsHorizontalScrollIndicator={false}>
 
-                        {Silver_category.map((element, index) => {
-                            return(
-                                 
-                                <View style={HomeStyle.CategoryOptionLayout} 
-                                    key={index}>
+                            {Silver_category.map((element, index) => {
+                                return(
+                                    
+                                    <View style={HomeStyle.CategoryOptionLayout} 
+                                        key={index}>
 
-                                    <Pressable style={HomeStyle.CategoryPressableLayout}
-                                        android_ripple={{color:colorCode.HomeScreenColor.SliverCategoryLayoutRipple}}>
+                                        <Pressable style={HomeStyle.CategoryPressableLayout}
+                                            android_ripple={{color:colorCode.HomeScreenColor.SliverCategoryLayoutRipple}}
+                                            onPress={() => Category_product_opener(element.Category_table, element.Category_name)}>
 
-                                        <Image
-                                            source={{uri:element.Category_image}}
-                                            style = {HomeStyle.CategoryImage}
-                                        />
-                                        
-                                        <Text style={HomeStyle.CategoryOptionTextButton}>{element.Category_name}</Text>
-                                 
-                                    </Pressable>
+                                            <Image
+                                                source={{uri:element.Category_image}}
+                                                style = {HomeStyle.CategoryImage}
+                                            />
+                                            
+                                            <Text style={HomeStyle.CategoryOptionTextButton}>{element.Category_name}</Text>
+                                    
+                                        </Pressable>
 
-                                </View> 
+                                    </View> 
 
-                            )
-                        })} 
-                 
-                    </ScrollView>
+                                )
+                            })} 
+                    
+                        </ScrollView>
+                    </>}
+
 
                 </View>
 
-                {/* == Contact us information layout == */}
+                {/* ==== Close Silver category product layout ====  */}
+
+                {/* ==== Start contact information layout ==== */}
 
                 <View style={HomeStyle.ContactUsLayout}>
                     
@@ -668,24 +956,14 @@ export default function Home({navigation}){
                             source={require('../assets/Image/Contact.png')}
                             style={HomeStyle.ContactUsImage}
                         />
-                        <Text style={HomeStyle.ContactUsText}>Vipulbhai = 6354757251</Text>
-                    
-                    </Pressable>
-
-                    <Pressable style={HomeStyle.ContactUsInformationLayout}
-                        android_ripple={{color:"#ececec"}}>
-                    
-                        <Image
-                            source={require('../assets/Image/Contact.png')}
-                            style={HomeStyle.ContactUsImage}
-                        />
-
-                        <Text style={HomeStyle.ContactUsText}>Shailashbhai = 9824113124</Text>
+                        <Text style={HomeStyle.ContactUsText}>Vipulbhai = 98241132124</Text>
                     
                     </Pressable>
 
                 </View>
-                
+               
+                {/* ==== Close contact information layout ====  */}
+
                 </ScrollView>
 
             </View>
@@ -913,7 +1191,7 @@ const HomeStyle = StyleSheet.create({
         width: "98%",
         marginLeft: "auto",
         marginRight: "auto",
-        resizeMode: 'cover', 
+        resizeMode: 'contain', 
         borderRadius: 8 
     },
 
@@ -1068,7 +1346,7 @@ const HomeStyle = StyleSheet.create({
         position: "absolute", 
         height: "100%", 
         width: "100%", 
-        backgroundColor: "rgba(160, 160, 160, 0.708)", 
+        backgroundColor: "rgba(44, 44, 44, 0.918)", 
         zIndex: 10, 
         display: "flex", 
         textAlign: "center",
@@ -1077,8 +1355,8 @@ const HomeStyle = StyleSheet.create({
     }, 
     
     LocationLayout:{
-        width: "90%", 
-        backgroundColor: "#ececec", 
+        width: "95%", 
+        backgroundColor: colorCode.HomeScreenColor.PriceLayoutColor, 
         margin: "auto", 
         borderRadius:8, 
         paddingBottom: 15, 
@@ -1112,7 +1390,7 @@ const HomeStyle = StyleSheet.create({
         marginLeft: "auto", 
         marginRight: "auto", 
         backgroundColor: "white", 
-        marginTop: 10, 
+        marginTop: 5, 
         marginBottom: 10, 
         paddingTop:10, 
         elevation: 10, 
@@ -1126,7 +1404,8 @@ const HomeStyle = StyleSheet.create({
         paddingTop:10,
         paddingBottom:10, 
         borderBottomLeftRadius:8, 
-        borderBottomRightRadius:8
+        borderBottomRightRadius:8,
+        justifyContent: "center"
     }
 
     

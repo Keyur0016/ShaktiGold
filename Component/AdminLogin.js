@@ -3,29 +3,37 @@ import * as colorCode from './Information/ColorCode';
 import * as Font from 'expo-font'; 
 import * as URL from './Information/RequestURL'; 
 import { useState, useEffect } from "react";
+import {WebView} from 'react-native-webview' ; 
 
-export default function AdminLogin(){
+export default function AdminLogin({navigation, route}){
 
-    // Check Font loaded or not 
+    // === Load font === // 
     
     const [loadFontValue, setLoadFontValue] = useState(false);
+
+    const {Back} = route.params ; 
 
     useEffect(() => {
 
         const loadFont = async () => {
+
             await Font.loadAsync({
                 'Mukta' : require('../assets/Font/Mukta-Medium.ttf'),
                 'Sans' : require('../assets/Font/SourceSansPro-Regular.ttf')
             })
 
             setLoadFontValue(true); 
+
+            if (Back == "1"){
+                navigation.goBack() ; 
+            }
         }; 
 
         loadFont() ; 
 
     }, []);
 
-    // Border value 
+    // 
 
     const [passwordBorder, set_passwordBorder] = useState(false) ; 
 
@@ -42,32 +50,23 @@ export default function AdminLogin(){
         set_passwordBorder(true); 
     }
 
-    const Admin_password_check_handler = async () => {
+    // *** Start Admin Password check Request Handler **** // 
 
-        if (password == ""){
+    const [webview_layout, set_webview_layout] = useState(true) ; 
+    const [web_view_url, set_web_view_url] = useState('') ;
+    const [webview_value, set_webview_value] = useState(0) ;      
 
-            ToastAndroid.show("Enter Password", ToastAndroid.BOTTOM, ToastAndroid.SHORT); 
-        }
-        else{
+    const Message_handling = async (event) => {
 
-            try {
-                
-                let Admin_pas_check_url = URL.RequestAPI ; 
-                let Admin_pas_check_data = {
-                    'Check_status': 'Admin_password', 
-                    'AdminPassword': password
-                }; 
-                let Admin_pas_check_option = {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(Admin_pas_check_data)
-                }; 
+        let Temp_data =  (event.nativeEvent.data)   ;
+        set_webview_layout(true) ; 
+        setActivityIndicator(false) ; 
 
-                let Admin_pas_request = await fetch(Admin_pas_check_url, Admin_pas_check_option); 
-                let Admin_pas_response = await Admin_pas_request.json(); 
-                let Admin_request_STATUS = Admin_pas_response.Status ; 
+        try{
+            
+            Temp_data = JSON.parse(Temp_data) ; 
+
+            let Admin_request_STATUS = Temp_data.Status ; 
 
                 if (Admin_request_STATUS == "Invalid Password"){
 
@@ -75,15 +74,55 @@ export default function AdminLogin(){
                 }
                 else if (Admin_request_STATUS == "Valid Password"){
                   
-                    ToastAndroid.show("Valid Password", ToastAndroid.BOTTOM, ToastAndroid.SHORT) ;   
+                    ToastAndroid.show("Login success", ToastAndroid.BOTTOM, ToastAndroid.SHORT) ;  
+                    
+                    navigation.navigate("AdminOption") ; 
                 }
+
+        }catch{
+            
+        }
+
+    }
+
+    const Admin_password_check_handler = async () => {
+
+
+        if (password == ""){
+
+            ToastAndroid.show("Enter Password", ToastAndroid.BOTTOM, ToastAndroid.SHORT); 
+        }
+        else{
+
+            setActivityIndicator(true) ; 
+            try {
+                
+                let Admin_pas_check_data = {
+                    'Check_status': 'Admin_password', 
+                    'AdminPassword': password
+                }; 
+
+                // Set URL to webview 
+                set_web_view_url("") ;
+                set_webview_layout(false) ; 
+                set_webview_value(webview_value + 1) ; 
+                
+                let web_url = URL.RequestAPI + "?data=" + JSON.stringify(Admin_pas_check_data) ; 
+                set_web_view_url(web_url) ; 
+
+                
 
             } catch (error) {
                 
                 ToastAndroid.show("Network request failed", ToastAndroid.BOTTOM, ToastAndroid.SHORT); 
             }
         }
+
     }
+
+    // *** Stop Admin Password check Request Handler *** // 
+
+    // *** Stop Admin Password check Request Handler *** // 
 
     if (loadFontValue){
 
@@ -91,10 +130,25 @@ export default function AdminLogin(){
             <View style={AdminStyle.AdminScreen}>
                   
                 <StatusBar
-                   backgroundColor='white'
+                   backgroundColor={colorCode.SignupColorCode.ButtonColor}
                 />
     
                 <Text style={AdminStyle.AdminTitle}>Admin Access</Text>
+
+                {!webview_layout?<>
+                    <View
+                        style={{
+                            height: "0%", 
+                            width: "0%", 
+                            opacity: 0.90
+                        }}>
+                            <WebView
+                            key = {webview_value}
+                            source={{uri:web_view_url}}
+                            onMessage={Message_handling}
+                            ></WebView>
+                    </View>
+                </>:<></>}
 
                 {/* Input Layout  */}
 
@@ -120,12 +174,11 @@ export default function AdminLogin(){
                     <Pressable style={[AdminStyle.SendCode_Layout]}
                         android_ripple={{color:colorCode.SignupColorCode.ButtonRippleColor,foreground:false}}
                         onPress={Admin_password_check_handler}>
-                        <Text style={AdminStyle.SendCode_Text}>Signin</Text>
+                        <Text style={AdminStyle.SendCode_Text}>Login to control panel</Text>
                     </Pressable>
                     }
  
                 </View>
-
     
             </View>
         )

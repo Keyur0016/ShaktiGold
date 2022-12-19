@@ -3,8 +3,12 @@ import { useState, useEffect } from "react";
 import * as Font from 'expo-font'; 
 import * as URL from './Information/RequestURL';
 import * as colorCode from './Information/ColorCode' ; 
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import {WebView} from 'react-native-webview' ; 
 
 export default function CancelOrder({navigation, route}){
+
+    const {Table_name} = route.params ; 
 
     // == Cancel order reason 
     const [cancel_order_reason, set_cancel_order_reason] = useState('') ; 
@@ -18,6 +22,8 @@ export default function CancelOrder({navigation, route}){
 
     useEffect(() => {
         const loadFont = async () => {
+
+              
             await Font.loadAsync({
                 'Mukta' : require('../assets/Font/Mukta-Medium.ttf'),
                 'Sans' : require('../assets/Font/SourceSansPro-Regular.ttf'),
@@ -32,6 +38,7 @@ export default function CancelOrder({navigation, route}){
 
     // == Back Handler 
     const Back_Handler = () => {
+        set_webview_layout(true);
         navigation.goBack() ; 
     }
 
@@ -40,39 +47,91 @@ export default function CancelOrder({navigation, route}){
        set_cancel_order_border(true) ;    
     }
 
-    // Cancel order process 
-    const Cancel_order_process = async ()  => {
-        setActivityIndicator(true) ; 
+    // **** Start Cancel order Request Handler **** // 
+
+    const [webview_layout, set_webview_layout] = useState(true) ; 
+    const [web_view_url, set_web_view_url] = useState('') ;
+    const [webview_value, set_webview_value] = useState(0) ; 
+
+    const Message_handling = async (event) => {
+
+        let Temp_data = event.nativeEvent.data ; 
+        setActivityIndicator(false) ; 
+        set_webview_layout(true) ; 
+
         try{
+            Temp_data = JSON.parse(Temp_data) ; 
+
+            if (Temp_data.Status == "Cancel_order"){
+                 
+                ToastAndroid.show("Your order cancel successfully", ToastAndroid.BOTTOM, ToastAndroid.SHORT) ; 
+                navigation.goBack() ; 
+            }
+
 
         }catch{
-
+            ToastAndroid.show("Network request failed", ToastAndroid.BOTTOM, ToastAndroid.SHORT) ; 
         }
 
-        setActivityIndicator(false) ; 
-    }
 
-    // Cancel order Handler
-    const Cancel_order = () => {
+    }
+    
+    const Cancel_order = async () => {
+        
+        
         if (cancel_order_reason == ""){
             ToastAndroid.show("Enter order cancel reason", ToastAndroid.BOTTOM, ToastAndroid.SHORT) ; 
         }
         else{
+            setActivityIndicator(true) ;
+            try{
+                
+                // == User mobile number 
+                const User_mobile_number = await AsyncStorage.getItem("Mobilenumber") ; 
 
-            Alert.alert(
-                "Cancel order",
-                "Are you sure you want to cancel your order ?",
-                [
-                  {
-                    text: "Yes",
-                    onPress: () => console.log("Cancel Pressed"),
-                    style: "cancel"
-                  },
-                  { text: "No", onPress: () => console.log("OK Pressed") }
-                ]
-              );
+                // == Make cancel order data
+                const Day_object = new Date(); 
+                const Day = Day_object.getDate() ; 
+                const Month = Day_object.getMonth() + 1; 
+                const Year = Day_object.getFullYear() ; 
+                const Hour = Day_object.getHours();
+                const Minute = Day_object.getMinutes() ; 
+                const Second = Day_object.getSeconds() ;
+
+                const Cancel_order_date = Day + "-" + Month + "-" + Year + "-" + Hour + "-" + Minute + "-" + Second ; 
+
+                let Cancel_order_data = {
+                    "Table_name": Table_name, 
+                    "Payment_method": route.params.Order.Data3, 
+                    "Payment_id": route.params.Order.Data4, 
+                    "Order_id": route.params.Order.Data1,
+                    "Cancel_reason": cancel_order_reason, 
+                    "Cancel_date": Cancel_order_date, 
+                    "Check_status": "Cancel_order", 
+                    "Mobile_number": User_mobile_number,
+                    "Username": route.params.Order.Data9,
+                    "Order_date": route.params.Order.Data5,
+                    "Order_total": route.params.Order.Data8 
+                } ; 
+
+                set_web_view_url("") ;
+                set_webview_layout(false) ; 
+                set_webview_value(webview_value + 1) ; 
+                
+                let web_url = URL.RequestAPI + "?data=" + JSON.stringify(Cancel_order_data) ; 
+                console.log(web_url);
+                set_web_view_url(web_url) ;
+
+            }catch{     
+                
+                ToastAndroid.show("Network request failed", ToastAndroid.BOTTOM, ToastAndroid.SHORT) ; 
+            }
         }
+
+
     }
+
+    // **** Stop Cancel order Request Handler **** // 
 
     if(loadFontValue){
         return(
@@ -81,6 +140,21 @@ export default function CancelOrder({navigation, route}){
                 <StatusBar
                     backgroundColor={colorCode.SignupColorCode.ButtonColor}
                 />
+                
+                {!webview_layout?<>
+                    <View
+                        style={{
+                            height: "1%", 
+                            width: "1%", 
+                            opacity: 0.90
+                        }}>
+                            <WebView
+                                key = {webview_value}
+                                source={{uri:web_view_url}}
+                                onMessage={Message_handling}
+                            ></WebView>
+                    </View>
+                </>:<></>}
                 
                 {/* == Back Option Container ==  */}
 
@@ -114,17 +188,21 @@ export default function CancelOrder({navigation, route}){
                     onFocus = {() => OnFocusHandle(0)}
                     />
 
-                {activityIndicator ? 
-                    <View style={[CancelOrderStyle.SendCode_Layout]}> <ActivityIndicator
+                {activityIndicator ? <>
+                    <View style={[CancelOrderStyle.SendCode_Layout]}> 
+                        
+                        <ActivityIndicator
                             color='white'
                             size="large"
                         />
-                    </View>:
+
+                    </View>
+                    </>:<>
                     <Pressable style={[CancelOrderStyle.SendCode_Layout]}
                         android_ripple={{color:colorCode.HomeScreenColor.PriceInformationTitleColor,foreground:false}}
                         onPress={Cancel_order}>
                         <Text style={CancelOrderStyle.SendCode_Text}>Cancel order</Text>
-                    </Pressable>
+                    </Pressable></>
                 }
 
             </View>

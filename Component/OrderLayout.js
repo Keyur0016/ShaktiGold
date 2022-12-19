@@ -1,9 +1,13 @@
 import { View, StyleSheet, StatusBar, ScrollView, Image, Text, 
-    Pressable, ToastAndroid, Dimensions, BackHandler } from "react-native";
+    Pressable, ToastAndroid, Dimensions, BackHandler, Alert } from "react-native";
 import { useEffect, useState } from "react";
 import * as Font from 'expo-font'; 
 import * as colorCode from './Information/ColorCode'; 
 import * as URL from './Information/RequestURL' ; 
+import {WebView} from 'react-native-webview' ; 
+import LoadData from './OtherComponent/LoadingData' ; 
+import { useIsFocused } from "@react-navigation/native";
+
 
 export default function OrderLayout({navigation, route}){
 
@@ -31,7 +35,37 @@ export default function OrderLayout({navigation, route}){
 
     // == Check Font loaded or not 
     const [loadFontValue, setLoadFontValue] = useState(false); 
+
+    const isScreenFocus = useIsFocused() ; 
+
     
+    // **** Start Pending order data Request Handler **** //
+
+    const [webview_layout, set_webview_layout] = useState(true) ; 
+    const [web_view_url, set_web_view_url] = useState('') ;
+    const [webview_value, set_webview_value] = useState(0) ;
+    const [order_loading_layout, set_order_loading_layout] = useState(false) ; 
+
+    const Fetch_order_data = (event) => {
+
+        let Temp_data = event.nativeEvent.data ; 
+        set_webview_layout(true) ; 
+        set_order_loading_layout(true) ; 
+
+        try{
+
+            Temp_data = JSON.parse(Temp_data);
+
+            if (Temp_data.Status == "Fetch"){
+                set_order_information([...Temp_data.Order].reverse());
+                set_pending_order_information_data([...Temp_data.Order].reverse()) ; 
+            }
+
+        }catch{
+            ToastAndroid.show("Network request failed", ToastAndroid.BOTTOM, ToastAndroid.SHORT ) ; 
+        }
+    }
+
     useEffect(() => {
 
         const loadFont = async () => {
@@ -50,42 +84,38 @@ export default function OrderLayout({navigation, route}){
 
             try{
 
-                let Pending_order_url = URL.RequestAPI ; 
                 let Pending_order_data = {
                     "Table_name": Table_name, 
                     "Order_status": "Pending", 
                     "Check_status": "Place_order_data"
                 }; 
-                let Pending_order_option = {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(Pending_order_data)
-                }; 
 
-                let Pending_order_request = await fetch(Pending_order_url,Pending_order_option ); 
-                let Pending_order_response = await Pending_order_request.json() ; 
-
-                if (Pending_order_response.Status == "Fetch"){
-                    let Temp_data = Pending_order_response.Order ; 
-                    Temp_data.reverse() ; 
-                    set_order_information([...Temp_data]);
-                    set_pending_order_information_data([...Temp_data]) ; 
-                }
+                // Set URL to webview 
+                set_web_view_url("") ;
+                set_webview_layout(false) ; 
+                set_webview_value(webview_value + 1) ; 
+                
+                let web_url = URL.RequestAPI + "?data=" + JSON.stringify(Pending_order_data) ; 
+                
+                set_web_view_url(web_url) ; 
+                set_order_loading_layout(false) ; 
 
             }catch{
                 ToastAndroid.show("Network request failed", ToastAndroid.BOTTOM, ToastAndroid.SHORT) ; 
             }
         }; 
 
-        Load_Order_data() ; 
-    }, []) ; 
+        
+        setTimeout(() => {
+            Load_Order_data() ; 
+            
+        }, 500);
+    }, [isScreenFocus] ); 
 
     // == Qr Code Opener 
     const QrCode_layout_opener = (order_id, mobile_number) => {
         
-        let QrCode_data = Table_name + "***" + order_id + "**" + mobile_number ; 
+        let QrCode_data = Table_name + "**" + order_id + "**" + mobile_number ; 
         set_QR_code_image("https://api.qrserver.com/v1/create-qr-code/?data=" + QrCode_data ) ; 
         set_QR_Code_layout(true) ; 
         set_Status_bar_color("#ececec") ; 
@@ -106,9 +136,30 @@ export default function OrderLayout({navigation, route}){
     const Pending_order_handler = () => {
         set_pending_order_layout(true) ; 
         set_complete_order_layout(false) ;
-        set_cancel_order_layout(false) ; 
+        set_cancel_order_layout(false) ;
+        
+        try{
 
-        set_order_information([...pending_order_information_data]) ; 
+            let Cancel_order_data = {
+                "Table_name": Table_name, 
+                "Order_status": "Pending", 
+                "Check_status": "Place_order_data"
+            }; 
+
+            // Set URL to webview 
+            set_web_view_url("") ;
+            set_webview_layout(false) ; 
+            set_webview_value(webview_value + 1) ; 
+            
+            let web_url = URL.RequestAPI + "?data=" + JSON.stringify(Cancel_order_data) ; 
+            
+            set_web_view_url(web_url) ; 
+            set_order_loading_layout(false) ; 
+            
+        }catch{
+            ToastAndroid.show("Network request failed", ToastAndroid.BOTTOM, ToastAndroid.SHORT) ; 
+        }
+
     }
 
     // == Complete order Handler 
@@ -119,26 +170,22 @@ export default function OrderLayout({navigation, route}){
      
         try{
 
-            let Complete_order_url = URL.RequestAPI; 
             let Complete_order_data = {
                 "Table_name": Table_name, 
                 "Order_status": "Complete", 
                 "Check_status": "Place_order_data"
             }; 
-            let Complete_order_option = {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(Complete_order_data)
-            }; 
 
-            let Complete_order_request = await fetch(Complete_order_url, Complete_order_option) ;  
-            let Complete_order_response = await Complete_order_request.json() ; 
-
-            if (Complete_order_response.Status == "Fetch"){
-               set_order_information([...Complete_order_response.Order]) ;
-            }
+            // Set URL to webview 
+            set_web_view_url("") ;
+            set_webview_layout(false) ; 
+            set_webview_value(webview_value + 1) ; 
+            
+            let web_url = URL.RequestAPI + "?data=" + JSON.stringify(Complete_order_data) ; 
+            
+            set_web_view_url(web_url) ; 
+            set_order_loading_layout(false) ; 
+            
 
         }catch{
             ToastAndroid.show("Network request failed", ToastAndroid.BOTTOM, ToastAndroid.SHORT) ; 
@@ -153,30 +200,33 @@ export default function OrderLayout({navigation, route}){
         
         try{
 
-            let Cancel_order_url = URL.RequestAPI ; 
             let Cancel_order_data = {
                 "Table_name": Table_name, 
-                "Order_status": "User-cancel", 
+                "Order_status": "Cancel", 
                 "Check_status": "Place_order_data"
             }; 
-            let Cancel_order_option = {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(Cancel_order_data)
-            } ; 
 
-            let Cancel_order_request = await fetch(Cancel_order_url, Cancel_order_option) ; 
-            let Cancel_order_response = await Cancel_order_request.json() ; 
+            // Set URL to webview 
+            set_web_view_url("") ;
+            set_webview_layout(false) ; 
+            set_webview_value(webview_value + 1) ; 
             
-            if (Cancel_order_response.Status == "Fetch"){
-                set_order_information([...Cancel_order_response.Order]) ; 
-            }
+            let web_url = URL.RequestAPI + "?data=" + JSON.stringify(Cancel_order_data) ; 
+            
+            set_web_view_url(web_url) ; 
+            set_order_loading_layout(false) ; 
+            
         }catch{
             ToastAndroid.show("Network request failed", ToastAndroid.BOTTOM, ToastAndroid.SHORT) ; 
         }
     }
+
+    // == Cancel order request 
+    const Cancel_order_request_handler = async (element) => {
+        navigation.navigate("CancelOrder", {"Table_name":Table_name, "Order":element}) ; 
+    }
+
+    
     
 
     if (loadFontValue){
@@ -186,6 +236,21 @@ export default function OrderLayout({navigation, route}){
                 <StatusBar
                     backgroundColor={Status_bar_color}
                 />  
+
+                {!webview_layout?<>
+                    <View
+                        style={{
+                            height: "1%", 
+                            width: "1%", 
+                            opacity: 0.90
+                        }}>
+                            <WebView
+                            key = {webview_value}
+                            source={{uri:web_view_url}}
+                            onMessage={Fetch_order_data}
+                            ></WebView>
+                    </View>
+                </>:<></>}
 
                 {/* == Back Option Container ==  */}
 
@@ -273,224 +338,271 @@ export default function OrderLayout({navigation, route}){
                     </View>
 
                 </>:<></>}
+
+                {/* Order data layout  */}
                 
-                <ScrollView showsVerticalScrollIndicator={false} >
-                   
-                    {order_information.length > 0?<>
+                {order_loading_layout?<>
 
-                        {order_information.map((element, index) => {
-                            return(
+                    <ScrollView showsVerticalScrollIndicator={false} >
+                    
+                        {order_information.length > 0?<>
 
-                                <View style={OrderLayoutStyle.OrderInformationLayout}
-                                    key={index}>
+                            {order_information.map((element, index) => {
+                                return(
 
-                                    {/* Username information  */}
-                                    
-                                    <View style={[OrderLayoutStyle.UserInformationStyle, {backgroundColor: colorCode.HomeScreenColor.PriceLayoutColor}]} >
+                                    <View style={OrderLayoutStyle.OrderInformationLayout}
+                                        key={index}>
+
+                                        {/* Username information  */}
                                         
-                                        <Text style={[OrderLayoutStyle.UserInformationTitle, {color: "white"}]}>Username : </Text>
-                                        <Text style={[OrderLayoutStyle.UserInformationData, {color: "white", fontFamily: "Ubuntu"}]}>{element.Data9}</Text>
-                                    
-                                    </View>
+                                        <View style={[OrderLayoutStyle.UserInformationStyle, {backgroundColor: colorCode.HomeScreenColor.PriceLayoutColor}]} >
+                                            
+                                            <Text style={[OrderLayoutStyle.UserInformationTitle, {color: "white"}]}>Username : </Text>
+                                            <Text style={[OrderLayoutStyle.UserInformationData, {color: "white", fontFamily: "Ubuntu"}]}>{element.Data9}</Text>
+                                        
+                                        </View>
 
-                                    {/* Order id information  */}
+                                        {((cancel_order_layout == true) || (element.Data2 == "Server-cancel"))?<>
+                                            <View style={[OrderLayoutStyle.UserInformationStyle, {paddingTop:8, paddingBottom:8} ]}>
 
-                                    <View style={[OrderLayoutStyle.UserInformationStyle, {paddingTop:8, paddingBottom:8} ]}>
+                                                <Text style={[OrderLayoutStyle.UserInformationTitle, {color:"#ff7176", fontSize:18}]}>Order cancel by Shree Shakti Gold </Text>
 
-                                        <Text style={[OrderLayoutStyle.UserInformationTitle]}>Order id :</Text>
-                                        <Text style={[OrderLayoutStyle.UserInformationData]}>{element.Data1}</Text>
+                                            </View>
+                                        </>:<></>}
 
-                                    </View>
+                                        {/* Order id information  */}
 
-                                    {/* Order date information  */}
-
-                                    <View style={[OrderLayoutStyle.UserInformationStyle, {paddingTop:8, paddingBottom:8} ]}>
-
-                                        <Text style={[OrderLayoutStyle.UserInformationTitle]}>Order date :</Text>
-                                        <Text style={[OrderLayoutStyle.UserInformationData]}>{element.Data5}</Text>
-
-                                    </View>
-
-                                    {complete_order_layout == true?<>
                                         <View style={[OrderLayoutStyle.UserInformationStyle, {paddingTop:8, paddingBottom:8} ]}>
 
-                                            <Text style={[OrderLayoutStyle.UserInformationTitle]}>Order Deliver date :</Text>
+                                            <Text style={[OrderLayoutStyle.UserInformationTitle]}>Order id :</Text>
+                                            <Text style={[OrderLayoutStyle.UserInformationData]}>{element.Data1}</Text>
+
+                                        </View>
+
+                                        {/* Order date information  */}
+
+                                        <View style={[OrderLayoutStyle.UserInformationStyle, {paddingTop:8, paddingBottom:8} ]}>
+
+                                            <Text style={[OrderLayoutStyle.UserInformationTitle]}>Order date :</Text>
                                             <Text style={[OrderLayoutStyle.UserInformationData]}>{element.Data5}</Text>
 
                                         </View>
-                                    </>:<></>}
-
-                                    {cancel_order_layout == true?<>
-                                        <View style={[OrderLayoutStyle.UserInformationStyle, {paddingTop:8, paddingBottom:8} ]}>
-
-                                            <Text style={[OrderLayoutStyle.UserInformationTitle]}>Order cancel date :</Text>
-                                            <Text style={[OrderLayoutStyle.UserInformationData]}>{element.Data5}</Text>
-
-                                        </View>
-                                    </>:<></>}
-
-                                    {cancel_order_layout == true?<>
-                                        <View style={[OrderLayoutStyle.UserInformationStyle, {paddingTop:8, paddingBottom:8} ]}>
-
-                                            <Text style={[OrderLayoutStyle.UserInformationTitle]}>Cancel reason :</Text>
-                                            <Text style={[OrderLayoutStyle.UserInformationData]}>{element.Data7 }</Text>
-
-                                        </View>
-                                    </>:<></>}
-
-                                    {/* Payment method information  */}
-
-                                    <View style={[OrderLayoutStyle.UserInformationStyle, {paddingTop:8, paddingBottom:8} ]}>
-
-                                        <Text style={[OrderLayoutStyle.UserInformationTitle]}>Payment method :</Text>
-                                        <Text style={[OrderLayoutStyle.UserInformationData]}>{element.Data3}</Text>
-
-                                    </View>
-                                    
-
-                                    {/* Payment id information  */}
-
-                                    {element.Data3 != "Cash on delivery"?<>
                                         
+                                        {/* Show complete order date for Complete order  */}
+
+                                        {complete_order_layout == true?<>
+                                            <View style={[OrderLayoutStyle.UserInformationStyle, {paddingTop:8, paddingBottom:8} ]}>
+
+                                                <Text style={[OrderLayoutStyle.UserInformationTitle]}>Order Deliver date :</Text>
+                                                <Text style={[OrderLayoutStyle.UserInformationData]}>{element.Data5}</Text>
+
+                                            </View>
+                                        </>:<></>}
+
+                                        {/* Show cancel order date for Cancel order  */}
+
+                                        {cancel_order_layout == true?<>
+                                            <View style={[OrderLayoutStyle.UserInformationStyle, {paddingTop:8, paddingBottom:8} ]}>
+
+                                                <Text style={[OrderLayoutStyle.UserInformationTitle]}>Order cancel date :</Text>
+                                                <Text style={[OrderLayoutStyle.UserInformationData]}>{element.Data6}</Text>
+
+                                            </View>
+                                        </>:<></>}
+
+                                        {/* Cancel reason information  */}
+
+                                        {cancel_order_layout == true?<>
+                                            <View style={[OrderLayoutStyle.UserInformationStyle, {paddingTop:8, paddingBottom:8} ]}>
+
+                                                <Text style={[OrderLayoutStyle.UserInformationTitle]}>Cancel reason :</Text>
+                                                <Text style={[OrderLayoutStyle.UserInformationData]}>{element.Data7 }</Text>
+
+                                            </View>
+                                        </>:<></>}
+
+                                        
+
+                                        {/* Payment method information  */}
+
                                         <View style={[OrderLayoutStyle.UserInformationStyle, {paddingTop:8, paddingBottom:8} ]}>
 
-                                            <Text style={[OrderLayoutStyle.UserInformationTitle]}>Payment id :</Text>
-                                            <Text style={[OrderLayoutStyle.UserInformationData]}>{element.Data4}</Text>
+                                            <Text style={[OrderLayoutStyle.UserInformationTitle]}>Payment method :</Text>
+                                            <Text style={[OrderLayoutStyle.UserInformationData]}>{element.Data3}</Text>
 
                                         </View>
-                                    
-                                    </>:<></>}
-                                
-                                    {/* Subtotal information  */}
 
-                                    <View style={[OrderLayoutStyle.UserInformationStyle, {paddingTop:8, paddingBottom:8, marginBottom: 6}]}>
+                                        {(element.Data2 == "User-cancel") && (element.Data3 == "Payment success")?<>
+                                            <View style={[OrderLayoutStyle.UserInformationStyle, {paddingTop:8, paddingBottom:8} ]}>
+
+                                                <Text style={[OrderLayoutStyle.UserInformationTitle]}>Refund status :</Text>
+                                                <Text style={[OrderLayoutStyle.UserInformationData]}>{element.Data15}</Text>
+
+                                            </View>
+                                        </>:<></>}
                                         
-                                        <Text style={[OrderLayoutStyle.UserInformationTitle, {color:"#cd3838"}]}>Subtotal:</Text>
-                                        <Text style={[OrderLayoutStyle.UserInformationData, {marginLeft:"auto", fontSize: 19}]}>₹1000/-</Text>
-                                    
-                                    </View>
 
-                                    {/* ProductData information  */}
-                                    
-                                    {element.Product_data.map((product_element, index) => {
-                                        return(
-                                            <View style={[OrderLayoutStyle.PopularProductLayout, 
-                                                {elevation:0, marginTop:5,marginBottom:5, borderTopWidth: 1, borderTopColor: "#ececec"}]}
-                                                key={index}>
+                                        {/* Payment id information  */}
 
-                                                <Pressable style={OrderLayoutStyle.PopularProductPressableLayout}
-                                                    android_ripple={{color:colorCode.HomeScreenColor.ProductLayoutRippler}}
-                                                    > 
-                                                    
-                                                    <Pressable style={OrderLayoutStyle.PressableImageLayout}>
+                                        {element.Data2 == "Online payment"?<>
+                                            
+                                            <View style={[OrderLayoutStyle.UserInformationStyle, {paddingTop:8, paddingBottom:8} ]}>
+
+                                                <Text style={[OrderLayoutStyle.UserInformationTitle]}>Payment id :</Text>
+                                                <Text style={[OrderLayoutStyle.UserInformationData]}>{element.Data4}</Text>
+
+                                            </View>
+                                        
+                                        </>:<></>}
+
+                                        {(element.Data2 == "Complete") && (element.Data3 == "Payment success") ?<>
+                                            
+                                            <View style={[OrderLayoutStyle.UserInformationStyle, {paddingTop:8, paddingBottom:8} ]}>
+
+                                                <Text style={[OrderLayoutStyle.UserInformationTitle]}>Payment id :</Text>
+                                                <Text style={[OrderLayoutStyle.UserInformationData]}>{element.Data4}</Text>
+
+                                            </View>
+                                        
+                                        </>:<></>}
+                                    
+                                        {/* Subtotal information  */}
+
+                                        <View style={[OrderLayoutStyle.UserInformationStyle, {paddingTop:8, paddingBottom:8, marginBottom: 6}]}>
+                                            
+                                            <Text style={[OrderLayoutStyle.UserInformationTitle, {color:"#cd3838"}]}>Subtotal:</Text>
+                                            <Text style={[OrderLayoutStyle.UserInformationData, {marginLeft:"auto", fontSize: 19}]}>₹{element.Data8}/-</Text>
+                                        
+                                        </View>
+
+                                        {/* ProductData information  */}
+                                        
+                                        {element.Product_data.map((product_element, index) => {
+                                            return(
+                                                <View style={[OrderLayoutStyle.PopularProductLayout, 
+                                                    {elevation:0, marginTop:5,marginBottom:5, borderTopWidth: 1, borderTopColor: "#ececec"}]}
+                                                    key={index}>
+
+                                                    <Pressable style={OrderLayoutStyle.PopularProductPressableLayout}
+                                                        android_ripple={{color:colorCode.HomeScreenColor.ProductLayoutRippler}}
+                                                        > 
                                                         
-                                                        <Image
-                                                            source={{uri:product_element.Product_image1}}
-                                                            style = {OrderLayoutStyle.PopularProductImage}
-                                                        />
+                                                        <Pressable style={OrderLayoutStyle.PressableImageLayout}>
+                                                            
+                                                            <Image
+                                                                source={{uri:product_element.Product_image1}}
+                                                                style = {OrderLayoutStyle.PopularProductImage}
+                                                            />
+
+                                                        </Pressable>
+                                    
+                                                        <View style={OrderLayoutStyle.ProductInfoData}>
+
+                                                            {/* Product information  */}
+                                                            <Text style={OrderLayoutStyle.ProductInformation}>{product_element.Product_information}</Text>
+                                                                
+                                                            {/* Weight and Size information layout   */}
+
+                                                            <View style={OrderLayoutStyle.WeightSizeLayout}>
+                                                        
+                                                                {/* Weight information  */}
+
+                                                                <View style={OrderLayoutStyle.WeightLayout}>
+
+                                                                    <Text style={OrderLayoutStyle.WeightSizeTitle}>Weight |</Text>
+
+                                                                    <Text style={OrderLayoutStyle.WeightSizeInformation}>{product_element.Product_weight}</Text>
+                                                                
+                                                                </View>
+                                                                
+                                                                {/* Size information */}
+
+                                                                <View style={[OrderLayoutStyle.SizeLayout]}>
+                                                                    
+                                                                    <Text style={OrderLayoutStyle.WeightSizeTitle}>Size |</Text>
+                                                                
+                                                                    <Text style={OrderLayoutStyle.WeightSizeInformation}>{product_element.Product_size}</Text>
+                                                                
+                                                                </View>
+
+                                                            </View>
+
+                                                            {/* Price information layout  */}
+                                                            
+                                                            <View style={OrderLayoutStyle.PriceInformationLayout}>
+                                                                
+                                                                <Text style={[OrderLayoutStyle.WeightLayout, 
+                                                                    {marginRight: 0, 
+                                                                    fontFamily: "Mukta",
+                                                                    fontSize: 18}]}>Price</Text>
+
+                                                                <Text style={OrderLayoutStyle.RetailPrice}>₹{product_element.Product_retail_price}</Text>
+                                                                
+                                                                <Text style={OrderLayoutStyle.DiscountPrice} numberOfLines={1} >₹{product_element.Product_discount_price}</Text>    
+                                                            
+                                                            </View>
+
+
+                                                        </View>
 
                                                     </Pressable>
-                                
-                                                    <View style={OrderLayoutStyle.ProductInfoData}>
 
-                                                        {/* Product information  */}
-                                                        <Text style={OrderLayoutStyle.ProductInformation}>{product_element.Product_information}</Text>
-                                                            
-                                                        {/* Weight and Size information layout   */}
-
-                                                        <View style={OrderLayoutStyle.WeightSizeLayout}>
-                                                    
-                                                            {/* Weight information  */}
-
-                                                            <View style={OrderLayoutStyle.WeightLayout}>
-
-                                                                <Text style={OrderLayoutStyle.WeightSizeTitle}>Weight |</Text>
-
-                                                                <Text style={OrderLayoutStyle.WeightSizeInformation}>{product_element.Product_weight}</Text>
-                                                            
-                                                            </View>
-                                                            
-                                                            {/* Size information */}
-
-                                                            <View style={[OrderLayoutStyle.SizeLayout]}>
-                                                                
-                                                                <Text style={OrderLayoutStyle.WeightSizeTitle}>Size |</Text>
-                                                            
-                                                                <Text style={OrderLayoutStyle.WeightSizeInformation}>{product_element.Product_size}</Text>
-                                                            
-                                                            </View>
-
-                                                        </View>
-
-                                                        {/* Price information layout  */}
-                                                        
-                                                        <View style={OrderLayoutStyle.PriceInformationLayout}>
-                                                            
-                                                            <Text style={[OrderLayoutStyle.WeightLayout, 
-                                                                {marginRight: 0, 
-                                                                fontFamily: "Mukta",
-                                                                fontSize: 18}]}>Price</Text>
-
-                                                            <Text style={OrderLayoutStyle.RetailPrice}>₹{product_element.Product_retail_price}/-</Text>
-                                                            
-                                                            <Text style={OrderLayoutStyle.DiscountPrice}>₹{product_element.Product_discount_price}/-</Text>    
-                                                        
-                                                        </View>
-
-
-                                                    </View>
-
-                                                </Pressable>
-
-                                            </View> 
-                                        )
-                                    })}
-                                    
-                                    {/* Product address information layout */}
-
-                                    <View style={[OrderLayoutStyle.AddressLayout, 
-                                        {borderTopWidth:1, borderTopColor:"#ececec", paddingTop:8, marginBottom: 5}]}>
-                                    
-                                        <Text style={[OrderLayoutStyle.UserInformationTitle]}>Address :</Text>
-                                        <Text style={[OrderLayoutStyle.UserInformationData, {marginLeft:0, marginTop: 8}]}>
-                                            {element.Data11}
-                                        </Text>
+                                                </View> 
+                                            )
+                                        })}
                                         
-                                        <Text style={[OrderLayoutStyle.UserInformationData, {marginLeft:0, marginTop: 4}]}>
-                                            {element.Data12}, {element.Data13}
-                                        </Text>
+                                        {/* Product address information layout */}
+
+                                        <View style={[OrderLayoutStyle.AddressLayout, 
+                                            {borderTopWidth:1, borderTopColor:"#ececec", paddingTop:8, marginBottom: 5}]}>
                                         
-                                        <Text style={[OrderLayoutStyle.UserInformationData, {marginLeft:0, marginTop: 4}]}>
-                                            Pincode = {element.Data14}
-                                        </Text>
-                                    
+                                            <Text style={[OrderLayoutStyle.UserInformationTitle]}>Address :</Text>
+                                            <Text style={[OrderLayoutStyle.UserInformationData, {marginLeft:0, marginTop: 8}]}>
+                                                {element.Data11}
+                                            </Text>
+                                            
+                                            <Text style={[OrderLayoutStyle.UserInformationData, {marginLeft:0, marginTop: 4}]}>
+                                                {element.Data12}, {element.Data13}
+                                            </Text>
+                                            
+                                            <Text style={[OrderLayoutStyle.UserInformationData, {marginLeft:0, marginTop: 4}]}>
+                                                Pincode = {element.Data14}
+                                            </Text>
+                                        
+                                        </View>
+
+                                        {/* Show QR code Option  */}
+                                        <Pressable style={[OrderLayoutStyle.QrCancelLayout]}
+                                            android_ripple={{color:colorCode.HomeScreenColor.PriceInformationTitleColor}}
+                                            onPress = {() => QrCode_layout_opener(element.Data1, element.Data10)}>
+
+                                            <Text style={[OrderLayoutStyle.QrCancelText]}> Show QR code</Text>
+                                        
+                                        </Pressable> 
+
+                                        {((element.Data2 == "Pending") || (element.Data2 == "Online payment") )?<>
+
+                                            <Pressable style={[OrderLayoutStyle.QrCancelLayout]}
+                                                android_ripple={{color:colorCode.HomeScreenColor.PriceInformationTitleColor}}
+                                                onPress={() => Cancel_order_request_handler(element)}>
+                                            
+                                                <Text style={[OrderLayoutStyle.QrCancelText]}>Cancel order</Text>
+                                            
+                                            </Pressable>
+                                        </>:<></>}
+
                                     </View>
-
-                                    {/* Show QR code Option  */}
-                                    <Pressable style={[OrderLayoutStyle.QrCancelLayout]}
-                                        android_ripple={{color:colorCode.HomeScreenColor.PriceInformationTitleColor}}
-                                        onPress = {() => QrCode_layout_opener(element.Data1, element.Data10)}>
-
-                                        <Text style={[OrderLayoutStyle.QrCancelText]}> Show QR code</Text>
-                                    
-                                    </Pressable> 
-
-                                    <Pressable style={[OrderLayoutStyle.QrCancelLayout]}
-                                        android_ripple={{color:colorCode.HomeScreenColor.PriceInformationTitleColor}}>
-                                    
-                                        <Text style={[OrderLayoutStyle.QrCancelText]}>Cancel order</Text>
-                                    
-                                    </Pressable>
-
-                                </View>
-                            )
-                        })}
-                    </>:<>
-                        <Text style={{fontFamily:"Ubuntu", fontSize: 19, 
-                        width:"80%", marginLeft:"auto", marginRight:"auto", marginTop:20}}>Not found any Order information</Text>
-                    </>}
-                
-                </ScrollView>
+                                )
+                            })}
+                        </>:<>
+                            <Text style={{fontFamily:"Ubuntu", fontSize: 19, 
+                            width:"80%", marginLeft:"auto", marginRight:"auto", marginTop:20}}>Not found any Order information</Text>
+                        </>}
+                    
+                    </ScrollView>
+                </>:<>
+                    <LoadData/>
+                </>}
 
             </View>
         )
@@ -545,9 +657,9 @@ const OrderLayoutStyle = StyleSheet.create({
     UserInformationStyle:{
         display: "flex", 
         flexDirection: "row", 
-        paddingLeft: 10, 
+        paddingLeft: 8, 
         paddingRight: 10, 
-        paddingBottom: 13, 
+        paddingBottom: 8, 
         paddingTop: 13, 
         borderTopLeftRadius: 8 ,
         borderTopRightRadius: 8 
@@ -555,12 +667,12 @@ const OrderLayoutStyle = StyleSheet.create({
 
     UserInformationTitle:{
         fontFamily: "Ubuntu", 
-        fontSize: 18
+        fontSize: 17
     }, 
 
     UserInformationData:{
         fontFamily: "Sans", 
-        fontSize: 19, 
+        fontSize: 18, 
         marginLeft: 8
     },
 
@@ -679,7 +791,8 @@ const OrderLayoutStyle = StyleSheet.create({
     PriceInformationLayout:{
         display: "flex",
         flexDirection: "row",
-        marginTop: 10
+        marginTop: 10, 
+        width: "100%", 
     },
     
     RetailPrice:{
@@ -689,7 +802,7 @@ const OrderLayoutStyle = StyleSheet.create({
         textDecorationLine: 'line-through',
         marginTop: "auto",
         marginBottom: "auto",
-        marginLeft: 12
+        marginLeft: 12, 
     },
     
     DiscountPrice:{
@@ -698,7 +811,7 @@ const OrderLayoutStyle = StyleSheet.create({
         color: "#696969",
         marginTop: "auto",
         marginBottom: "auto",
-        marginLeft: 8
+        marginLeft: 10, 
     }, 
 
     AddressLayout:{

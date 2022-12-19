@@ -6,6 +6,8 @@ import * as colorCode from './Information/ColorCode';
 import * as URL from './Information/RequestURL' ; 
 import BlurViewLayout from "./OtherComponent/BlurViewLayout";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import {WebView} from 'react-native-webview' ; 
+import LoadData from './OtherComponent/LoadingData' ; 
 
 export default function CartItem({navigation, route}){
 
@@ -28,11 +30,42 @@ export default function CartItem({navigation, route}){
     const [navigation_bar_color, set_navigation_bar_color] = useState(colorCode.SignupColorCode.ButtonColor) ; 
 
     // == Cart Subtotal counter 
+
     const SubTotal_count = () => {
         
         for(let i = 0 ; i<cart_productData_information.length; i++){
             set_cart_subtotal(cart_subtotal + parseInt(cart_productData_information[i]["Product_discount_price"]) ); 
         }
+    }
+
+    // **** Start load cart item Request Handler **** // 
+
+    const [webview_layout, set_webview_layout] = useState(true) ; 
+    const [web_view_url, set_web_view_url] = useState('') ;
+    const [webview_value, set_webview_value] = useState(0) ;
+    const [load_cart_item_layout, set_load_cart_item_layout] = useState(true) ; 
+    
+    const Load_cart_product_data = async (event) => {
+
+        let Temp_data = event.nativeEvent.data ;
+        set_webview_layout(true) ; 
+
+        try{
+            Temp_data = JSON.parse(Temp_data) ; 
+            set_load_cart_item_layout(false) ; 
+
+            if (Temp_data.Status == "Fetch"){
+                
+                set_cart_productData_information([...Temp_data.Data]) ;
+                set_cart_subtotal(Temp_data.Subtotal) ;    
+            }
+
+
+        }catch{
+            ToastAndroid.show("Network request failed", ToastAndroid.BOTTOM, ToastAndroid.SHORT) ; 
+        }
+
+
     }
 
     useEffect(() => {
@@ -50,31 +83,25 @@ export default function CartItem({navigation, route}){
 
         loadFont() ; 
 
+        // --- Load cart product request --- // 
+
         const Load_Cart_ProductData = async () => {
 
               
             try{
-                let Cart_product_url = URL.RequestAPI ; 
                 let Cart_product_data = {
                     "Table_name": Table_name,
                     "Check_status": "Fetch_cart_item"
                 }; 
-                let Cart_product_option = {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(Cart_product_data)
-                };
-    
-                let Cart_product_request = await fetch(Cart_product_url, Cart_product_option) ; 
-                let Cart_product_response = await Cart_product_request.json() ; 
-    
-                if (Cart_product_response.Status == "Fetch"){
+
+                // Set URL to webview 
+                set_web_view_url("") ;
+                set_webview_layout(false) ; 
+                set_webview_value(webview_value + 1) ; 
                 
-                    set_cart_productData_information([...Cart_product_response.Data]) ;
-                    set_cart_subtotal(Cart_product_response.Subtotal) ;    
-                }
+                let web_url = URL.RequestAPI + "?data=" + JSON.stringify(Cart_product_data) ; 
+                
+                set_web_view_url(web_url) ;
 
             }catch{
 
@@ -84,60 +111,37 @@ export default function CartItem({navigation, route}){
          
         if (Table_name != ""){
             
-            Load_Cart_ProductData() ;
+            setTimeout(() => {
+                
+                Load_Cart_ProductData() ;
+            }, 500);
         }
+
 
     }, []); 
 
+    // **** Close load cart item Request Handler **** // 
 
-    //  == Open Product image Handler 
+    // **** Start Delete cart item Request Handler **** // 
 
-    const Open_product_image = (product_url) => {
-        Linking.openURL(product_url) ; 
-    }
+    const [delete_cart_item_layout, set_delete_cart_item_layout] = useState(true) ; 
+    const [delete_cart_item_view_url, set_delete_cart_item_view_url] = useState('') ; 
+    const [delete_cart_item_view_value, set_delete_cart_item_view_value] = useState(0) ; 
+    const [delete_cart_product_index, set_delete_cart_product_index] = useState(0) ; 
 
-    // == Set Loading Layout 
-    const Set_loading_layout_handler = () => {
-        set_loading_layout(true) ; 
-        set_navigation_bar_color(colorCode.HomeScreenColor.LoadingNavigationBarColor) ;
-    }
-
-    // == Disable Loading Layout 
-    const Disable_loading_layout_handler = () => {
-        set_loading_layout(false); 
-        set_navigation_bar_color(colorCode.SignupColorCode.ButtonColor) ; 
-    }
-
-    // == Delete Product image Handler 
-    const Delete_cart_item = async  (product_id, category_id, index) => {
-         
-        Set_loading_layout_handler() ; 
+    const Delete_cart_item_handling = (event) => {
+        let Temp_data = event.nativeEvent.data ; 
+        set_delete_cart_item_layout(true) ; 
 
         try{
 
-            let Delete_cart_product_url = URL.RequestAPI ; 
-            let Delete_cart_product_data = {
-                "Check_status":"Delete_cart_item", 
-                "Table_name":  Table_name, 
-                "Product_id": product_id,
-                "Category_id": category_id
-            }; 
-            let Delete_cart_product_option = {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(Delete_cart_product_data)
-            }; 
+            Temp_data = JSON.parse(Temp_data) ; 
 
-            let Delete_cart_product_request = await fetch(Delete_cart_product_url, Delete_cart_product_option) ;
-            let Delete_cart_product_response = await Delete_cart_product_request.json() ; 
-
-            if (Delete_cart_product_response.Status == "Delete"){
+            if (Temp_data.Status == "Delete"){
                 
                 Disable_loading_layout_handler() ; 
 
-                cart_productData_information.splice(index, 1); 
+                cart_productData_information.splice(delete_cart_product_index, 1); 
 
                 set_cart_productData_information(([...cart_productData_information])); 
 
@@ -145,6 +149,39 @@ export default function CartItem({navigation, route}){
 
                 ToastAndroid.show("Delete cart item", ToastAndroid.BOTTOM, ToastAndroid.SHORT) ; 
             }
+
+        }catch{
+            ToastAndroid.show("Network request failed", ToastAndroid.BOTTOM, ToastAndroid.SHORT) ; 
+        }
+
+        Disable_loading_layout_handler() ; 
+        
+    }
+
+    const Delete_cart_item = async  (product_id, category_id, index) => {
+         
+        Set_loading_layout_handler() ; 
+
+        try{
+
+            let Delete_cart_product_data = {
+                "Check_status":"Delete_cart_item", 
+                "Table_name":  Table_name, 
+                "Product_id": product_id,
+                "Category_id": category_id
+            }; 
+
+            // Set URL to webview 
+            set_delete_cart_item_view_url("") ;
+            set_delete_cart_item_layout(false) ; 
+            set_delete_cart_item_view_value(delete_cart_item_view_value + 1) ; 
+            set_delete_cart_product_index(index) ; 
+            
+            let web_url = URL.RequestAPI + "?data=" + JSON.stringify(Delete_cart_product_data) ; 
+            
+            set_delete_cart_item_view_url(web_url) ;
+
+           
         }catch{
 
             Disable_loading_layout_handler() ; 
@@ -152,11 +189,25 @@ export default function CartItem({navigation, route}){
             ToastAndroid.show("Network request failed") ; 
         }
 
-        Disable_loading_layout_handler() ; 
 
     }
+    
+    // **** Close Delete cart item request Handler **** // 
 
-    // == Proceed to checkout Option 
+    const Open_product_image = (product_url) => {
+        Linking.openURL(product_url) ; 
+    }
+
+    const Set_loading_layout_handler = () => {
+        set_loading_layout(true) ; 
+        set_navigation_bar_color(colorCode.HomeScreenColor.LoadingNavigationBarColor) ;
+    }
+
+    const Disable_loading_layout_handler = () => {
+        set_loading_layout(false); 
+        set_navigation_bar_color(colorCode.SignupColorCode.ButtonColor) ; 
+    }
+
     const Proceed_To_checkout_option = async () => {
 
         const Order_data = await AsyncStorage.getItem("Order") ; 
@@ -183,15 +234,15 @@ export default function CartItem({navigation, route}){
         
     }
 
-    // == Cart Empty Handler 
     const Cart_empty_Handler = () => {
         navigation.navigate("Home") ; 
     }
 
-    // == Back Handler 
     const Back_Handler = () => {
         navigation.goBack() ; 
     }
+
+    // === Layout === // 
 
     if ( loadFontValue ){
         return(
@@ -200,6 +251,37 @@ export default function CartItem({navigation, route}){
                 <StatusBar
                     backgroundColor={colorCode.SignupColorCode.ButtonColor}
                 />
+
+                
+                {!webview_layout?<>
+                    <View
+                        style={{
+                            height: "0%", 
+                            width: "0%", 
+                            opacity: 0.90
+                        }}>
+                            <WebView
+                            key = {webview_value}
+                            source={{uri:web_view_url}}
+                            onMessage={Load_cart_product_data}
+                            ></WebView>
+                    </View>
+                </>:<></>}
+
+                {!delete_cart_item_layout?<>
+                    <View
+                        style={{
+                            height: "0%", 
+                            width: "0%", 
+                            opacity: 0.90
+                        }}>
+                            <WebView
+                            key = {delete_cart_item_view_value}
+                            source={{uri:delete_cart_item_view_url}}
+                            onMessage={Delete_cart_item_handling}
+                            ></WebView>
+                    </View>
+                </>:<></>}
 
                 {/* == Loading layout ==  */}
 
@@ -226,141 +308,149 @@ export default function CartItem({navigation, route}){
                     </Pressable>
             
                 </View>
-                
-                {cart_productData_information.length > 0?<>
 
-                    {/* == SubTotal price information == */}
-
-                    <View style={CartItemStyle.SubTotalLayout}>
-
-                        <Text style={CartItemStyle.SubTotalTitle}>Subtotal:</Text>
-
-                        <Text style={CartItemStyle.SubTotalPrice}>₹{cart_subtotal}/-</Text>
-                    
-                    </View> 
-
-                    {/* == Proceed to Buy Option == */}
-
-                    <Pressable style={CartItemStyle.ProceedToBuy}
-                        android_ripple={{color: colorCode.HomeScreenColor.PriceInformationTitleColor}}
-                        onPress = {() => Proceed_To_checkout_option()}>
-
-                        <Text style={CartItemStyle.ProceedToBuyText}>Proceed to Buy ({cart_productData_information.length} Items)</Text>
-                    
-                    </Pressable>
-                    
-                    {/* == Cart Product Data information ==  */}
-
-                    <View style={CartItemStyle.PopularProductMainLayout}>
-                        
-                        <ScrollView showsHorizontalScrollIndicator={false}>
-
-                            {cart_productData_information.map((element, index) => {
-                                
-                                return(
-                                    <View style={[CartItemStyle.PopularProductLayout]} 
-                                        key={index}>
-
-                                        <Pressable style={CartItemStyle.PopularProductPressableLayout}
-                                            android_ripple={{color:colorCode.HomeScreenColor.ProductLayoutRippler}}
-                                            onPress={() => Open_particular_product(element) }>
-
-                                            <Pressable style={CartItemStyle.PressableImageLayout}
-                                                onPress = {() => Open_product_image(element.Product_image1)}>
-
-                                                <Image
-                                                    source={{uri:element.Product_image1}}
-                                                    style = {CartItemStyle.PopularProductImage}
-                                                />
-
-                                            </Pressable>  
-                        
-                                            <View style={CartItemStyle.ProductInfoData}>
-
-                                                {/* Product information  */}
-                                                <Text style={CartItemStyle.ProductInformation}>{element.Product_information}</Text>
-                                                    
-                                                {/* Weight and Size information layout   */}
-
-                                                <View style={CartItemStyle.WeightSizeLayout}>
-                                            
-                                                    {/* Weight information  */}
-
-                                                    <View style={CartItemStyle.WeightLayout}>
-
-                                                        <Text style={CartItemStyle.WeightSizeTitle}>Weight |</Text>
-
-                                                        <Text style={CartItemStyle.WeightSizeInformation}>{element.Product_weight}</Text>
-                                                    
-                                                    </View>
-                                                    
-                                                    {/* Size information */}
-
-                                                    <View style={[CartItemStyle.SizeLayout]}>
-                                                        
-                                                        <Text style={CartItemStyle.WeightSizeTitle}>Size |</Text>
-                                                    
-                                                        <Text style={CartItemStyle.WeightSizeInformation}>{element.Product_size}</Text>
-                                                    
-                                                    </View>
-
-                                                </View>
-
-                                                {/* Price information layout  */}
-                                                
-                                                <View style={CartItemStyle.PriceInformationLayout}>
-                                                    
-                                                    <Text style={[CartItemStyle.WeightLayout, 
-                                                        {marginRight: 0, 
-                                                        fontFamily: "Mukta",
-                                                        fontSize: 18}]}>Price</Text>
-
-                                                    <Text style={CartItemStyle.RetailPrice}>₹{element.Product_retail_price}</Text>
-                                                    
-                                                    <Text style={CartItemStyle.DiscountPrice}>₹{element.Product_discount_price}</Text>    
-                                                
-                                                </View>
-
-                                                {/* Delete Option Layout */}
-
-                                                <Pressable style={CartItemStyle.DeleteOptionLayout}
-                                                    android_ripple={{color: '#ff6565'}}
-                                                    onPress = {() => Delete_cart_item(element.Product_id, element.Category_id, index)}>
-                                                    <Text style={CartItemStyle.DeleteOptionText}>Delete</Text>
-                                                </Pressable>
-
-                                            </View>
-
-                                        </Pressable>
-
-                                    </View> 
-                                )
-                            })}
-
-                        </ScrollView>
-
-                    </View> 
-
+                {load_cart_item_layout?<>
+                    <LoadData/>
                 </>:<>
-                    <View style={CartItemStyle.CartEmptyLayout}>
 
-                        <Pressable style={CartItemStyle.BackToHomeLayout}
-                            android_ripple={{color:colorCode.HomeScreenColor.PriceInformationTitleColor}}
-                            onPress={Cart_empty_Handler}>
-                            
-                            <Text style={{fontFamily: "Ubuntu", fontSize:18, color: 'white'}}>Back to Home</Text>
+                    {cart_productData_information.length > 0?<>
+
+                        {/* ==== Start Subtotal price information layout ====  */}
+
+                        <View style={CartItemStyle.SubTotalLayout}>
+
+                            <Text style={CartItemStyle.SubTotalTitle}>Subtotal:</Text>
+
+                            <Text style={CartItemStyle.SubTotalPrice}>₹{cart_subtotal}/-</Text>
+                        
+                        </View> 
+
+                        {/* ==== Close subtotal price information layout ====  */}
+
+                        {/* == Proceed to Buy Option == */}
+
+                        <Pressable style={CartItemStyle.ProceedToBuy}
+                            android_ripple={{color: colorCode.HomeScreenColor.PriceInformationTitleColor}}
+                            onPress = {() => Proceed_To_checkout_option()}>
+
+                            <Text style={CartItemStyle.ProceedToBuyText}>Proceed to Buy ({cart_productData_information.length} Items)</Text>
                         
                         </Pressable>
+                        
+                        {/* == Cart Product Data information ==  */}
 
-                        <Image
-                            source={require('../assets/Image/Empty_cart.png')}
-                            style={{height: '70%', width: '85%', resizeMode: "contain", 
-                            marginLeft: "auto", marginRight: "auto" }}
-                        />
+                        <View style={CartItemStyle.PopularProductMainLayout}>
+                            
+                            <ScrollView showsHorizontalScrollIndicator={false}>
+
+                                {cart_productData_information.map((element, index) => {
+                                    
+                                    return(
+                                        <View style={[CartItemStyle.PopularProductLayout]} 
+                                            key={index}>
+
+                                            <Pressable style={CartItemStyle.PopularProductPressableLayout}
+                                                android_ripple={{color:colorCode.HomeScreenColor.ProductLayoutRippler}}
+                                                >
+
+                                                <Pressable style={CartItemStyle.PressableImageLayout}
+                                                    onPress = {() => Open_product_image(element.Product_image1)}>
+
+                                                    <Image
+                                                        source={{uri:element.Product_image1}}
+                                                        style = {CartItemStyle.PopularProductImage}
+                                                    />
+
+                                                </Pressable>  
+                            
+                                                <View style={CartItemStyle.ProductInfoData}>
+
+                                                    {/* Product information  */}
+                                                    <Text style={CartItemStyle.ProductInformation}>{element.Product_information}</Text>
+                                                        
+                                                    {/* Weight and Size information layout   */}
+
+                                                    <View style={CartItemStyle.WeightSizeLayout}>
+                                                
+                                                        {/* Weight information  */}
+
+                                                        <View style={CartItemStyle.WeightLayout}>
+
+                                                            <Text style={CartItemStyle.WeightSizeTitle}>Weight |</Text>
+
+                                                            <Text style={CartItemStyle.WeightSizeInformation}>{element.Product_weight}</Text>
+                                                        
+                                                        </View>
+                                                        
+                                                        {/* Size information */}
+
+                                                        <View style={[CartItemStyle.SizeLayout]}>
+                                                            
+                                                            <Text style={CartItemStyle.WeightSizeTitle}>Size |</Text>
+                                                        
+                                                            <Text style={CartItemStyle.WeightSizeInformation}>{element.Product_size}</Text>
+                                                        
+                                                        </View>
+
+                                                    </View>
+
+                                                    {/* Price information layout  */}
+                                                    
+                                                    <View style={CartItemStyle.PriceInformationLayout}>
+                                                        
+                                                        <Text style={[CartItemStyle.WeightLayout, 
+                                                            {marginRight: 0, 
+                                                            fontFamily: "Mukta",
+                                                            fontSize: 18}]}>Price</Text>
+
+                                                        <Text style={CartItemStyle.RetailPrice}>₹{element.Product_retail_price}</Text>
+                                                        
+                                                        <Text style={CartItemStyle.DiscountPrice}>₹{element.Product_discount_price}</Text>    
+                                                    
+                                                    </View>
+
+                                                    {/* Delete Option Layout */}
+
+                                                    <Pressable style={CartItemStyle.DeleteOptionLayout}
+                                                        android_ripple={{color: '#ff6565'}}
+                                                        onPress = {() => Delete_cart_item(element.Product_id, element.Category_id, index)}>
+                                                        <Text style={CartItemStyle.DeleteOptionText}>Delete</Text>
+                                                    </Pressable>
+
+                                                </View>
+
+                                            </Pressable>
+
+                                        </View> 
+                                    )
+                                })}
+
+                            </ScrollView>
+
+                        </View> 
+
+                    </>:<>
+                        <View style={CartItemStyle.CartEmptyLayout}>
+
+                            <Pressable style={CartItemStyle.BackToHomeLayout}
+                                android_ripple={{color:colorCode.HomeScreenColor.PriceInformationTitleColor}}
+                                onPress={Cart_empty_Handler}>
+                                
+                                <Text style={{fontFamily: "Ubuntu", fontSize:18, color: 'white'}}>Back to Home</Text>
+                            
+                            </Pressable>
+
+                            <Image
+                                source={require('../assets/Image/Empty_cart.png')}
+                                style={{height: '70%', width: '85%', resizeMode: "contain", 
+                                marginLeft: "auto", marginRight: "auto" }}
+                            />
 
 
-                    </View>
+                        </View>
+                    </>}
                 </>}
+                
 
             </View>
         )

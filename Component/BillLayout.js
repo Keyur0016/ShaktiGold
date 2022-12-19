@@ -6,27 +6,41 @@ import * as colorCode from './Information/ColorCode' ;
 import * as URL from './Information/RequestURL' ; 
 import BlurViewLayout from "./OtherComponent/BlurViewLayout";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { WebView } from 'react-native-webview';
+import { CommonActions } from '@react-navigation/native';
 
 export default function BillLayout({navigation, route}){
 
-    // == Table name
+    // --- Table name --- // 
+
     const {Table_name} = route.params ; 
 
     // == Loading Layout 
+
     const [loading_layout, set_loading_layout] = useState(false) ; 
 
     // == Disable Navigation bar color
+    
     const [navigation_bar_color, set_navigation_bar_color] = useState(colorCode.SignupColorCode.ButtonColor) ; 
 
     // == Require data 
+    
     const [Username, set_Username] = useState(''); 
+    
     const [cart_total, set_cart_total] = useState(''); 
+    
     const [product_data, set_product_data] = useState([]) ; 
+    
     const [payment_method, set_payment_method] = useState('') ; 
+    
     const [street_address, set_street_address] = useState('') ; 
+    
     const [area, set_area] = useState('') ; 
+    
     const [landmark, set_landmark] = useState(''); 
+    
     const [pincode, set_pincode] = useState('') ; 
+    
     const [mobile_number, set_mobile_number] = useState('') ; 
 
     // == Check font loaded or not 
@@ -53,13 +67,21 @@ export default function BillLayout({navigation, route}){
                
             let Order_data = await AsyncStorage.getItem("Order") ; 
             Order_data = JSON.parse(Order_data) ; 
+
             set_cart_total(Order_data.Subtotal) ; 
+            
             set_product_data([...Order_data.Product]) ;
+            
             set_payment_method(Order_data.Payment_method) ; 
+            
             set_street_address(Order_data.Address.Street_address) ; 
+            
             set_area(Order_data.Address.Area) ; 
+            
             set_landmark(Order_data.Address.Landmark); 
+            
             set_pincode(Order_data.Address.Pincode); 
+            
             set_Username(Order_data.Address.Username) ; 
 
             const Mobile_number = await AsyncStorage.getItem("Mobilenumber"); 
@@ -70,19 +92,59 @@ export default function BillLayout({navigation, route}){
 
     }, []);
 
-    // == Set Loading Layout 
     const Set_loading_layout_handler = () => {
         set_loading_layout(true) ; 
         set_navigation_bar_color(colorCode.HomeScreenColor.LoadingNavigationBarColor) ;
     }
 
-    // == Disable Loading Layout 
     const Disable_loading_layout_handler = () => {
         set_loading_layout(false); 
         set_navigation_bar_color(colorCode.SignupColorCode.ButtonColor) ; 
     }
 
-    // == Place order option Handler 
+    // **** Start Place order Request Handler **** // 
+    const [webview_layout, set_webview_layout] = useState(true) ; 
+    const [web_view_url, set_web_view_url] = useState('') ;
+    const [webview_value, set_webview_value] = useState(0) ;
+
+    // --- Webview request --- // 
+
+    const Place_order_view_handling = (event) => {
+
+        let Temp_data = event.nativeEvent.data ; 
+        Disable_loading_layout_handler() ; 
+        set_webview_layout(true) ; 
+
+        try{
+ 
+            Temp_data = JSON.parse(Temp_data) ; 
+
+
+            if (Temp_data.Status == "Place_order"){
+
+                Disable_loading_layout_handler() ; 
+                
+                navigation.dispatch(
+                    CommonActions.reset({
+                        index: 0,
+                        routes: [{ name: "Home" }]
+                }));
+
+                navigation.navigate("Home") ; 
+                
+                ToastAndroid.show("Order place successfully", ToastAndroid.BOTTOM, ToastAndroid.SHORT) ;
+                
+            }
+            else{
+                Disable_loading_layout_handler() ; 
+            }
+
+        }catch{
+            ToastAndroid.show("Network request failed", ToastAndroid.BOTTOM, ToastAndroid.SHORT) ; 
+        }
+    }
+
+    // --- Button handler --- // 
     const Place_order_Handler = async () => {
            
         Set_loading_layout_handler() ;
@@ -94,7 +156,6 @@ export default function BillLayout({navigation, route}){
             let Year = new Date().getFullYear() ; 
             let Date_information = Day + "-" + Month + "-" + Year; 
             
-            let Place_order_url = URL.RequestAPI ; 
             let Place_order_data = {
                 "Check_status": "Place_order", 
                 "Order_total": cart_total, 
@@ -112,37 +173,28 @@ export default function BillLayout({navigation, route}){
                 "Order_date": Date_information, 
                 "Mobile_number": mobile_number
             } ; 
-            let Place_order_option = {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(Place_order_data)
-            }; 
 
-            let Place_order_request = await fetch(Place_order_url, Place_order_option) ; 
-            let Place_order_response = await Place_order_request.json() ; 
+            
+            // --- Set Web view request --- // 
+            set_web_view_url('') ; 
+            set_webview_layout(false) ; 
+            set_webview_value(webview_value + 1) ; 
 
-            if (Place_order_response.Status == "Place_order"){
+            let web_url = URL.RequestAPI + "?data=" + JSON.stringify(Place_order_data) ;
 
-                Disable_loading_layout_handler() ; 
-                
-                navigation.navigate("Home") ; 
-                
-                ToastAndroid.show("Order place successfully", ToastAndroid.BOTTOM, ToastAndroid.SHORT) ;
-                
-            }
-            else{
-                Disable_loading_layout_handler() ; 
-            }
+            set_web_view_url(web_url) ; 
+        
 
         } catch {
             
+            Disable_loading_layout_handler() ; 
             ToastAndroid.show("Error in placing order", ToastAndroid.BOTTOM, ToastAndroid.SHORT) ; 
         }
-        Disable_loading_layout_handler() ; 
     }
 
+    // **** Stop Place order Request Handler **** // 
+    
+    // --- Layout --- // 
     
     if (loadFontValue){
         return(
@@ -155,6 +207,21 @@ export default function BillLayout({navigation, route}){
 
                 {loading_layout?<>
                     <BlurViewLayout/>
+                </>:<></>}
+
+                {!webview_layout?<>
+                    <View
+                        style={{
+                            height: "0%", 
+                            width: "0%", 
+                            opacity: 0.90
+                        }}>
+                            <WebView
+                            key = {webview_value}
+                            source={{uri:web_view_url}}
+                            onMessage={Place_order_view_handling}
+                            ></WebView>
+                    </View>
                 </>:<></>}
 
                 <View style={BillLayoutStyle.BackImageContainer}>
