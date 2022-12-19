@@ -1,0 +1,61 @@
+{
+    "Status": "Fetch",
+    "Data": [
+        {
+            "Category_id": "7",
+            "Category_name": "Ear ring",
+            "Category_option": "Gold",
+            "Category_image": "http://res.cloudinary.com/smartinfo/image/upload/v1668321589/rkm7iiregi2bzctjy6no.jpg",
+            "Category_table": "nkabcuwivg"
+        },
+        {
+            "Category_id": "10",
+            "Category_name": "Ring1",
+            "Category_option": "Gold",
+            "Category_image": "https://res.cloudinary.com/smartinfo/image/upload/v1668454917/prenbtwe6ab1aprxxtkt.jpg",
+            "Category_table": "abcd"
+        },
+        {
+            "Category_id": "13",
+            "Category_name": "Ring1",
+            "Category_option": "Gold",
+            "Category_image": "https: //res.cloudinary.com/smartinfo/image/upload/v1668454917/prenbtwe6ab1aprxxtkt.jpg",
+            "Category_table": "abcd"
+        },
+        {
+            "Category_id": "16",
+            "Category_name": "Gold ring1",
+            "Category_option": "Gold",
+            "Category_image": "Image1",
+            "Category_table": "zyjtslpark"
+        },
+        {
+            "Category_id": "17",
+            "Category_name": "Keyut#636",
+            "Category_option": "Gold",
+            "Category_image": "",
+            "Category_table": "teoxvyfmqu"
+        },
+        {
+            "Category_id": "18",
+            "Category_name": "Keyut1266362",
+            "Category_option": "Gold",
+            "Category_image": "",
+            "Category_table": "zotxkydsqi"
+        },
+        {
+            "Category_id": "19",
+            "Category_name": "Jeans ring ",
+            "Category_option": "Gold",
+            "Category_image": "http: //res.cloudinary.com/smartinfo/image/upload/v1670155334/qsvprli4xpaw1plqmosz.jpg",
+            "Category_table": "kmhxjedufi"
+        },
+        {
+            "Category_id": "24",
+            "Category_name": "Zbzhx",
+            "Category_option": "Gold",
+            "Category_image": "http://res.cloudinary.com/smartinfo/image/upload/v1670753287/oppum6atc7dswsicaz9b.jpg",
+            "Category_table": "johzybelig"
+        }
+    ]
+}
