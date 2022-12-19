@@ -1,29 +1,57 @@
 import { View, StyleSheet, StatusBar, Pressable, Image, Text, 
-    ToastAndroid, Dimensions, Linking } from "react-native";
+    ToastAndroid, Dimensions, Linking, ActivityIndicator } from "react-native";
 import { useState, useEffect } from "react";
 import * as Font from 'expo-font' ; 
 import * as colorCode from '../Information/ColorCode' ; 
 import * as URL from '../Information/RequestURL' ; 
 import {FlatListSlider} from 'react-native-flatlist-slider';
 import StatusPreview from "./StatusPreview";
+import {WebView} from 'react-native-webview' ; 
+import LoadingData from "./LoadingData";
 
 export default function StatusView({navigation}){
 
-    // Status Image Layout Height 
+    // --- Calculate Status Image Height  ---- // 
+
     const WindowHeight = parseInt((Dimensions.get('window').height) - 90) ; 
 
-    // == Status image data 
+    // ---- Status image list ---- // 
+    
     const [Status_image, set_Status_image_data] = useState([]) ; 
+    
+    // ==== Load font ==== // 
 
-    // == Check font loaded or not 
     const [loadFontValue, setLoadFontValue] = useState(false); 
 
-    // == Status bar color 
-    const [status_bar_color, set_status_bar_color] = useState("#ffebbd") ; 
+    // **** Start Load Status Image Request Handler **** // 
 
+    const [webview_layout, set_webview_layout] = useState(true) ; 
+    const [web_view_url, set_web_view_url] = useState('') ;
+    const [webview_value, set_webview_value] = useState(0) ;
+    const [status_image_load, set_status_image_load] = useState(true) ; 
+    
+    const Load_banner_data = (event) => {
+
+        let Temp_data = event.nativeEvent.data ; 
+
+        // -- Close webview and Status image load layout -- // 
+
+        set_webview_layout(true) ; 
+        set_status_image_load(false) ; 
+
+        try{
+            Temp_data = JSON.parse(Temp_data) ; 
+
+            if (Temp_data.Status == "Fetch"){
+                set_Status_image_data([...Temp_data.Data]); 
+            }
+
+        }catch{
+            ToastAndroid.show("Unable to load Product Image", ToastAndroid.BOTTOM, ToastAndroid.LONG) ; 
+        }
+
+    }
     useEffect(() => {
-
-        // -- Load Font 
 
         const loadFont = async () => {
             await Font.loadAsync({
@@ -37,50 +65,58 @@ export default function StatusView({navigation}){
 
         loadFont() ; 
 
-        const Status_image_data = async () => {
+
+        // --- Call Load Banner Request --- // 
+
+        const Status_image_data = () => {
 
             try{
 
-                let Status_fetch_url = URL.RequestAPI ; 
                 let Status_fetch_data = {
                     "Check_status" : "Fetch_banner", 
                     "Option" : "Status"
                 }; 
-                let Status_fetch_option = {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(Status_fetch_data)
-                }; 
 
-                let Status_fetch_request = await fetch(Status_fetch_url, Status_fetch_option) ; 
-                let Status_fetch_response = await Status_fetch_request.json() ; 
+                // Set URL to webview 
+                set_web_view_url("") ;
+                set_webview_layout(false) ; 
+                set_webview_value(webview_value + 1) ; 
+                set_status_image_load(true) ; 
 
-                if (Status_fetch_response.Status == "Fetch"){
-                    set_Status_image_data([...Status_fetch_response.Data]); 
-                }
+                let web_url = URL.RequestAPI + "?data=" + JSON.stringify(Status_fetch_data) ; 
+
+                set_web_view_url(web_url) ; 
+
+                
             }catch{
                 ToastAndroid.show("Network request failed", ToastAndroid.BOTTOM, ToastAndroid.SHORT); 
             }
         }; 
 
-        Status_image_data() ; 
+        setTimeout(() => {
+            Status_image_data() ; 
+        }, 500);
 
-    }, []); 
+        
+    }, []);
+
+    // **** Close Load Status Image load Request **** // 
     
 
-    // == Back Button Handler 
+    // ==== Back Handler ==== // 
 
     const Back_Handler = () => {
         navigation.navigate("Home") ; 
     }; 
 
-    // ==  Status image onPress Handler 
+    // ==== Status image click Handler ==== // 
 
     const Status_image_opener = (element) => {
+
         Linking.openURL(element.image) ; 
     }
+
+    // === Layout === // 
 
     if (loadFontValue){
 
@@ -89,12 +125,27 @@ export default function StatusView({navigation}){
             <View style={StatusStyle.StatusScreen}>
 
                 <StatusBar
-                    backgroundColor={status_bar_color}
+                    backgroundColor={colorCode.SignupColorCode.ButtonColor}
                 />
+
+                {!webview_layout?<>
+                    <View
+                        style={{
+                            height: "0%", 
+                            width: "0%", 
+                            opacity: 0.90
+                        }}>
+                            <WebView
+                            key = {webview_value}
+                            source={{uri:web_view_url}}
+                            onMessage={Load_banner_data}
+                            ></WebView>
+                    </View>
+                </>:<></>}
 
                 {/* == Back Option Container ==  */}
 
-                <View style={[StatusStyle.BackImageContainer, {backgroundColor:status_bar_color}]}>
+                <View style={[StatusStyle.BackImageContainer, {backgroundColor:colorCode.SignupColorCode.ButtonColor}]}>
 
                     <Pressable style={[StatusStyle.BackImageContainer, 
                         {paddingLeft: 10 , paddingTop: 10 ,paddingBottom: 10, paddingRight: 12, 
@@ -113,22 +164,34 @@ export default function StatusView({navigation}){
 
                 </View>
 
-                <View style={StatusStyle.StatusImageLayout}>
+                {status_image_load?<>
+                    
+                    <LoadingData/>
 
-                    {Status_image.length > 0?<>
+                </>:<>
 
-                        <FlatListSlider
-                            data = {Status_image}
-                            component = {<StatusPreview/>}
-                            autoscroll = {false}
-                            onPress = {(item) => Status_image_opener(item)} 
-                        />
+                    <View style={StatusStyle.StatusImageLayout}>
 
-                    </>:
-                    <></>}
+                    
+                        {Status_image.length > 0?<>
 
-                
-                </View>     
+                            <FlatListSlider
+                                data = {Status_image}
+                                component = {<StatusPreview/>}
+                                autoscroll = {false}
+                                onPress = {(item) => Status_image_opener(item)} 
+                            />
+
+                        </>:
+                        <>
+                            <Text style={StatusStyle.NotAvailableProduct}>Not available any product</Text>
+
+                        </>}
+
+                    
+                    </View>     
+                </>}
+
 
             </View>
 
@@ -172,5 +235,20 @@ const StatusStyle = StyleSheet.create({
         marginLeft: "auto", 
         marginRight: "auto",
         marginTop: 10
+    }, 
+
+    NotAvailableProduct:{
+        fontFamily: 'Ubuntu',
+        fontSize: 18, 
+        marginLeft: "auto", 
+        marginRight: "auto",
+        marginTop: "2%"
+    },
+    LoadingLayout:{
+        display: "flex", 
+        height: "100%", 
+        width: "100%",
+        flex: 1,
+        justifyContent: 'center'
     }
 })

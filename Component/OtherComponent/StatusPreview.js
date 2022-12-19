@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
   ProductImage: {
     width: '96%',
     borderRadius: 8,
-    resizeMode: 'cover',
+    resizeMode: 'contain',
   },
   
 });
