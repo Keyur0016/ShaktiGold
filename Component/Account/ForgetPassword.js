@@ -2,11 +2,12 @@ import React, {useState, useEffect} from 'react';
 import { View, StyleSheet, KeyboardAvoidingView, StatusBar, Image, Text, TextInput, ActivityIndicator, Pressable, ToastAndroid } from 'react-native';
 import * as colorCode from '../Information/ColorCode'; 
 import * as Font from 'expo-font' ; 
-import * as URL from '../Information/RequestURL' ; 
+import * as URL from '../Information/RequestURL' ;
+import {WebView} from 'react-native-webview' ; 
 
 export default function ChangeEmail({navigation}){
     
-    // --- Load require font --- // 
+    // ==== Load font ==== // 
     
     const [loadFontValue, setLoadFontValue] = useState(false); 
 
@@ -25,27 +26,68 @@ export default function ChangeEmail({navigation}){
 
     },[]);
     
-    // Input value 
+    // ==== Input value ==== // 
 
     const [mobilenumber, setMobilenumber] = useState(''); 
+    const [activityIndicator, setActivityIndicator] = useState(false) ; 
     
-    // Input Focus attributes
+    // ==== Input focus attribute ==== // 
 
     const [emailBorder, setEmailBorder] = useState(false); 
     
-    // Activity Indicator 
-    
-    const [activityIndicator, setActivityIndicator] = useState(false) ; 
+    // ==== Focus Handler ==== // 
 
     const OnFocusHandle = () => {
         setEmailBorder(true); 
     }
 
-    // --- Forget Password Handler --- // 
+    // **** Start Forget Password Request Handler **** // 
+
+    const [webview_layout, set_webview_layout] = useState(true) ; 
+    const [web_view_url, set_web_view_url] = useState('') ;
+    const [webview_value, set_webview_value] = useState(0) ; 
+
+    // -- Webview request -- //
+
+    const Message_handling = async (event) => {
+
+        let Temp_data = event.nativeEvent.data ; 
+        set_webview_layout(true) ; 
+
+        try{
+            Temp_data = JSON.parse(Temp_data) ; 
+            
+            let SendCode_STATUS = Temp_data.Status; 
+
+            if (SendCode_STATUS == "Mobile number not register"){
+
+                ToastAndroid.show(SendCode_STATUS, ToastAndroid.BOTTOM, ToastAndroid.SHORT); 
+            }
+            else if (SendCode_STATUS == "OTP send") {
+
+                ToastAndroid.show("OTP send successfully", ToastAndroid.BOTTOM, ToastAndroid.SHORT); 
+
+                let Verification_OTP = Temp_data.OTP; 
+                navigation.navigate("ForgetVerification", {"Mobilenumber":mobilenumber, "Code":Verification_OTP}); 
+            }
+            
+            else if (SendCode_STATUS == "OTP send failed"){
+
+                ToastAndroid.show("OTP send failed. Try, again", ToastAndroid.BOTTOM, ToastAndroid.SHORT); 
+            }
+
+
+        }catch{
+            ToastAndroid.show("Network request failed", ToastAndroid.BOTTOM, ToastAndroid.SHORT) ; 
+        }
+
+        setActivityIndicator(false) ; 
+
+    }
+
+    // -- Forget Password Button Handler -- // 
 
     const ForgetPassword_Handle = async () => {
-         
-        setActivityIndicator(true); 
 
         if (mobilenumber == ""){
 
@@ -56,70 +98,61 @@ export default function ChangeEmail({navigation}){
             ToastAndroid.show("Invalid Mobilenumber", ToastAndroid.BOTTOM, ToastAndroid.SHORT); 
         }
         else{
+
+            // -- Webview request -- // 
              
-            try {
-                
-                let SendCode_url = URL.RequestAPI ; 
-                let SendCode_data = {
-                    'Check_status': 'Send_otp',
-                    'Mobilenumber': mobilenumber
-                } ; 
-                let SendCode_option = {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(SendCode_data)
-                }
-    
-                let SendCode_request = await fetch(SendCode_url, SendCode_option); 
-                let SendCode_response = await SendCode_request.json() ; 
-                let SendCode_STATUS = SendCode_response.Status; 
+            let SendCode_data = {
+                'Check_status': 'Send_otp',
+                'Mobilenumber': mobilenumber
+            } ; 
+            
+            // Set URL to webview 
+            setActivityIndicator(true) ; 
 
-                if (SendCode_STATUS == "Mobile number not register"){
-
-                    ToastAndroid.show(SendCode_STATUS, ToastAndroid.BOTTOM, ToastAndroid.SHORT); 
-                }
-                else if (SendCode_STATUS == "OTP send") {
-
-                    ToastAndroid.show("OTP send successfully", ToastAndroid.BOTTOM, ToastAndroid.SHORT); 
-
-                    let Verification_OTP = SendCode_response.OTP; 
-                    navigation.navigate("ForgetVerification", {"Mobilenumber":mobilenumber, "Code":Verification_OTP}); 
-                }
-                
-                else if (SendCode_STATUS == "OTP send failed"){
-
-                    ToastAndroid.show("OTP send failed. Try, again", ToastAndroid.BOTTOM, ToastAndroid.SHORT); 
-                }
-
-            } catch (error) {
-                
-                ToastAndroid.show("Network request failed", ToastAndroid.BOTTOM, ToastAndroid.SHORT); 
-            }
-
+            set_web_view_url("") ;
+            set_webview_layout(false) ; 
+            set_web_view_url(webview_value + 1) ; 
+            
+            let web_url = URL.RequestAPI + "?data=" + JSON.stringify(SendCode_data) ; 
+            
+            set_web_view_url(web_url ) ;
         }
 
-        setActivityIndicator(false) ; 
     }
+
+    // **** Close Forget Password Request Handler **** // 
+
     
-    // --- Forget Password Back Handler --- // 
+    // ==== Back Handler ==== // 
 
     const Forget_password_back_handler = () =>{
-
         navigation.navigate("Signin"); 
-    
     }
     
-    
+    // ==== Layout ==== // 
+
     if (loadFontValue){
         return(
             
             <KeyboardAvoidingView style={ForgetPassStyle.ForgetPassScreen}>
                      
                 <StatusBar
-                    backgroundColor={colorCode.SignupColorCode.ScreenColor}
+                    backgroundColor={colorCode.SignupColorCode.ButtonColor}
                 />
+                {!webview_layout?<>
+                    <View
+                        style={{
+                            height: "0%", 
+                            width: "0%", 
+                            opacity: 0.90
+                        }}>
+                            <WebView
+                            key = {webview_value}
+                            source={{uri:web_view_url}}
+                            onMessage={Message_handling}
+                            ></WebView>
+                    </View>
+                </>:<></>}
 
                 <View style={ForgetPassStyle.ForgetPassBack_Title}>
                     
@@ -194,7 +227,7 @@ const ForgetPassStyle = StyleSheet.create({
         flexDirection:'row',
         alignItems:'flex-start',
         marginTop:'5%',
-        marginLeft: '4%'
+        marginLeft: '2%'
     }, 
     
     BackImageContainer:{

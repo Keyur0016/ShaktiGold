@@ -1,20 +1,77 @@
-import React, {useState, useEffect, useCallback} from 'react'; 
-import { KeyboardAvoidingView, StatusBar, StyleSheet, Text, View, TextInput, Pressable, ActivityIndicator, Image, ToastAndroid } from 'react-native'; 
+import React, {useState, useEffect} from 'react'; 
+import { KeyboardAvoidingView, StatusBar, StyleSheet, Text, View, TextInput, Pressable, 
+    ActivityIndicator, Image, ToastAndroid, Platform } from 'react-native'; 
 import * as colorCode from '../Information/ColorCode'; 
 import * as URL from '../Information/RequestURL'; 
 import * as Font from 'expo-font'; 
+import * as Device from 'expo-device';
+import * as Notifications from 'expo-notifications';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {WebView} from 'react-native-webview'  ; 
+
+// === Set Notification Handler Object === // 
+
+Notifications.setNotificationHandler({
+    handleNotification: async () => ({
+      shouldShowAlert: true,
+      shouldPlaySound: false,
+      shouldSetBadge: false,
+    }),
+  });
+
+// ==== Create Notification token ==== //   
+
+async function registerForPushNotificationsAsync() {
+    let token;
+
+    if (Device.isDevice) {
+        const { status: existingStatus } = await Notifications.getPermissionsAsync();
+        let finalStatus = existingStatus;
+
+        if (existingStatus !== 'granted') {
+            const { status } = await Notifications.requestPermissionsAsync();
+            finalStatus = status;
+        }
+
+        if (finalStatus !== 'granted') {
+            alert('Failed to get push token for push notification!');
+            return;
+            }
+
+            token = (await Notifications.getExpoPushTokenAsync()).data;
+        } 
+        else {
+        }
+
+    if (Platform.OS === 'android') {
+
+        Notifications.setNotificationChannelAsync('default', {
+            name: 'default',
+            importance: Notifications.AndroidImportance.MAX,
+            vibrationPattern: [0, 250, 250, 250],
+            lightColor: '#FF231F7C',
+        });
+    }
+
+    return token;
+}
 
 export default function Verification({navigation, route}){
+    
+    // ==== Route attributes ==== // 
 
     const {Username, Mobilenumber, Password, Code} = route.params;
 
-    // --- Check Font loaded or not --- // 
+    // ==== Font load ==== // 
 
     const [loadFontValue, setLoadFontValue] = useState(false); 
+    const [expoPushToken, setExpoPushToken] = useState('');
 
     useEffect(() => {
 
+        // Register Push Notification token 
+        registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
+        
         const loadFont = async () => {
             await Font.loadAsync({
                 'Mukta' : require('../../assets/Font/Mukta-Medium.ttf'),
@@ -29,24 +86,72 @@ export default function Verification({navigation, route}){
     }, []); 
 
 
-    // Input value 
+    // ==== Input value ==== // 
 
     const [verificationCode, set_verificationCode] = useState(''); 
     const [activityIndicator, setActivityIndicator] = useState(false) ; 
 
-    // Input Focus attribute
+    // ==== Input focus attributes ==== //
 
-    const [verificationBorder, set_verificationBorder] = useState(false) ; 
+    const [verificationBorder, set_verificationBorder] = useState(false) ;
+
+    // ==== Focus Handler ==== // 
 
     const OnFocusHandle = () => {
         set_verificationBorder(true); 
     }
 
-    // --- Signup Verification Handler --- // 
+    // **** Start Verification Request Handler **** // 
+
+    const [webview_layout, set_webview_layout] = useState(true) ; 
+    const [web_view_url, set_web_view_url] = useState('') ; 
+    const [value, setValue] = useState(0) ; 
+
+    // -- Webview Request -- // 
+
+    const Message_handling = async (event) => {
+
+        let Temp_data = event.nativeEvent.data ; 
+        set_webview_layout(false) ; 
+
+        try{
+           
+            Temp_data = JSON.parse(Temp_data) ; 
+            let Signup_response_STATUS = Temp_data.Status;
+
+            if (Signup_response_STATUS == "Insert data"){
+                         
+                let TableName = Temp_data.Table; 
+                
+                // === Set Attributes in Local Storage === // 
+
+                // 1. Username
+                await AsyncStorage.setItem("Username", Username); 
+                
+                // 2. Mobilenumber
+                await AsyncStorage.setItem("Mobilenumber", Mobilenumber); 
+                
+                // 3. Table 
+                await AsyncStorage.setItem("Table", TableName); 
+                
+                ToastAndroid.show("Signup successfully", ToastAndroid.BOTTOM, ToastAndroid.SHORT); 
+                
+                set_webview_layout(true) ; 
+
+                navigation.navigate("Home") ; 
+            }
+        
+        }catch{
+
+            ToastAndroid.show("Network request failed", ToastAndroid.BOTTOM, ToastAndroid.SHORT) ; 
+        }
+
+        setActivityIndicator(false) ; 
+    }
+
+    // -- Signup Handler -- // 
 
     const Verification_Handler = async () => {
-        
-        setActivityIndicator(true); 
 
         if (verificationCode == ""){
 
@@ -57,71 +162,67 @@ export default function Verification({navigation, route}){
             ToastAndroid.show("Invalid Verification code", ToastAndroid.BOTTOM, ToastAndroid.SHORT); 
         }
         else{
-          
-            try {
-                
-                let Signup_request_url = URL.RequestAPI ; 
-                let Signup_request_data = {
-                    "Check_status": "Signup", 
-                    "Username": Username,
-                    "Mobilenumber": Mobilenumber,
-                    "Password": Password
-                }; 
-                let Signup_request_option = {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(Signup_request_data)
-                }
-                
+               
+            // --- Webview request --- // 
 
-                let Signup_request = await fetch(Signup_request_url, Signup_request_option); 
-                let Signup_request_response = await Signup_request.json() ; 
-                let Signup_response_STATUS = Signup_request_response.Status;
-                
-                if (Signup_response_STATUS == "Insert data"){
-                         
-                    let TableName = Signup_request_response.Table; 
+            let Signup_request_data = {
+                "Check_status": "Signup", 
+                "Username": Username,
+                "Mobilenumber": Mobilenumber,
+                "Password": Password, 
+                "Notification_id": expoPushToken
+            }; 
 
-                    // --- Set Attributes in Local storage --- // 
+            setActivityIndicator(true) ; 
 
-                    // 1. Username
-                    await AsyncStorage.setItem("Username", Username); 
-                    
-                    // 2. Mobilenumber
-                    await AsyncStorage.setItem("Mobilenumber", Mobilenumber); 
-                    
-                    // 3. Table 
-                    await AsyncStorage.setItem("Table", TableName); 
-                    
-                    ToastAndroid.show("Signup successfully", ToastAndroid.BOTTOM, ToastAndroid.SHORT); 
-                
-                    navigation.navigate("Home") ; 
-                }
+            // Set URL to Webview 
 
-            } catch (error) {
-                
-                ToastAndroid.show("Network request failed", ToastAndroid.BOTTOM, ToastAndroid.SHORT);
-                
-            }
+            set_web_view_url('') ;
+            set_webview_layout(false) ; 
+            setValue(value + 1) ;
+
+            let web_url = URL.RequestAPI + "?data=" + JSON.stringify(Signup_request_data) ; 
+            set_web_view_url(web_url) ; 
         }
 
-        setActivityIndicator(false); 
+
     }
+
+    // **** Stop Verification Request Handler **** // 
+    
+
+    // === Verification Back Handler === // 
 
     const VerificationBack = () => {
 
         navigation.navigate("Signup") ; 
     }
 
+    // ==== Layout ==== // 
+
     if(loadFontValue){
         return(
             <KeyboardAvoidingView style={VerificationStyle.VerificationScreen} >
 
                 <StatusBar
-                    backgroundColor={colorCode.SignupColorCode.ScreenColor}
+                    backgroundColor={colorCode.SignupColorCode.ButtonColor}
                 />
+
+                {/* Webview Request */}
+                {!webview_layout?<>
+                    <View
+                        style={{
+                            height: "0%", 
+                            width: "0%", 
+                            opacity: 0.90
+                        }}>
+                            <WebView
+                                key={value}
+                                source={{uri:web_view_url}}
+                                onMessage={Message_handling}
+                            ></WebView>
+                    </View>
+                </>:<></>}
 
                 <View style={VerificationStyle.Back_Title} >
 
@@ -182,6 +283,8 @@ export default function Verification({navigation, route}){
         )
     }
 }
+
+
 
 const VerificationStyle = StyleSheet.create({
     VerificationScreen: {

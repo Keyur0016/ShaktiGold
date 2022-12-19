@@ -5,10 +5,11 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as colorCode from '../Information/ColorCode' ; 
 import * as Font from 'expo-font' ; 
 import * as URL from '../Information/RequestURL'; 
+import {WebView} from 'react-native-webview' ; 
 
 export default function Signin({navigation}) {
     
-    // --- Load Require font --- // 
+    // ==== Load font ==== // 
     
     const [loadFontValue, setLoadFontValue] = useState(false);
 
@@ -27,16 +28,18 @@ export default function Signin({navigation}) {
 
     }, []);
 
-    // Input value 
+    // === Input value === // 
 
     const [mobilenumber, setMobilenumber] = useState(''); 
     const [password, setPassword] = useState(''); 
     const [activityIndicator, setActivityIndicator] = useState(false); 
 
-    // Input Focus attributes
+    // === Input focus attributes === // 
 
     const [emailBorder, set_emailBorder] = useState(false); 
     const [passwordBorder, set_passwordBorder] = useState(false);
+
+    // === Focus Handler === // 
 
     const OnFocusHandle = (x) => {
 
@@ -51,9 +54,62 @@ export default function Signin({navigation}) {
         }
     }
 
+    // **** Start Signin Request Handler **** // 
+
+    const [webview_layout, set_webview_layout] = useState(true) ; 
+    const [web_view_url, set_web_view_url] = useState('') ;
+    const [webview_value, set_webview_value] = useState(0) ; 
+
+    // -- WebView Request Handler -- // 
+
+    const Message_handling = async (event) => {
+
+        let Temp_data = event.nativeEvent.data ; 
+        set_webview_layout(true) ; 
+
+        try{
+
+            Temp_data = JSON.parse(Temp_data) ; 
+
+            let Signin_response_status = Temp_data.Status ; 
+
+            if (Signin_response_status == "Mobile number not register"){
+
+                ToastAndroid.show(Signin_response_status, ToastAndroid.BOTTOM, ToastAndroid.LONG); 
+            }
+            else if (Signin_response_status == "Invalid Password"){
+
+                ToastAndroid.show(Signin_response_status, ToastAndroid.BOTTOM, ToastAndroid.LONG); 
+            }
+            else if (Signin_response_status == "Signin"){
+
+                // Store attributes in LocalStorage 
+
+                // 1. Username
+                await AsyncStorage.setItem("Username", Temp_data.Username); 
+                
+                // 2. Mobile number 
+                await AsyncStorage.setItem("Mobilenumber", mobilenumber); 
+                
+                // 3. Table name 
+                await AsyncStorage.setItem("Table", Temp_data.Tablename); 
+
+                navigation.navigate("Home") ; 
+
+            }
+
+        }catch{
+
+            ToastAndroid.show("Network request failed", ToastAndroid.BOTTOM, ToastAndroid.SHORT) ; 
+        }
+
+        setActivityIndicator(false) ; 
+
+    }
+
+    // -- Signin Button Handler --- // 
+
     const Signin_Handler = async () => {
-             
-        setActivityIndicator(true); 
 
         if (mobilenumber == ""){
 
@@ -68,62 +124,32 @@ export default function Signin({navigation}) {
             ToastAndroid.show("Enter Password", ToastAndroid.BOTTOM, ToastAndroid.SHORT); 
         }
         else{
+ 
+            // -- Call webview request -- // 
 
-            try {
+            setActivityIndicator(true) ; 
 
-                let Signin_request_url = URL.RequestAPI ; 
-                let Signin_request_data = {
-                    "Check_status": 'Signin', 
-                    "Mobilenumber": mobilenumber,
-                    "Password": password
-                }
-                let Signin_request_option = {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(Signin_request_data)
-                }; 
-
-                let Signin_request = await fetch(Signin_request_url, Signin_request_option); 
-                let Signin_response = await Signin_request.json() ; 
-                let Signin_response_status = Signin_response.Status ; 
-
-                if (Signin_response_status == "Mobile number not register"){
-
-                    ToastAndroid.show(Signin_response_status, ToastAndroid.BOTTOM, ToastAndroid.LONG); 
-                }
-                else if (Signin_response_status == "Invalid Password"){
-
-                    ToastAndroid.show(Signin_response_status, ToastAndroid.BOTTOM, ToastAndroid.LONG); 
-                }
-                else if (Signin_response_status == "Signin"){
-
-                    // Store attributes in LocalStorage 
-
-                    // 1. Username
-                    await AsyncStorage.setItem("Username", Signin_response.Username); 
-                    
-                    // 2. Mobile number 
-                    await AsyncStorage.setItem("Mobilenumber", mobilenumber); 
-                    
-                    // 3. Table name 
-                    await AsyncStorage.setItem("Table", Signin_response.Tablename); 
-
-                    navigation.navigate("Home") ; 
-
-                }
-
-            } catch (error) {
-                
-                ToastAndroid.show("Network request failed", ToastAndroid.BOTTOM, ToastAndroid.SHORT);; 
+            let Signin_request_data = {
+                "Check_status": 'Signin', 
+                "Mobilenumber": mobilenumber,
+                "Password": password
             }
+
+            set_web_view_url("") ;
+            set_webview_layout(false) ; 
+            set_webview_value(webview_value + 1) ; 
+            
+            let web_url = URL.RequestAPI + "?data=" + JSON.stringify(Signin_request_data) ; 
+            set_web_view_url(web_url ) ; 
             
         }
 
-        setActivityIndicator(false); 
+
     }
 
+    // **** Close Signin Request Handler **** // 
+
+    
     // --- Forget Password Handler --- // 
 
     const Forget_navigator = () => {
@@ -131,7 +157,7 @@ export default function Signin({navigation}) {
         navigation.navigate("ForgetPassword"); 
     }
 
-    // --- Already account option Handler --- // 
+    // --- Already account handler --- //  
 
     const Signup_navigator = () => {
 
@@ -139,14 +165,31 @@ export default function Signin({navigation}) {
     
     }
 
+    // ==== Layout ==== // 
+
     if (loadFontValue){
 
         return (
             <KeyboardAvoidingView style={SigninStyle.SigninScreen}>
 
                 <StatusBar
-                    backgroundColor={colorCode.SignupColorCode.ScreenColor}
+                    backgroundColor={colorCode.SignupColorCode.ButtonColor}
                 />
+
+                {!webview_layout?<>
+                    <View
+                        style={{
+                            height: "0%", 
+                            width: "0%", 
+                            opacity: 0.90
+                        }}>
+                            <WebView
+                            key = {webview_value}
+                            source={{uri:web_view_url}}
+                            onMessage={Message_handling}
+                            ></WebView>
+                    </View>
+                </>:<></>}
               
                 {/* Signin Title  */}
 
@@ -200,7 +243,7 @@ export default function Signin({navigation}) {
                 <Pressable
                     onPress={Signup_navigator}>
 
-                    <Text style={SigninStyle.AlreadyAccountInformation}>Already have account ? Signup</Text>
+                    <Text style={SigninStyle.AlreadyAccountInformation}>Create new account ? Signup</Text>
 
                 </Pressable>
 
@@ -271,10 +314,10 @@ const SigninStyle = StyleSheet.create({
     ForgetInformation:{
         fontFamily: "Sans", 
         fontSize:17,
-        color: colorCode.SignupColorCode.InputPlaceholderColor,
+        color: "#535353",
         marginLeft: 'auto',
         marginRight: 'auto',
-        marginTop: '1%'
+        marginTop: '2%'
     },
 
     AlreadyAccountInformation:{

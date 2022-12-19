@@ -4,11 +4,12 @@ import * as colorCode from  '../Information/ColorCode';
 import * as Font from 'expo-font'; 
 import * as URL from '../Information/RequestURL';
 import { useEffect, useState } from 'react';
+import {WebView} from 'react-native-webview'  ; 
 
 export default function Signup({navigation}) {
-
-    // --- Check Font loaded or not --- // 
-
+     
+    // ==== Load font ==== // 
+    
     const [loadFontValue, setLoadFontValue] = useState(false); 
        
     useEffect(() => {
@@ -20,33 +21,34 @@ export default function Signup({navigation}) {
             })
 
             setLoadFontValue(true); 
+
         }; 
 
         loadFont() ; 
 
     }, []); 
     
-    // Input 
+    // ==== Input value ==== // 
 
     const [username, set_username] = useState(''); 
     const [mobilenumber, set_mobilenumber] = useState(''); 
     const [password, set_password] = useState(''); 
     const [re_password, set_rePassword] = useState('');  
+    const [activityIndicator, setActivityIndicator] = useState(false) ; 
+
     
-    // Input Focus attributes 
+
+    // ==== Input focus attributes ==== // 
 
     const [usernameBorder, set_usernameBorder] = useState(false); 
     const [mobileBorder, set_mobileBorder] = useState(false) ; 
     const [passwordBorder, set_passwordBorder] = useState(false) ; 
     const [re_passwordBorder, set_re_passwordBorder] = useState(false) ;  
 
+    // ==== Focus Handler ==== // 
 
-    // Activity Indicator set or not Value 
-
-    const [activityIndicator, setActivityIndicator] = useState(false) ; 
-
-    // Input widget focus handler
     const OnFocusHandle = (x) => {
+
         set_usernameBorder(false); 
         set_mobileBorder(false) ; 
         set_passwordBorder(false) ; 
@@ -66,9 +68,56 @@ export default function Signup({navigation}) {
         }
     }
 
+    // **** Start Signup Request Handler **** // 
+
+    const [webview_layout, set_webview_layout] = useState(true) ; 
+    const [web_view_url, set_web_view_url] = useState('') ;
+    const [webview_value, set_webview_value] = useState(0) ;  
+
+    // -- Webview Request Handler -- // 
+
+    const Message_handling = (event) => { 
+
+        let Temp_data = event.nativeEvent.data; 
+        set_webview_layout(true) ; 
+
+        try{
+
+            Temp_data = JSON.parse(Temp_data) ; 
+            
+            let Signup_request_STATUS = Temp_data.Status ; 
+    
+            if (Signup_request_STATUS == "Mobile number already register"){
+                
+                ToastAndroid.show(Signup_request_STATUS, ToastAndroid.BOTTOM, ToastAndroid.SHORT); 
+            }
+            else if (Signup_request_STATUS == "OTP send failed"){
+                
+                ToastAndroid.show("OTP send failed. Try, again", ToastAndroid.BOTTOM, ToastAndroid.SHORT); 
+            }
+            else if (Signup_request_STATUS == "OTP send"){
+    
+                let Verification_OTP = Temp_data.OTP; 
+    
+                ToastAndroid.show("OTP send successfully", ToastAndroid.BOTTOM, ToastAndroid.SHORT) ;
+    
+                set_webview_layout(true) ; 
+
+                navigation.navigate("Verification", {"Username":username,"Mobilenumber":mobilenumber,"Password":password,"Code":Verification_OTP}); 
+                
+            }
+        }catch{
+             
+            ToastAndroid.show("Network request failed", ToastAndroid.BOTTOM, ToastAndroid.SHORT) ; 
+        }
+
+        setActivityIndicator(false) ; 
+
+    }
+
+    // -- Signup Button Handler -- // 
+
     const Signup_Handler = async () => {
-        
-        setActivityIndicator(true); 
 
         if (username == ""){
 
@@ -103,66 +152,63 @@ export default function Signup({navigation}) {
         }
         else{
             
-            try {
-                
-                let Signup_check_url = URL.RequestAPI; 
-                let Signup_check_data = {
-                    "Check_status" : "Signup_check", 
-                    "Mobilenumber" : mobilenumber
-                }
-                let Signup_check_option = {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(Signup_check_data)
-                }
+            // --- Send Webview request --- // 
+            
+            setActivityIndicator(true) ; 
 
-                let Signup_request = await fetch(Signup_check_url, Signup_check_option);
-                let Signup_request_response = await Signup_request.json() ; 
-                let Signup_request_STATUS = Signup_request_response.Status ; 
-
-                if (Signup_request_STATUS == "Mobile number already register"){
-                    
-                    ToastAndroid.show(Signup_request_STATUS, ToastAndroid.BOTTOM, ToastAndroid.SHORT); 
-                }
-                else if (Signup_request_STATUS == "OTP send failed"){
-                    
-                    ToastAndroid.show("OTP send failed. Try, again", ToastAndroid.BOTTOM, ToastAndroid.SHORT); 
-                }
-                else if (Signup_request_STATUS == "OTP send"){
-
-                    let Verification_OTP = Signup_request_response.OTP; 
-
-                    ToastAndroid.show("OTP send successfully", ToastAndroid.BOTTOM, ToastAndroid.SHORT) ;
-
-                    navigation.navigate("Verification", {"Username":username,"Mobilenumber":mobilenumber,"Password":password,"Code":Verification_OTP}); 
-                    
-                }
-
-            } catch (error) {
-                
-                ToastAndroid.show("Network request failed", ToastAndroid.BOTTOM, ToastAndroid.SHORT) ; 
+            let Signup_check_data = {
+                "Check_status" : "Signup_check", 
+                "Mobilenumber" : mobilenumber
             }
-                      
-        }
 
-        setActivityIndicator(false); 
+            // Set URL to webview 
+
+            set_web_view_url("") ;
+            set_webview_layout(false) ; 
+            set_webview_value(webview_value + 0) ; 
+            
+            let web_url = URL.RequestAPI + "?data=" + JSON.stringify(Signup_check_data) ; 
+            set_web_view_url(web_url ) ; 
+                
+        }
         
-        setActivityIndicator(false) ; 
     }
+
+    // **** Stop Signup Request Handler **** // 
+
+
+    // === Already Account Navigator === // 
 
     const AlreadyAccount_handler = () => {
         navigation.navigate("Signin");     
     }
 
+    // === Layout === //
+     
     if (loadFontValue){
         return (
             <KeyboardAvoidingView style={SignupStyle.SignupScreen}
                 behavior="height">
     
                 <StatusBar 
-                    backgroundColor={colorCode.SignupColorCode.ScreenColor} />
+                    backgroundColor={colorCode.SignupColorCode.ButtonColor} />
+                
+                {/* Webview Request Handler */}
+
+                {!webview_layout?<>
+                    <View
+                        style={{
+                            height: "0%", 
+                            width: "0%", 
+                            opacity: 0.90
+                        }}>
+                            <WebView
+                            key={webview_value}
+                            source={{uri:web_view_url}}
+                            onMessage={Message_handling}
+                            ></WebView>
+                    </View>
+                </>:<></>}
                 
                 {/* Signup Title  */}
 
@@ -288,7 +334,7 @@ const SignupStyle = StyleSheet.create({
     SigninInformation:{
         fontFamily: "Sans", 
         fontSize:17,
-        color: colorCode.SignupColorCode.InputPlaceholderColor,
+        color: "#535353",
         marginLeft: 'auto',
         marginRight: 'auto',
         marginTop: '3%'

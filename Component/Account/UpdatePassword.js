@@ -4,12 +4,15 @@ TextInput, Pressable, ActivityIndicator, ToastAndroid } from 'react-native';
 import * as Font from 'expo-font';
 import * as URL from '../Information/RequestURL'; 
 import * as colorCode from '../Information/ColorCode'; 
+import {WebView} from 'react-native-webview' ; 
 
 export default function UpdatePassword({navigation, route}) {
   
+  // ==== Route attribute ==== // 
+
   const {Mobilenumber} = route.params ; 
 
-  // --- Check Font loaded or not --- // 
+  // ==== Load font ==== // 
 
   const [loadFontValue, setLoadFontValue] = useState(false); 
 
@@ -28,16 +31,18 @@ export default function UpdatePassword({navigation, route}) {
 
   }, []); 
 
-  // Input value 
+  // ==== Input value ==== // 
 
   const [Password,setPassword] = useState(''); 
   const [rePassword, setRePassword] = useState(''); 
   const [activityIndicator, setActivityIndicator] = useState(false) ; 
 
-  // Input Focus Attributes 
+  // ==== Input focus attribute ==== // 
   
   const [PasswordBorder, setPasswordBorder] = useState(false); 
   const [RePasswordBorder, setRePasswordBorder] = useState(false); 
+
+  // ==== Focus Handler ==== // 
 
   const OnFocusHandle = (x) => {
 
@@ -56,9 +61,43 @@ export default function UpdatePassword({navigation, route}) {
     }
   }
 
-  const UpdatePasswordHandle = async () => {
+  // **** Start Update Password Request Handler **** // 
+
+  const [webview_layout, set_webview_layout] = useState(true) ; 
+  const [web_view_url, set_web_view_url] = useState('') ;
+  const [webview_value, set_webview_value] = useState(0) ;
+
+  // -- Webview Request -- // 
+
+  const Message_handling = (event) => {
+
+    let Temp_data = event.nativeEvent.data ; 
+    set_webview_layout(true) ; 
+    
+    try{
       
-    setActivityIndicator(true); 
+      Temp_data = JSON.parse(Temp_data) ; 
+
+      let Update_password_STATUS = Temp_data.Status; 
+
+      if (Update_password_STATUS == "Update password"){
+
+        ToastAndroid.show("Update Password successfully", ToastAndroid.BOTTOM, ToastAndroid.SHORT); 
+      
+        navigation.navigate("Signin"); 
+      }
+
+    }catch{
+
+      ToastAndroid.show("Network request failed", ToastAndroid.BOTTOM, ToastAndroid.SHORT) ; 
+    }
+
+    setActivityIndicator(false);
+  }
+
+  // -- Update Password Button Handler -- // 
+
+  const UpdatePasswordHandle = async () => {
 
     if (Password == ""){
 
@@ -78,43 +117,28 @@ export default function UpdatePassword({navigation, route}) {
     }
     else{
 
-      try {
-        
-        let Update_password_url = URL.RequestAPI; 
-        let Update_password_data = {
-          "Check_status": "Update_password", 
-          "Mobilenumber": Mobilenumber, 
-          "Password": Password
-        }; 
-        let Update_password_option = {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(Update_password_data)
-        }; 
+      // -- Webview request -- // 
 
-        let Update_password_request = await fetch(Update_password_url, Update_password_option); 
-        let Update_password_response = await Update_password_request.json() ; 
-        let Update_password_STATUS = Update_password_response.Status; 
-
-        if (Update_password_STATUS == "Update password"){
-
-          ToastAndroid.show("Update Password successfully", ToastAndroid.BOTTOM, ToastAndroid.SHORT); 
-        
-          navigation.navigate("Signin"); 
-
-        }
-
-      } catch (error) {
-        
-        ToastAndroid.show("Network request failed", ToastAndroid.BOTTOM, ToastAndroid.SHORT); 
-      }
+      let Update_password_data = {
+        "Check_status": "Update_password", 
+        "Mobilenumber": Mobilenumber, 
+        "Password": Password
+      }; 
       
+      // Set URL to webview 
+      setActivityIndicator(true) ; 
+      set_web_view_url("") ;
+      set_webview_layout(false) ; 
+      set_web_view_url(webview_value + 1) ; 
+      let web_url = URL.RequestAPI + "?data=" + JSON.stringify(Update_password_data) ; 
+      set_web_view_url(web_url ) ;
     }
-
-    setActivityIndicator(false); 
   }
+
+  // *** Stop Update Password Request Handler *** // 
+  
+
+  // ==== Layout ==== // 
 
   if (loadFontValue){
     
@@ -124,8 +148,23 @@ export default function UpdatePassword({navigation, route}) {
         behavior="height">
         
         <StatusBar
-          backgroundColor={colorCode.SignupColorCode.ScreenColor}
+          backgroundColor={colorCode.SignupColorCode.ButtonColor}
         />
+
+        {!webview_layout?<>
+          <View
+              style={{
+                  height: "0%", 
+                  width: "0%", 
+                  opacity: 0.90
+              }}>
+                  <WebView
+                  key = {webview_value}
+                  source={{uri:web_view_url}}
+                  onMessage={Message_handling}
+                  ></WebView>
+          </View>
+        </>:<></>}
   
         {/* Update Password Title  */}
 

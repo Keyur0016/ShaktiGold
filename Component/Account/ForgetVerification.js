@@ -6,9 +6,11 @@ import * as Font from 'expo-font';
 
 export default function Verification({navigation, route}){
     
+    // ==== Route attribute ==== // 
+
     const {Mobilenumber, Code} = route.params ; 
 
-    // --- Check Font loaded or not --- // 
+    // ==== Load font ==== // 
 
     const [loadFontValue, setLoadFontValue] = useState(false); 
 
@@ -27,14 +29,16 @@ export default function Verification({navigation, route}){
 
     }, []); 
 
-    // Input value 
+    // ==== Input value ==== //  
 
     const [verificationCode, set_verificationCode] = useState(''); 
     const [activityIndicator, setActivityIndicator] = useState(false) ; 
 
-    // Input Focus attribute 
+    // ==== Input focus attributes ==== // 
     
     const [verificationBorder, set_verificationBorder] = useState(false) ; 
+
+    // ==== Focus Handler ==== // 
 
     const OnFocusHandle = () => {
 
@@ -42,7 +46,7 @@ export default function Verification({navigation, route}){
 
     }
 
-    // --- Code Verification Handler --- // 
+    // ==== Code Verification Handler ==== // 
 
     const Verification_Handler = async () => {
         
@@ -65,7 +69,7 @@ export default function Verification({navigation, route}){
 
     }
 
-    // --- Verification Back Handler --- // 
+    // ==== Back Handler ==== // 
 
     const VerificationBack = () => {
 
@@ -73,12 +77,14 @@ export default function Verification({navigation, route}){
     
     }
 
+    // ==== Layout ==== // 
+
     if(loadFontValue){
         return(
             <KeyboardAvoidingView style={ForgetVerificationStyle.VerificationScreen} >
 
                 <StatusBar
-                    backgroundColor={colorCode.SignupColorCode.ScreenColor}
+                    backgroundColor={colorCode.SignupColorCode.ButtonColor}
                 />
 
                 <View style={ForgetVerificationStyle.Back_Title} >

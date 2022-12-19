@@ -30,7 +30,7 @@ export default function SplashScreen({navigation}){
             }
         }; 
 
-        GetRequireData() ; 
+        GetRequireData() ;
     }, [ScreenFocused]); 
     
     return(
