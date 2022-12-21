@@ -7,6 +7,7 @@ import {FlatListSlider} from 'react-native-flatlist-slider';
 import Preview from './OtherComponent/PreView'; 
 import {WebView} from 'react-native-webview' ; 
 import BlurViewLayout from "./OtherComponent/BlurViewLayout";
+import { CommonActions } from '@react-navigation/native';
 
 export default function ParticularProduct({navigation, route}){
 
@@ -430,6 +431,13 @@ export default function ParticularProduct({navigation, route}){
     // === Buy now option handler === // 
 
     const BuY_now_option = () => {
+
+        navigation.dispatch(
+            CommonActions.reset({
+                index: 0,
+                routes: [{ name: "Cart" }]
+        }));
+
         navigation.navigate("Cart", {"Table_name":Table_name}) ; 
     }
 
@@ -685,16 +693,6 @@ export default function ParticularProduct({navigation, route}){
                             </>}
 
 
-                            <Pressable style={[ParticularProductStyle.AddToCartOptionLayout,
-                                {borderBottomRightRadius: 5, 
-                                borderLeftWidth: 1,
-                                borderLeftColor: "#686868"}]}
-                                onPress={() => BuY_now_option()}
-                                android_ripple={{color:colorCode.SignupColorCode.ButtonRippleColor}}>
-                                <Text style={ParticularProductStyle.AddToCartOptionText}>Buy now</Text>
-                            </Pressable>
-
-
                         </View>
 
                     </View>
@@ -894,7 +892,7 @@ const ParticularProductStyle = new StyleSheet.create({
     }, 
 
     AddToCartOptionLayout:{
-        width:'50%', 
+        width:'100%', 
         backgroundColor: colorCode.SignupColorCode.ButtonColor, 
         marginLeft: "auto", 
         marginRight: "auto", 

@@ -771,12 +771,6 @@ export default function HomeProductList({navigation, route}){
                                                 </>
                                                 }
 
-                                                <Text style={{fontFamily:"Ubuntu", fontSize: 16, marginLeft:"auto", 
-                                                    backgroundColor:"#f3f1f1", paddingTop: 8, paddingBottom:8, paddingLeft:8, paddingRight:8,
-                                                    borderRadius:8}}>
-                                                    916
-                                                </Text>
-
                                             </View>
 
                                         </View>

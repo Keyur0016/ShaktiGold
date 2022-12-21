@@ -424,21 +424,24 @@ export default function UploadStatus({navigation}){
 
 async function sendPushNotification(expoPushToken, notification_body) {
     const message = {
-      to: expoPushToken,
-      sound: 'default',
-      title: ' 🔶🔷 Shree Shakti Gold Jewellers 🔶🔷 ',
-      body: notification_body,
-      data: { Data : 'Status' },
+        to: expoPushToken,
+        priority: "normal",
+        notification:{
+            title: ' 🔶🔷 Shree Shakti Gold Jewellers 🔶🔷 ',
+            body: notification_body,
+            data: { Data : 'Status' },
+        }
     };
   
-    await fetch('https://exp.host/--/api/v2/push/send', {
-      method: 'POST',
+    await fetch("https://fcm.googleapis.com/fcm/send", {
+      method: "POST",
       headers: {
-        Accept: 'application/json',
-        'Accept-encoding': 'gzip, deflate',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(message),
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        "Authorization":
+          "key=AAAA6GxAfPM:APA91bGxKuNUheg83H4kLEhWYiEfid0aL_3En5nThJTNlugbTPh6oi5vtDpgS_1O5cy52DlSmeUtfHvjBzj1JvmC7VSWWQJFdecrRGhpozrb5h6KxSCh79eYlVWdzk0cyTNhvhilBGgB",
+        },
+        body: JSON.stringify(message),
     });
 }
 

@@ -12,7 +12,8 @@ import { useIsFocused } from "@react-navigation/native";
 export default function OrderLayout({navigation, route}){
 
     // == Table name
-    const {Table_name} = route.params ;
+    // const {Table_name} = route.params ;
+    const Table_name = "hykqgaiuftcdwnr";
 
     // == Order Option Layout Width 
     const Order_option_layout_width = parseInt((Dimensions.get('window').width)*0.6) ; 
@@ -362,10 +363,20 @@ export default function OrderLayout({navigation, route}){
                                         
                                         </View>
 
+                                        {/* Server cancel order information  */}
                                         {((cancel_order_layout == true) || (element.Data2 == "Server-cancel"))?<>
                                             <View style={[OrderLayoutStyle.UserInformationStyle, {paddingTop:8, paddingBottom:8} ]}>
 
-                                                <Text style={[OrderLayoutStyle.UserInformationTitle, {color:"#ff7176", fontSize:18}]}>Order cancel by Shree Shakti Gold </Text>
+                                                <Text style={[OrderLayoutStyle.UserInformationTitle, {color:"#ff282f", fontSize:18}]}>Order cancel by Shree Shakti Gold </Text>
+
+                                            </View>
+                                        </>:<></>}
+
+                                        {/* Payment not complete order information  */}
+                                        {element.Data2 == "Online payment pending"?<>
+                                            <View style={[OrderLayoutStyle.UserInformationStyle, {paddingTop:8, paddingBottom:8} ]}>
+
+                                                <Text style={[OrderLayoutStyle.UserInformationTitle, {color:"#ff282f", fontSize:18}]}>Payment not complete</Text>
 
                                             </View>
                                         </>:<></>}

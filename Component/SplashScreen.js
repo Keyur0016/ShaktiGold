@@ -34,7 +34,7 @@ export default function SplashScreen({navigation}){
 
     const TableName = await AsyncStorage.getItem("Table"); 
     
-    if (TableName != null){
+    if (TableName == null){
           
       setTimeout(() => {
         navigation.navigate("Home"); 

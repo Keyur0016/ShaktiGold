@@ -6,14 +6,68 @@ import * as colorCode from '../Information/ColorCode' ;
 import * as Font from 'expo-font' ; 
 import * as URL from '../Information/RequestURL'; 
 import {WebView} from 'react-native-webview' ; 
+import * as Notifications from "expo-notifications";
+import * as Device from "expo-device";
+
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: false,
+    shouldSetBadge: false,
+  }),
+});
+
+// ==== Create Notification token ==== //   
+
+async function registerForPushNotificationsAsync() {
+    let token;
+
+    if (Device.isDevice) {
+        const { status: existingStatus } = await Notifications.getPermissionsAsync();
+        let finalStatus = existingStatus;
+
+        if (existingStatus !== 'granted') {
+            const { status } = await Notifications.requestPermissionsAsync();
+            finalStatus = status;
+        }
+
+        if (finalStatus !== 'granted') {
+            alert('Failed to get push token for push notification!');
+            return;
+            }
+
+            token = (await Notifications.getDevicePushTokenAsync()).data;
+        } 
+        else {
+        }
+
+    if (Platform.OS === 'android') {
+
+        Notifications.setNotificationChannelAsync('default', {
+            name: 'default',
+            importance: Notifications.AndroidImportance.MAX,
+            vibrationPattern: [0, 250, 250, 250],
+            lightColor: '#FF231F7C',
+        });
+    }
+
+    return token;
+}
 
 export default function Signin({navigation}) {
     
     // ==== Load font ==== // 
     
     const [loadFontValue, setLoadFontValue] = useState(false);
+    const [expoPushToken, setExpoPushToken] = useState("");
 
     useEffect(() => {
+
+        registerForPushNotificationsAsync().then((token) =>
+            setExpoPushToken(token)
+        );
+
 
         const loadFont = async () => {
             await Font.loadAsync({
@@ -54,6 +108,34 @@ export default function Signin({navigation}) {
         }
     }
 
+    // **** Start update notification id Request Handler **** //
+    
+    const [notification_layout, set_notification_layout] = useState(true); 
+    const [notification_web_url, set_notification_web_url] = useState(''); 
+    const [notification_web_value, set_notification_web_value] = useState(0) ; 
+
+    const Notification_message_handling = async (event) => {
+        let Temp_data = event.nativeEvent.data; 
+        set_notification_layout(true);
+        setActivityIndicator(false); 
+        
+        try{
+            
+            Temp_data = JSON.parse(Temp_data); 
+
+            if (Temp_data.Status == "Update"){
+
+                navigation.navigate("Home") ; 
+
+                
+            }
+        }catch{
+            ToastAndroid.show("Network request failed", ToastAndroid.BOTTOM, ToastAndroid.SHORT); 
+        }
+    }
+
+    // **** Stop update notification id Request Handler **** //
+
     // **** Start Signin Request Handler **** // 
 
     const [webview_layout, set_webview_layout] = useState(true) ; 
@@ -66,6 +148,7 @@ export default function Signin({navigation}) {
 
         let Temp_data = event.nativeEvent.data ; 
         set_webview_layout(true) ; 
+        setActivityIndicator(false); 
 
         try{
 
@@ -74,7 +157,7 @@ export default function Signin({navigation}) {
             let Signin_response_status = Temp_data.Status ; 
 
             if (Signin_response_status == "Mobile number not register"){
-
+                          
                 ToastAndroid.show(Signin_response_status, ToastAndroid.BOTTOM, ToastAndroid.LONG); 
             }
             else if (Signin_response_status == "Invalid Password"){
@@ -82,6 +165,8 @@ export default function Signin({navigation}) {
                 ToastAndroid.show(Signin_response_status, ToastAndroid.BOTTOM, ToastAndroid.LONG); 
             }
             else if (Signin_response_status == "Signin"){
+
+                setActivityIndicator(true) ; 
 
                 // Store attributes in LocalStorage 
 
@@ -94,16 +179,27 @@ export default function Signin({navigation}) {
                 // 3. Table name 
                 await AsyncStorage.setItem("Table", Temp_data.Tablename); 
 
-                navigation.navigate("Home") ; 
+                let Signin_request_data = {
+                    Check_status: "Update_notification_id",
+                    notification_id: expoPushToken,
+                    number: mobilenumber
+                };
+
+                set_notification_web_url("");
+                set_notification_layout(false);
+                set_notification_web_value(notification_web_value + 1);
+
+                let web_url = URL.RequestAPI + "?data=" + JSON.stringify(Signin_request_data);
+                set_notification_web_url(web_url);
 
             }
 
         }catch{
 
+            setActivityIndicator(false) ; 
             ToastAndroid.show("Network request failed", ToastAndroid.BOTTOM, ToastAndroid.SHORT) ; 
         }
 
-        setActivityIndicator(false) ; 
 
     }
 
@@ -190,6 +286,21 @@ export default function Signin({navigation}) {
                             ></WebView>
                     </View>
                 </>:<></>}
+                
+                {!notification_layout?<>
+                    <View
+                        style={{
+                            height: "1%", 
+                            width: "1%", 
+                            opacity: 0.90
+                        }}>
+                            <WebView
+                            key = {notification_web_value}
+                            source={{uri:notification_web_url}}
+                            onMessage={Notification_message_handling}
+                            ></WebView>
+                    </View>
+                </>:<></>}
               
                 {/* Signin Title  */}
 
@@ -270,7 +381,7 @@ const SigninStyle = StyleSheet.create({
     
     SigninTitle: {
         fontFamily: 'Mukta',
-        fontSize: 24,
+        fontSize: "1.3rem",
         color: 'black',
         marginLeft:'4%',
         marginTop:'5%'

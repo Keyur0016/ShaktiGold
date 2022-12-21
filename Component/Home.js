@@ -677,7 +677,7 @@ export default function Home({navigation}){
     
                     {/* Shakti gold title  */}
     
-                    <Text style={HomeStyle.HomeScreenTitle}>Shakti Gold</Text>
+                    <Text style={HomeStyle.HomeScreenTitle}>Shree Shakti Gold</Text>
 
                     {/* ==== Heart, Cart, Location layout option ==== */}
 
@@ -685,7 +685,7 @@ export default function Home({navigation}){
                       
                         {/* Cart option  */}
 
-                        <Pressable style={[HomeStyle.HomeOptionPressable, {marginLeft:5, marginRight:5}]}
+                        <Pressable style={[HomeStyle.HomeOptionPressable, {marginLeft:3, marginRight:3}]}
                             onPress = {Cart_product_Handler}>
                             <Image
                                 source={require('../assets/Image/Cart.png')}
@@ -695,7 +695,7 @@ export default function Home({navigation}){
                      
                         {/* Heart option  */}
  
-                        <Pressable style={[HomeStyle.HomeOptionPressable, {marginLeft:5, marginRight:5}]}
+                        <Pressable style={[HomeStyle.HomeOptionPressable, {marginLeft:3, marginRight:3}]}
                             onPress={Watchlist_product_opener}>
                             <Image
                                 source={require('../assets/Image/Heart.png')}
@@ -705,7 +705,7 @@ export default function Home({navigation}){
 
                         {/* Location option  */}
 
-                        <Pressable style={[HomeStyle.HomeOptionPressable, {marginLeft:5, marginRight:5}]}
+                        <Pressable style={[HomeStyle.HomeOptionPressable, {marginLeft:3, marginRight:3}]}
                             onPress= { () => Slider_menu_shop_location_option()}>
                             <Image
                                 source={require('../assets/Image/Location.png')}
@@ -956,7 +956,7 @@ export default function Home({navigation}){
                             source={require('../assets/Image/Contact.png')}
                             style={HomeStyle.ContactUsImage}
                         />
-                        <Text style={HomeStyle.ContactUsText}>Vipulbhai = 98241132124</Text>
+                        <Text style={HomeStyle.ContactUsText}>Vipulbhai = 9824113124</Text>
                     
                     </Pressable>
 
@@ -987,8 +987,8 @@ const HomeStyle = StyleSheet.create({
         paddingRight: 8 
     },
     HomeOptionImage:{
-        height: 32,
-        width: 32
+        height: 30,
+        width: 30
     },
     HomeOptionPressable:{
         width: 40,
@@ -1001,7 +1001,7 @@ const HomeStyle = StyleSheet.create({
     }, 
     HomeScreenTitle: {
         fontFamily: 'Ubuntu',
-        fontSize: 21,
+        fontSize: 20,
         color: colorCode.HomeScreenColor.HomeScreenTitle,
         marginTop: 'auto',
         marginBottom: 'auto',
