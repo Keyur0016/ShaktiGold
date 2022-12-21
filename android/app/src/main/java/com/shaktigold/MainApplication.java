@@ -13,7 +13,6 @@ import com.facebook.react.ReactPackage;
 import com.facebook.react.config.ReactFeatureFlags;
 import com.facebook.soloader.SoLoader;
 import com.shaktigold.newarchitecture.MainApplicationReactNativeHost;
-import com.shaktigold.timer.BackgroundTimerPackage;
 
 import expo.modules.ApplicationLifecycleDispatcher;
 import expo.modules.ReactNativeHostWrapper;
@@ -28,13 +27,6 @@ public class MainApplication extends Application implements ReactApplication {
     @Override
     public boolean getUseDeveloperSupport() {
       return BuildConfig.DEBUG;
-    }
-
-    @Override
-    protected List<ReactPackage> getPackages() {
-      return Arrays.<ReactPackage>asList(
-        new BackgroundTimerPackage()
-      );
     }
 
     @Override

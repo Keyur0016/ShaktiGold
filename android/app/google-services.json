@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "998248578291",
+    "project_id": "shaktigold-80666",
+    "storage_bucket": "shaktigold-80666.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:998248578291:android:5fb5306ef0c69ee8470b86",
+        "android_client_info": {
+          "package_name": "com.shaktigold"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "998248578291-df7p0u93h3arlglt59egit9bv9n699o7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD18itVNP1IN0XHtQrWbBi_95pIObhLcOg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "998248578291-df7p0u93h3arlglt59egit9bv9n699o7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
