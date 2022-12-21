@@ -1,13 +1,13 @@
 {
   "expo": {
-    "name": "shaktigold",
-    "slug": "shaktigold",
+    "name": "ShaktiGold",
+    "slug": "shree-shakti-gold",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/Logo.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/ShaktiGold.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -22,31 +22,21 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/Logo.png",
         "backgroundColor": "#FFFFFF"
       },
-      "package": "com.shaktigold"
+      "package": "com.shaktigold",
+      "versionCode": 1,
+      "googleServicesFile": "./android/app/google-services.json"
     },
-    "web": {
-      "favicon": "./assets/favicon.png"
+    "notification":{
+      "icon": "./assets/Logo.png"
     },
-    "plugins": [
-      [
-        "expo-notifications",
-        {
-          "icon": "./local/assets/notification-icon.png",
-          "color": "#ffffff",
-          "sounds": [
-            "./local/assets/notification-sound.wav",
-            "./local/assets/notification-sound-other.wav"
-          ]
-        }
-      ]
-    ],
     "extra": {
       "eas": {
-        "projectId": "9bc213ea-4284-476f-842a-050bc0ec12a1"
+        "projectId": "c1d0c615-3960-46c3-aad4-4180bbb1e1aa"
       }
-    }
+    },
+    "owner": "shaktigold"
   }
 }

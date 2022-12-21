@@ -1,4 +1,5 @@
 import { StyleSheet} from 'react-native';
+import { useState, useEffect, useRef } from 'react';
 import * as NavigationBar from 'expo-navigation-bar';
 import {NavigationContainer} from '@react-navigation/native' ; 
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -19,6 +20,9 @@ import SelectCategory from './Component/Admin/SelectCategory';
 import DeleteUpdateProduct from './Component/Admin/DeleteUpdateProduct';
 import UpdateProduct from './Component/Admin/UpdateProduct';
 import QrCodeScanner from './Component/Admin/QRCodeScanner';
+import UpdateAdminPassword from './Component/Admin/UpdateAdminPassword';
+import UploadStatus from './Component/Admin/UploadStatus';
+import Send_notification from './Component/Admin/Send_notification';
 
 import SplashScreen from './Component/SplashScreen';
 import AdminLogin from './Component/AdminLogin';
@@ -33,21 +37,25 @@ import BillLayout from './Component/BillLayout';
 import StatusView from './Component/OtherComponent/StatusView';
 import OrderLayout from './Component/OrderLayout';
 import CancelOrder from './Component/CancelOrder';
+import Update_mobile from './Component/UpdateMobileVerify';
+import Update_mobile_verification from './Component/UpdateMobile';
 
 import InsertAddress from './Component/Address/InsertAddress'; 
 import UpdateAddress from './Component/Address/UpdateAddress' ; 
 import SelectAddress from './Component/Address/SelectAddress' ; 
-
 import Home from './Component/Home';
+
 
 export default function App({navigation}) {
 
   NavigationBar.setBackgroundColorAsync("white") ; 
 
   const Stack = createNativeStackNavigator() ;
+
+
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName='SplashScreen' >
+      <Stack.Navigator initialRouteName='SplashScreen'>
         <Stack.Screen name='Signup' component={Signup} options={{headerShown:false}}></Stack.Screen>
         <Stack.Screen name="Verification" component={Verification} options={{headerShown:false}}></Stack.Screen>
         <Stack.Screen name='SplashScreen' component={SplashScreen} options={{headerShown:false}}></Stack.Screen>
@@ -74,12 +82,17 @@ export default function App({navigation}) {
         <Stack.Screen name='ParticularProduct' component={ParticularProduct} options={{headerShown:false}}></Stack.Screen>
         <Stack.Screen name='WatchListProduct' component={WatchListProduct} options={{headerShown:false}}></Stack.Screen>
         <Stack.Screen name='Cart' component={CartItem} options={{headerShown:false}}></Stack.Screen>
-        <Stack.Screen name='PaymentOption' component={PaymentOption} options={{headerShown:false}}></Stack.Screen>
+        <Stack.Screen name='PaymentOption' component={PaymentOption} options={{headerShown:false, animation:"none"}}></Stack.Screen>
         <Stack.Screen name='BillLayout' component={BillLayout} options={{headerShown:false}}></Stack.Screen>
         <Stack.Screen name='StatusView' component={StatusView} options={{headerShown:false}}></Stack.Screen>
         <Stack.Screen name='OrderLayout' component={OrderLayout} options={{headerShown: false}}></Stack.Screen>
         <Stack.Screen name='QrScanner' component={QrCodeScanner} options={{headerShown:false}}></Stack.Screen>
         <Stack.Screen name='CancelOrder' component={CancelOrder} options={{headerShown:false}}></Stack.Screen>
+        <Stack.Screen name='UpdateAdminPassword' component={UpdateAdminPassword} options={{headerShown:false}}></Stack.Screen>
+        <Stack.Screen name='UploadStatus' component={UploadStatus} options={{headerShown:false}}></Stack.Screen> 
+        <Stack.Screen name='SendNotification' component={Send_notification} options={{headerShown:false}}></Stack.Screen>
+        <Stack.Screen name='UpdateMobile' component={Update_mobile} options={{headerShown:false}}></Stack.Screen>
+        <Stack.Screen name='UpdateMobileVerify' component={Update_mobile_verification} options={{headerShown:false}}></Stack.Screen>
       </Stack.Navigator>
       
     </NavigationContainer>
