@@ -151,13 +151,13 @@ export default function UpdateAdminPassword({navigation}){
                  
                 {/* Title   */}
 
-                <Text style={AdminPasswordUpdate.AdminPasswordTitle}>Admin password update</Text>
+                <Text allowFontScaling={false} style={AdminPasswordUpdate.AdminPasswordTitle}>Admin password update</Text>
 
                 {/* Input Layout  */}
 
                 <View style={AdminPasswordUpdate.InputLayout}>
                     
-                    <TextInput style={[AdminPasswordUpdate.InputStyle, {borderColor: password_border ? colorCode.SignupColorCode.InputBorderColor : 'transparent'}]}
+                    <TextInput allowFontScaling={false} style={[AdminPasswordUpdate.InputStyle, {borderColor: password_border ? colorCode.SignupColorCode.InputBorderColor : 'transparent'}]}
                         placeholder="Enter Password"
                         placeholderTextColor = {colorCode.SignupColorCode.InputPlaceholderColor} 
                         keyboardType="default"
@@ -167,7 +167,7 @@ export default function UpdateAdminPassword({navigation}){
                         onFocus = {() => OnFocusHandle(0)}
                     />
                     
-                    <TextInput style={[AdminPasswordUpdate.InputStyle, {borderColor: re_password_border ? colorCode.SignupColorCode.InputBorderColor : 'transparent'}]}
+                    <TextInput allowFontScaling={false} style={[AdminPasswordUpdate.InputStyle, {borderColor: re_password_border ? colorCode.SignupColorCode.InputBorderColor : 'transparent'}]}
                         placeholder="Re-enter Password"
                         placeholderTextColor = {colorCode.SignupColorCode.InputPlaceholderColor} 
                         keyboardType="default"
@@ -187,7 +187,7 @@ export default function UpdateAdminPassword({navigation}){
                     <Pressable style={[AdminPasswordUpdate.SendCode_Layout]}
                         android_ripple={{color:colorCode.SignupColorCode.ButtonRippleColor,foreground:false}}
                         onPress={Update_admin_password_handler}>
-                        <Text style={AdminPasswordUpdate.SendCode_Text}>Update admin password</Text>
+                        <Text allowFontScaling={false} style={AdminPasswordUpdate.SendCode_Text}>Update admin password</Text>
                     </Pressable>
                     }
  

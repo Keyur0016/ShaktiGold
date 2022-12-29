@@ -104,13 +104,13 @@ export default function Verification({navigation, route}){
 
                     {/* Verification Title */}
 
-                    <Text style={ForgetVerificationStyle.ForgetVerificationTitle}>Forget Password</Text>
+                    <Text allowFontScaling={false} style={ForgetVerificationStyle.ForgetVerificationTitle}>Forget Password</Text>
                 
                 </View>                
 
                 {/* Mobilenumber information  */}
                 
-                <Text style={ForgetVerificationStyle.MobileInformation}>Mobilenumber: {Mobilenumber}</Text>
+                <Text allowFontScaling={false} style={ForgetVerificationStyle.MobileInformation}>Mobilenumber: {Mobilenumber}</Text>
             
                 {/* Input Layout  */}
 
@@ -118,7 +118,7 @@ export default function Verification({navigation, route}){
                     
                     {/* Verification code Input  */}
 
-                    <TextInput style={[ForgetVerificationStyle.InputStyle, {borderColor: verificationBorder ? colorCode.SignupColorCode.InputBorderColor : 'transparent'}]}
+                    <TextInput allowFontScaling={false} style={[ForgetVerificationStyle.InputStyle, {borderColor: verificationBorder ? colorCode.SignupColorCode.InputBorderColor : 'transparent'}]}
                         placeholder="Verification code"
                         placeholderTextColor = {colorCode.SignupColorCode.InputPlaceholderColor} 
                         keyboardType="numeric"
@@ -139,7 +139,7 @@ export default function Verification({navigation, route}){
                     <Pressable style={[ForgetVerificationStyle.SendCode_Layout]}
                         android_ripple={{color:colorCode.SignupColorCode.ButtonRippleColor,foreground:false}}
                         onPress={Verification_Handler}>
-                        <Text style={ForgetVerificationStyle.SendCode_Text}>Update Password</Text>
+                        <Text allowFontScaling={false} style={ForgetVerificationStyle.SendCode_Text}>Update Password</Text>
                     </Pressable>
                     
                     }

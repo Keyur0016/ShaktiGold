@@ -90,7 +90,7 @@ export default function UploadProduct({navigation, route}){
                 if (Insert_product_STATUS == "Insert product"){
 
                     ToastAndroid.show("Insert product successfully", ToastAndroid.BOTTOM, ToastAndroid.SHORT) ; 
-                    navigation.navigate("Home") ; 
+                    navigation.goBack(); 
                 }
 
 
@@ -164,8 +164,7 @@ export default function UploadProduct({navigation, route}){
     
                     if (Upload_image_response != null){
 
-                        Image1_response_url = Upload_image_response.url ; 
-                        
+                        Image1_response_url = Upload_image_response.url ;
                         ToastAndroid.show("View1 image upload successfully", ToastAndroid.BOTTOM, ToastAndroid.SHORT);
                     }
                     
@@ -278,6 +277,7 @@ export default function UploadProduct({navigation, route}){
     // **** Stop Upload Product Request Handler **** // 
 
     // Image picker handler for selector product view
+
     const Select_ProductImage_Selector = async (Image_selector) => {
 
         let result = await ImagePicker.launchImageLibraryAsync({
@@ -363,7 +363,7 @@ export default function UploadProduct({navigation, route}){
                     </View>
                 </>:<></>}
 
-                <Text style={UploadProductStyle.UploadProductTitle}>Upload Product in {Category_name}</Text>
+                <Text allowFontScaling={false} style={UploadProductStyle.UploadProductTitle}>Upload Product in {Category_name}</Text>
                 
                 <ScrollView>
                     
@@ -381,7 +381,7 @@ export default function UploadProduct({navigation, route}){
                         <Pressable style={UploadProductStyle.UploadProductImageSelect}
                             android_ripple={{color:colorCode.SignupColorCode.OtherButtonRipplerColor}}
                             onPress={() => Select_ProductImage_Selector(0)}>
-                            <Text style={UploadProductStyle.UploadImageSelectText}>Select Product View1</Text>
+                            <Text allowFontScaling={false} style={UploadProductStyle.UploadImageSelectText}>Select Product View1</Text>
                         </Pressable>
 
                     </View>
@@ -400,7 +400,7 @@ export default function UploadProduct({navigation, route}){
                         <Pressable style={UploadProductStyle.UploadProductImageSelect}
                             android_ripple={{color:colorCode.SignupColorCode.OtherButtonRipplerColor}}
                             onPress={() => Select_ProductImage_Selector(1)}>
-                            <Text style={UploadProductStyle.UploadImageSelectText}>Select Product View2</Text>
+                            <Text allowFontScaling={false} style={UploadProductStyle.UploadImageSelectText}>Select Product View2</Text>
                         </Pressable>
 
                     </View>
@@ -419,16 +419,16 @@ export default function UploadProduct({navigation, route}){
                         <Pressable style={UploadProductStyle.UploadProductImageSelect}
                             android_ripple={{color:colorCode.SignupColorCode.OtherButtonRipplerColor}}
                             onPress={() => Select_ProductImage_Selector(2)}>
-                            <Text style={UploadProductStyle.UploadImageSelectText}>Select Product View3</Text>
+                            <Text allowFontScaling={false} style={UploadProductStyle.UploadImageSelectText}>Select Product View3</Text>
                         </Pressable>
 
                     </View>
 
                     {/* Product Information input  */}
 
-                    <Text style={UploadProductStyle.ProductOtherSubtitle}>Product information</Text>
+                    <Text allowFontScaling={false} style={UploadProductStyle.ProductOtherSubtitle}>Product information</Text>
 
-                    <TextInput style={[UploadProductStyle.ProductInputStyle, {borderColor: ProductInformation_border ? colorCode.SignupColorCode.InputBorderColor : 'transparent'}]}
+                    <TextInput allowFontScaling={false} style={[UploadProductStyle.ProductInputStyle, {borderColor: ProductInformation_border ? colorCode.SignupColorCode.InputBorderColor : 'transparent'}]}
                         placeholder="Product information"
                         placeholderTextColor = {colorCode.SignupColorCode.InputPlaceholderColor} 
                         keyboardType="default"
@@ -440,9 +440,9 @@ export default function UploadProduct({navigation, route}){
 
                     {/* Product Weight input  */}
 
-                    <Text style={UploadProductStyle.ProductOtherSubtitle}>Product Weight in gm</Text>
+                    <Text allowFontScaling={false} style={UploadProductStyle.ProductOtherSubtitle}>Product Weight in gm</Text>
 
-                    <TextInput style={[UploadProductStyle.ProductInputStyle, {borderColor: ProductWeight_border ? colorCode.SignupColorCode.InputBorderColor : 'transparent'}]}
+                    <TextInput allowFontScaling={false} style={[UploadProductStyle.ProductInputStyle, {borderColor: ProductWeight_border ? colorCode.SignupColorCode.InputBorderColor : 'transparent'}]}
                         placeholder="Product Weight"
                         placeholderTextColor = {colorCode.SignupColorCode.InputPlaceholderColor} 
                         keyboardType="number-pad"
@@ -454,9 +454,9 @@ export default function UploadProduct({navigation, route}){
                      
                     {/* Product size input  */}
 
-                    <Text style={UploadProductStyle.ProductOtherSubtitle}>Product size</Text>
+                    <Text allowFontScaling={false} style={UploadProductStyle.ProductOtherSubtitle}>Product size</Text>
 
-                    <TextInput style={[UploadProductStyle.ProductInputStyle, {borderColor: ProductSize_border ? colorCode.SignupColorCode.InputBorderColor : 'transparent'}]}
+                    <TextInput allowFontScaling={false} style={[UploadProductStyle.ProductInputStyle, {borderColor: ProductSize_border ? colorCode.SignupColorCode.InputBorderColor : 'transparent'}]}
                         placeholder="Product size"
                         placeholderTextColor = {colorCode.SignupColorCode.InputPlaceholderColor} 
                         keyboardType="number-pad"
@@ -468,9 +468,9 @@ export default function UploadProduct({navigation, route}){
 
                     {/* Product tag name information  */}
                   
-                    <Text style={UploadProductStyle.ProductOtherSubtitle}>Tag number</Text>
+                    <Text allowFontScaling={false} style={UploadProductStyle.ProductOtherSubtitle}>Tag number</Text>
                     
-                    <TextInput style={[UploadProductStyle.ProductInputStyle, {borderColor: ProductTag_border ? colorCode.SignupColorCode.InputBorderColor : 'transparent'}]}
+                    <TextInput allowFontScaling={false} style={[UploadProductStyle.ProductInputStyle, {borderColor: ProductTag_border ? colorCode.SignupColorCode.InputBorderColor : 'transparent'}]}
                         placeholder="Tag name"
                         placeholderTextColor = {colorCode.SignupColorCode.InputPlaceholderColor} 
                         keyboardType="default"
@@ -483,9 +483,9 @@ export default function UploadProduct({navigation, route}){
 
                     {/* Product retail price information  */}
 
-                    <Text style={UploadProductStyle.ProductOtherSubtitle}>Product retail price</Text>
+                    <Text allowFontScaling={false} style={UploadProductStyle.ProductOtherSubtitle}>Product retail price</Text>
  
-                    <TextInput style={[UploadProductStyle.ProductInputStyle, {borderColor: ProductRetailPrice_border ? colorCode.SignupColorCode.InputBorderColor : 'transparent'}]}
+                    <TextInput allowFontScaling={false} style={[UploadProductStyle.ProductInputStyle, {borderColor: ProductRetailPrice_border ? colorCode.SignupColorCode.InputBorderColor : 'transparent'}]}
                         placeholder="Product retail price"
                         placeholderTextColor = {colorCode.SignupColorCode.InputPlaceholderColor} 
                         keyboardType="number-pad"
@@ -497,9 +497,9 @@ export default function UploadProduct({navigation, route}){
 
                     {/* Product discount information  */}
 
-                    <Text style={UploadProductStyle.ProductOtherSubtitle}>Product discount price</Text>
+                    <Text allowFontScaling={false} style={UploadProductStyle.ProductOtherSubtitle}>Product discount price</Text>
  
-                    <TextInput style={[UploadProductStyle.ProductInputStyle, {borderColor: ProductDiscountPrice_border ? colorCode.SignupColorCode.InputBorderColor : 'transparent'}]}
+                    <TextInput allowFontScaling={false} style={[UploadProductStyle.ProductInputStyle, {borderColor: ProductDiscountPrice_border ? colorCode.SignupColorCode.InputBorderColor : 'transparent'}]}
                         placeholder="Product discount price"
                         placeholderTextColor = {colorCode.SignupColorCode.InputPlaceholderColor} 
                         keyboardType="number-pad"
@@ -521,7 +521,7 @@ export default function UploadProduct({navigation, route}){
                     <Pressable style={[UploadProductStyle.SendCode_Layout]}
                         android_ripple={{color:'#ffd100',foreground:false}}
                         onPress={Upload_product_handler}>
-                        <Text style={UploadProductStyle.SendCode_Text}>Upload product</Text>
+                        <Text allowFontScaling={false} style={UploadProductStyle.SendCode_Text}>Upload product</Text>
                     </Pressable>
                     }
 

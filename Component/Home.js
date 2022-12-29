@@ -1,5 +1,5 @@
 import { View , StyleSheet, StatusBar, Pressable, Image, Text, 
-    ScrollView, ToastAndroid, Linking, BackHandler, Alert } from "react-native";
+    ScrollView, ToastAndroid, Linking, BackHandler, Alert, PixelRatio } from "react-native";
 import { useState, useEffect, useRef} from "react";
 import * as colorCode from './Information/ColorCode';
 import * as Font from 'expo-font'; 
@@ -241,6 +241,7 @@ export default function Home({navigation}){
             Load_other_data() ; 
         }, 500);
 
+        Text.allowFontScaling = false
         
     }, []);
 
@@ -483,7 +484,7 @@ export default function Home({navigation}){
 
                             <View style={HomeStyle.SliderOptionTitle}>
 
-                                <Text style={HomeStyle.SliderOptionTitleText}>Shree Shakti Gold</Text>
+                                <Text allowFontScaling={false} style={HomeStyle.SliderOptionTitleText}>Shree Shakti Gold</Text>
                                 
                                 <Pressable style={{marginLeft:"auto"}}
                                     onPress={Disable_slider_menu_layout}>
@@ -504,7 +505,7 @@ export default function Home({navigation}){
                                 android_ripple={{color:colorCode.HomeScreenColor.PriceInformationTitleColor}}
                                 onPress={Slider_menu_home_option}>
 
-                                <Text style={HomeStyle.SliderPressableOptionText}>Home</Text>
+                                <Text allowFontScaling={false} style={HomeStyle.SliderPressableOptionText}>Home</Text>
 
                             </Pressable>
                             
@@ -514,7 +515,7 @@ export default function Home({navigation}){
                                 android_ripple={{color:colorCode.HomeScreenColor.PriceInformationTitleColor}}
                                 onPress={Slider_menu_cart_option}>
 
-                                <Text style={HomeStyle.SliderPressableOptionText}>Cart</Text>
+                                <Text allowFontScaling={false} style={HomeStyle.SliderPressableOptionText}>Cart</Text>
 
                             </Pressable>
                             
@@ -525,7 +526,7 @@ export default function Home({navigation}){
                                 android_ripple={{color:colorCode.HomeScreenColor.PriceInformationTitleColor}}
                                 onPress={Slider_check_out_order_option}>
 
-                                <Text style={HomeStyle.SliderPressableOptionText}>Check out Order</Text>
+                                <Text allowFontScaling={false} style={HomeStyle.SliderPressableOptionText}>Check out Order</Text>
 
                             </Pressable>
 
@@ -535,7 +536,7 @@ export default function Home({navigation}){
                                 android_ripple={{color:colorCode.HomeScreenColor.PriceInformationTitleColor}}
                                 onPress={() => Update_mobile_number_layout()}>
 
-                                <Text style={HomeStyle.SliderPressableOptionText}>Update mobile number</Text>
+                                <Text allowFontScaling={false} style={HomeStyle.SliderPressableOptionText}>Update mobile number</Text>
 
                             </Pressable>
                             
@@ -545,7 +546,7 @@ export default function Home({navigation}){
                                 android_ripple={{color:colorCode.HomeScreenColor.PriceInformationTitleColor}}
                                 onPress={Slider_menu_shop_location_option}>
 
-                                <Text style={HomeStyle.SliderPressableOptionText}>Shop Location</Text>
+                                <Text allowFontScaling={false} style={HomeStyle.SliderPressableOptionText}>Shop Location</Text>
 
                             </Pressable>
                                 
@@ -560,7 +561,7 @@ export default function Home({navigation}){
                                     style={HomeStyle.LogoutImage}
                                 />
 
-                                <Text style={HomeStyle.LogoutOptionText}>Admin login</Text>
+                                <Text allowFontScaling={false} style={HomeStyle.LogoutOptionText}>Admin login</Text>
 
                             </Pressable>
 
@@ -575,7 +576,7 @@ export default function Home({navigation}){
                                     style={HomeStyle.LogoutImage}
                                 />
 
-                                <Text style={HomeStyle.LogoutOptionText}>Logout</Text>
+                                <Text allowFontScaling={false} style={HomeStyle.LogoutOptionText}>Logout</Text>
 
                             </Pressable> 
 
@@ -597,7 +598,7 @@ export default function Home({navigation}){
                     
                             <View style={HomeStyle.LocationTitleLayout}>
 
-                                <Text style={HomeStyle.LocationTitleText}>Our branch</Text>
+                                <Text allowFontScaling={false} style={HomeStyle.LocationTitleText}>Our branch</Text>
 
                                 <Pressable style={{marginLeft: "auto" }}
                                     onPress={Close_shop_location_layout}>
@@ -614,18 +615,13 @@ export default function Home({navigation}){
 
                             <View style={HomeStyle.BrachLayout}>
                                 
-                                <Text style={{fontFamily:"Mukta", fontSize:20, paddingLeft:10}}>Area = Mota varachha</Text>
-                                <Text style={{fontFamily:"Sans", fontSize:18, paddingLeft:10, color:"#5c5c5c"}}>24,25 ABC central,abc chowk,near sudama chowk, vadi, opp. Khodiyar nagar</Text>
-                                
-                                <Image
-                                    source={require('../assets/Image/Shop1.png')}
-                                    style={{width:"100%", height:150, resizeMode:"contain", marginTop:10, marginBottom:10}}
-                                />
+                                <Text allowFontScaling={false} style={{fontFamily:"Mukta", fontSize:20, paddingLeft:10}}>Area = Mota varachha</Text>
+                                <Text allowFontScaling={false} style={{fontFamily:"Sans", fontSize:18, paddingLeft:10, color:"#5c5c5c"}}>24,25 ABC central,abc chowk,near sudama chowk, vadi, opp. Khodiyar nagar</Text>
 
                                 <Pressable style={HomeStyle.ShopLocationPressable}
                                     android_ripple={{color:colorCode.HomeScreenColor.PriceLayoutColor}}
                                     onPress = {() => Shop_location_opener("https://goo.gl/maps/hek8PSDwFgvYf2QHA")}>
-                                    <Text style={{fontFamily:"Ubuntu", fontSize:18, color:"white"}}>Shop location</Text>
+                                    <Text allowFontScaling={false} style={{fontFamily:"Ubuntu", fontSize:18, color:"white"}}>Shop location</Text>
                                 </Pressable>
 
                             </View>
@@ -634,20 +630,15 @@ export default function Home({navigation}){
 
                             <View style={HomeStyle.BrachLayout}>
                                 
-                                <Text style={{fontFamily:"Mukta", fontSize:20, paddingLeft:10}}>Area = Mota varachha</Text>
-                                <Text style={{fontFamily:"Sans", fontSize:18, paddingLeft:10, color:"#5c5c5c"}}>
+                                <Text allowFontScaling={false} style={{fontFamily:"Mukta", fontSize:20, paddingLeft:10}}>Area = Mota varachha</Text>
+                                <Text allowFontScaling={false} style={{fontFamily:"Sans", fontSize:18, paddingLeft:10, color:"#5c5c5c"}}>
                                      B-13, Janta Apartment, Lambe Hanuman Road, Gayatri-Ramnagar T.P Road, Opp. Gayatri Society, Janata Nagar Society 
                                 </Text>
-
-                                <Image
-                                    source={require('../assets/Image/Shop1.png')}
-                                    style={{width:"100%", height:150, resizeMode:"contain", marginTop:10, marginBottom:10}}
-                                />
 
                                 <Pressable style={HomeStyle.ShopLocationPressable}
                                     android_ripple={{color:colorCode.HomeScreenColor.PriceLayoutColor}}
                                     onPress = {() => Shop_location_opener("https://goo.gl/maps/oJSWsTjTpVQVK1mD7")}>
-                                    <Text style={{fontFamily:"Mukta", fontSize:18, color:"white"}}>Shop location</Text>
+                                    <Text allowFontScaling={false} style={{fontFamily:"Ubuntu", fontSize:18, color:"white"}}>Shop location</Text>
                                 </Pressable>
 
                             </View>
@@ -677,7 +668,7 @@ export default function Home({navigation}){
     
                     {/* Shakti gold title  */}
     
-                    <Text style={HomeStyle.HomeScreenTitle}>Shree Shakti Gold</Text>
+                    <Text allowFontScaling={false} style={HomeStyle.HomeScreenTitle}>Shree Shakti Gold</Text>
 
                     {/* ==== Heart, Cart, Location layout option ==== */}
 
@@ -751,7 +742,7 @@ export default function Home({navigation}){
                         style={HomeStyle.NewArrivalsImage}
                     />
 
-                    <Text style={HomeStyle.NewArrivalsText}>Latest Products</Text>
+                    <Text allowFontScaling={false} style={HomeStyle.NewArrivalsText}>Latest Products</Text>
 
                 </Pressable>
 
@@ -768,9 +759,9 @@ export default function Home({navigation}){
                             source={require('../assets/Image/Gold.png')}
                             style={HomeStyle.PriceTitleOptionImage} />
 
-                        <Text style={HomeStyle.PriceTitle}>(24K) Gold price </Text>
+                        <Text allowFontScaling={false} style={HomeStyle.PriceTitle}>(24K) Gold price </Text>
                         
-                        <Text style={HomeStyle.PriceDate}>{Today_date}</Text>
+                        <Text allowFontScaling={false} style={HomeStyle.PriceDate}>{Today_date}</Text>
                     
                     </View>
                      
@@ -778,8 +769,8 @@ export default function Home({navigation}){
 
                     <View style={HomeStyle.PriceDataLayout}>
                          
-                        <Text style={HomeStyle.CurrentPriceTitle}>Current Price:</Text>
-                        <Text style={HomeStyle.CurrentPrice}>₹{gold_price}/10gm</Text>
+                        <Text allowFontScaling={false} style={HomeStyle.CurrentPriceTitle}>Current Price:</Text>
+                        <Text allowFontScaling={false} style={HomeStyle.CurrentPrice}>₹{gold_price}/10gm</Text>
 
                     </View>
                       
@@ -787,7 +778,7 @@ export default function Home({navigation}){
  
                     <Pressable
                         onPress={View_more_price_handler}>
-                        <Text style={HomeStyle.ViewMorePrice}>View other price</Text>
+                        <Text allowFontScaling={false} style={HomeStyle.ViewMorePrice}>View other price</Text>
                     </Pressable>
                 
                 </View>
@@ -799,7 +790,7 @@ export default function Home({navigation}){
 
                 <View style={HomeStyle.CategoryOptionText}>
 
-                    <Text style={HomeStyle.CategoryTitle}>Gold Products</Text>
+                    <Text allowFontScaling={false} style={HomeStyle.CategoryTitle}>Gold Products</Text>
 
                 </View>
 
@@ -837,7 +828,7 @@ export default function Home({navigation}){
                                                 style = {HomeStyle.CategoryImage}
                                             />
                                             
-                                            <Text style={HomeStyle.CategoryOptionTextButton}>{element.Category_name}</Text>
+                                            <Text allowFontScaling={false} style={HomeStyle.CategoryOptionTextButton}>{element.Category_name}</Text>
                                     
                                         </Pressable>
 
@@ -866,17 +857,17 @@ export default function Home({navigation}){
                             source={require('../assets/Image/Silver.png')}
                             style={HomeStyle.PriceTitleOptionImage} />
 
-                        <Text style={HomeStyle.PriceTitle}>Silver price</Text>
+                        <Text allowFontScaling={false} style={HomeStyle.PriceTitle}>Silver price</Text>
                         
-                        <Text style={HomeStyle.PriceDate}>{Today_date}</Text>
+                        <Text allowFontScaling={false} style={HomeStyle.PriceDate}>{Today_date}</Text>
                     
                     </View>
 
                     <View style={HomeStyle.PriceDataLayout}>
                          
-                        <Text style={HomeStyle.CurrentPriceTitle}>Current Price:</Text>
+                        <Text allowFontScaling={false} style={HomeStyle.CurrentPriceTitle}>Current Price:</Text>
 
-                        <Text style={HomeStyle.CurrentPrice}>₹{silver_price}/10gm</Text>
+                        <Text allowFontScaling={false} style={HomeStyle.CurrentPrice}>₹{silver_price}/1KG</Text>
 
                     </View>
                 
@@ -889,7 +880,7 @@ export default function Home({navigation}){
 
                 <View style={HomeStyle.CategoryOptionText}>
 
-                    <Text style={HomeStyle.CategoryTitle}>Silver Products</Text>
+                    <Text allowFontScaling={false} style={HomeStyle.CategoryTitle}>Silver Products</Text>
 
                 </View>
 
@@ -926,7 +917,7 @@ export default function Home({navigation}){
                                                 style = {HomeStyle.CategoryImage}
                                             />
                                             
-                                            <Text style={HomeStyle.CategoryOptionTextButton}>{element.Category_name}</Text>
+                                            <Text allowFontScaling={false} style={HomeStyle.CategoryOptionTextButton}>{element.Category_name}</Text>
                                     
                                         </Pressable>
 
@@ -947,7 +938,7 @@ export default function Home({navigation}){
 
                 <View style={HomeStyle.ContactUsLayout}>
                     
-                    <Text style={HomeStyle.ContactUsTitle}>Contact number : </Text>
+                    <Text allowFontScaling={false} style={HomeStyle.ContactUsTitle}>Contact number : </Text>
 
                     <Pressable style={HomeStyle.ContactUsInformationLayout}
                         android_ripple={{color:"#ececec"}}>
@@ -956,7 +947,7 @@ export default function Home({navigation}){
                             source={require('../assets/Image/Contact.png')}
                             style={HomeStyle.ContactUsImage}
                         />
-                        <Text style={HomeStyle.ContactUsText}>Vipulbhai = 9824113124</Text>
+                        <Text allowFontScaling={false} style={HomeStyle.ContactUsText}>Vipulbhai = 9824113124</Text>
                     
                     </Pressable>
 
@@ -1405,7 +1396,8 @@ const HomeStyle = StyleSheet.create({
         paddingBottom:10, 
         borderBottomLeftRadius:8, 
         borderBottomRightRadius:8,
-        justifyContent: "center"
+        justifyContent: "center",
+        marginTop:10
     }
 
     

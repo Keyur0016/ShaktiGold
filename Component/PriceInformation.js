@@ -21,8 +21,6 @@ export default function PriceInformation({navigation, route}){
     const [price_18K, set_price_18K] = useState('') ;
     const [price_916, set_price_916] = useState('') ;
     const [silver_price, set_silver_price] = useState(''); 
-    const [load_today_price, set_today_price] = useState(false); 
-    const [load_yesterday_price, set_yesterday_price] = useState(false) ; 
     const [date_information, set_date_information] = useState(''); 
 
     // ==== Load font ==== // 
@@ -45,7 +43,6 @@ export default function PriceInformation({navigation, route}){
             try{
 
                 set_price_24K(route.params.Price[0][0]["24K_price"]) ;
-                set_price_22K(route.params.Price[0][0]["22K_price"]) ; 
                 set_price_18K(route.params.Price[0][0]["18K_price"]) ; 
                 set_price_916(route.params.Price[0][0]["916_price"]) ; 
                 set_silver_price(route.params.Price[0][0]['Silver_price']) ;  
@@ -93,7 +90,7 @@ export default function PriceInformation({navigation, route}){
                             style={PriceInformationStyle.BackImage}
                         />
 
-                        <Text style={PriceInformationStyle.BackText}>Price</Text>
+                        <Text allowFontScaling={false} style={PriceInformationStyle.BackText}>Price</Text>
 
                     </Pressable>
                    
@@ -108,8 +105,8 @@ export default function PriceInformation({navigation, route}){
                         style={PriceInformationStyle.Gold_Silver_Image}
                     />
 
-                    <Text style={PriceInformationStyle.Gold_Silver_Title}> Gold Price</Text>
-                    <Text style={PriceInformationStyle.Gold_Silver_date}>{date_information}</Text>
+                    <Text allowFontScaling={false} style={PriceInformationStyle.Gold_Silver_Title}> Gold Price</Text>
+                    <Text allowFontScaling={false} style={PriceInformationStyle.Gold_Silver_date}>{date_information}</Text>
                 
                 </View>
 
@@ -117,17 +114,8 @@ export default function PriceInformation({navigation, route}){
 
                 <View style={PriceInformationStyle.PriceInformationLayout}>
 
-                    <Text style={PriceInformationStyle.PriceInformationTitle} >24K Price </Text>
-                    <Text style={PriceInformationStyle.PriceInformationData}>₹{price_24K}/10gm</Text>
-                
-                </View>
-
-                {/* 22K Price Information  */}
-
-                <View style={PriceInformationStyle.PriceInformationLayout}>
-
-                    <Text style={PriceInformationStyle.PriceInformationTitle} >22K Price </Text>
-                    <Text style={PriceInformationStyle.PriceInformationData}>₹{price_22K}/10gm</Text>
+                    <Text allowFontScaling={false} style={PriceInformationStyle.PriceInformationTitle} >24K Price </Text>
+                    <Text allowFontScaling={false} style={PriceInformationStyle.PriceInformationData}>₹{price_24K}/10gm</Text>
                 
                 </View>
 
@@ -135,8 +123,8 @@ export default function PriceInformation({navigation, route}){
                 
                 <View style={PriceInformationStyle.PriceInformationLayout}>
                 
-                    <Text style={PriceInformationStyle.PriceInformationTitle}>18K Price</Text>
-                    <Text style={PriceInformationStyle.PriceInformationData}>₹{price_18K}/10gm</Text>
+                    <Text allowFontScaling={false} style={PriceInformationStyle.PriceInformationTitle}>18K Price</Text>
+                    <Text allowFontScaling={false} style={PriceInformationStyle.PriceInformationData}>₹{price_18K}/10gm</Text>
                 
                 </View>
 
@@ -144,8 +132,8 @@ export default function PriceInformation({navigation, route}){
 
                 <View style={PriceInformationStyle.PriceInformationLayout}>
 
-                    <Text style={PriceInformationStyle.PriceInformationTitle}>916 Price</Text>
-                    <Text style={PriceInformationStyle.PriceInformationData}>₹{price_916}/10gm</Text>
+                    <Text allowFontScaling={false} style={PriceInformationStyle.PriceInformationTitle}>916 Price</Text>
+                    <Text allowFontScaling={false} style={PriceInformationStyle.PriceInformationData}>₹{price_916}/10gm</Text>
                 
                 </View>
 
@@ -158,8 +146,8 @@ export default function PriceInformation({navigation, route}){
                         style={[PriceInformationStyle.Gold_Silver_Image, {height:35, width: 35}]}
                     /> 
 
-                    <Text style={PriceInformationStyle.Gold_Silver_Title}>Silver Price</Text>
-                    <Text style={PriceInformationStyle.Gold_Silver_date}>{date_information}</Text>
+                    <Text allowFontScaling={false} style={PriceInformationStyle.Gold_Silver_Title}>Silver Price</Text>
+                    <Text allowFontScaling={false} style={PriceInformationStyle.Gold_Silver_date}>{date_information}</Text>
 
                 </View>
 
@@ -167,8 +155,8 @@ export default function PriceInformation({navigation, route}){
 
                 <View style={PriceInformationStyle.PriceInformationLayout}>
                     
-                    <Text style={PriceInformationStyle.PriceInformationTitle}>Silver Price</Text>
-                    <Text style={PriceInformationStyle.PriceInformationData}>₹{silver_price}/1Kg</Text>
+                    <Text allowFontScaling={false} style={PriceInformationStyle.PriceInformationTitle}>Silver Price</Text>
+                    <Text allowFontScaling={false} style={PriceInformationStyle.PriceInformationData}>₹{silver_price}/1Kg</Text>
                 
                 </View>
 

@@ -301,7 +301,7 @@ export default function SelectAddress({navigation, route}){
                             style={SelectAddressStyle.BackImage}
                         />
                     
-                        <Text style={SelectAddressStyle.BackText}>Select Address</Text>
+                        <Text allowFontScaling={false} style={SelectAddressStyle.BackText}>Select Address</Text>
                     
                     </Pressable>
         
@@ -320,7 +320,7 @@ export default function SelectAddress({navigation, route}){
                             android_ripple={{color:colorCode.HomeScreenColor.PriceInformationTitleColor}}
                             onPress = {Add_new_address_handler}>
                         
-                            <Text style={SelectAddressStyle.SelectAddressText}> Add new address</Text>
+                            <Text allowFontScaling={false} style={SelectAddressStyle.SelectAddressText}> Add new address</Text>
                         
                         </Pressable>
 
@@ -334,19 +334,19 @@ export default function SelectAddress({navigation, route}){
                                         
                                         {/* Username information  */}
 
-                                        <Text style={SelectAddressStyle.AddressUsername}>{element.Data1}</Text>
+                                        <Text allowFontScaling={false} style={SelectAddressStyle.AddressUsername}>{element.Data1}</Text>
                                         
                                         {/* Street address information  */}
                                         
-                                        <Text style={SelectAddressStyle.AddressOtherData}>{element.Data2}</Text>
+                                        <Text allowFontScaling={false} style={SelectAddressStyle.AddressOtherData}>{element.Data2}</Text>
                                     
                                         {/* Area information  */}
                                         
-                                        <Text style={SelectAddressStyle.AddressOtherData}>{element.Data3}, {element.Data4}</Text>
+                                        <Text allowFontScaling={false} style={SelectAddressStyle.AddressOtherData}>{element.Data3}, {element.Data4}</Text>
                                         
                                         {/* Pincode information   */}
                                         
-                                        <Text style={SelectAddressStyle.AddressOtherData}>Pincode - {element.Data5}</Text>
+                                        <Text allowFontScaling={false} style={SelectAddressStyle.AddressOtherData}>Pincode - {element.Data5}</Text>
                                         
                                         {/* == Address Layout option ==  */}
 
@@ -359,7 +359,7 @@ export default function SelectAddress({navigation, route}){
                                                 android_ripple={{color:colorCode.HomeScreenColor.PriceLayoutColor}}
                                                 onPress={() => Update_address_Handler(element)}>
 
-                                                <Text style={SelectAddressStyle.AddressOptionLayoutText}>Edit</Text>
+                                                <Text allowFontScaling={false} style={SelectAddressStyle.AddressOptionLayoutText}>Edit</Text>
                                             
                                             </Pressable>
                                         
@@ -369,7 +369,7 @@ export default function SelectAddress({navigation, route}){
                                                 android_ripple={{color:colorCode.HomeScreenColor.PriceLayoutColor}}
                                                 onPress={() => Delete_address_Handler(element.Option)}>
                                             
-                                                <Text style={SelectAddressStyle.AddressOptionLayoutText}>Remove</Text>
+                                                <Text allowFontScaling={false} style={SelectAddressStyle.AddressOptionLayoutText}>Remove</Text>
                                             
                                             </Pressable>
 
@@ -383,7 +383,7 @@ export default function SelectAddress({navigation, route}){
                                                 android_ripple={{color:colorCode.SignupColorCode.ButtonRippleColor}}
                                                 onPress = {() => Select_address_option(element)}>
 
-                                                <Text style={SelectAddressStyle.SelectAddressOptionText}>Select this address</Text>
+                                                <Text allowFontScaling={false} style={SelectAddressStyle.SelectAddressOptionText}>Select this address</Text>
                                             
                                             </Pressable>
 
@@ -395,7 +395,7 @@ export default function SelectAddress({navigation, route}){
                             } )}
                             </>:<>
                             
-                            <Text style={{fontFamily:"Ubuntu", fontSize:19, width:"90%", 
+                            <Text allowFontScaling={false} style={{fontFamily:"Ubuntu", fontSize:19, width:"90%", 
                                 marginLeft:"auto", marginRight:"auto", marginTop:"2%", textAlign:"center"}}>Not available any address</Text>
 
                             </>}

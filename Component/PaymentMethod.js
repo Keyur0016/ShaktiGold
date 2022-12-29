@@ -345,7 +345,7 @@ export default function PaymentOption({navigation, route}){
                                 style={PaymentOptionStyle.BackImage}
                             />
 
-                            <Text style={PaymentOptionStyle.BackText}>Select Payment Option</Text>
+                            <Text allowFontScaling={false} style={PaymentOptionStyle.BackText}>Select Payment Option</Text>
                         
                         </Pressable>
                         
@@ -361,7 +361,7 @@ export default function PaymentOption({navigation, route}){
                             source={require('../assets/Image/CashOnDelivery.png')}
                             style={PaymentOptionStyle.PaymentOptionImage}
                         />
-                        <Text style={PaymentOptionStyle.PaymentOptionText}>Cash on delivery</Text>
+                        <Text allowFontScaling={false} style={PaymentOptionStyle.PaymentOptionText}>Cash on delivery</Text>
 
                     </Pressable>
 
@@ -375,7 +375,7 @@ export default function PaymentOption({navigation, route}){
                             source={require('../assets/Image/OnlinePayment.png')}
                             style={PaymentOptionStyle.PaymentOptionImage}
                         />
-                        <Text style={PaymentOptionStyle.PaymentOptionText}>Make online payment</Text>
+                        <Text allowFontScaling={false} style={PaymentOptionStyle.PaymentOptionText}>Make online payment</Text>
 
                     </Pressable>
                 </>:<>

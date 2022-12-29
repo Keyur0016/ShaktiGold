@@ -403,7 +403,7 @@ export default function UploadStatus({navigation}){
                         android_ripple={{color:colorCode.HomeScreenColor.PriceInformationTitleColor}}
                         onPress={Status_image_picker_handler}>
                      
-                        <Text style={UploadStatusStyle.UploadStatusButtonText}>Select Status</Text>
+                        <Text allowFontScaling={false} style={UploadStatusStyle.UploadStatusButtonText}>Select Status</Text>
                     
                     </Pressable>
 
@@ -411,7 +411,7 @@ export default function UploadStatus({navigation}){
                         android_ripple={{color:colorCode.HomeScreenColor.PriceInformationTitleColor}}
                         onPress={Status_image_upload_handler}>
                     
-                        <Text style={UploadStatusStyle.UploadStatusButtonText}>Upload Status</Text>
+                        <Text allowFontScaling={false} style={UploadStatusStyle.UploadStatusButtonText}>Upload Status</Text>
                     
                     </Pressable>
 

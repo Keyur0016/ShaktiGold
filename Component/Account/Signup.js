@@ -212,13 +212,13 @@ export default function Signup({navigation}) {
                 
                 {/* Signup Title  */}
 
-                <Text style={SignupStyle.SignupTitle}>Signup</Text>
+                <Text allowFontScaling={false} style={SignupStyle.SignupTitle}>Signup</Text>
                  
                 {/* InputWidget Layout  */}
                 
                 <View style={SignupStyle.InputLayout}>
                      
-                    <TextInput style={[SignupStyle.InputStyle, {borderColor: usernameBorder? colorCode.SignupColorCode.InputBorderColor : 'transparent'}]}
+                    <TextInput allowFontScaling={false} style={[SignupStyle.InputStyle, {borderColor: usernameBorder? colorCode.SignupColorCode.InputBorderColor : 'transparent'}]}
                         placeholder="Username"
                         placeholderTextColor = {colorCode.SignupColorCode.InputPlaceholderColor} 
                         keyboardType="default"
@@ -228,7 +228,7 @@ export default function Signup({navigation}) {
                         onFocus = {() => OnFocusHandle(0)}
                     />
 
-                    <TextInput style={[SignupStyle.InputStyle, {borderColor: mobileBorder? colorCode.SignupColorCode.InputBorderColor : 'transparent'}]}
+                    <TextInput allowFontScaling={false} style={[SignupStyle.InputStyle, {borderColor: mobileBorder? colorCode.SignupColorCode.InputBorderColor : 'transparent'}]}
                         placeholder="Mobile number"
                         placeholderTextColor = {colorCode.SignupColorCode.InputPlaceholderColor} 
                         keyboardType="phone-pad"
@@ -238,7 +238,7 @@ export default function Signup({navigation}) {
                         onFocus = {() => OnFocusHandle(1)}
                     />
                     
-                    <TextInput style={[SignupStyle.InputStyle, {borderColor: passwordBorder ? colorCode.SignupColorCode.InputBorderColor : 'transparent'}]}
+                    <TextInput allowFontScaling={false} style={[SignupStyle.InputStyle, {borderColor: passwordBorder ? colorCode.SignupColorCode.InputBorderColor : 'transparent'}]}
                         placeholder="Password"
                         placeholderTextColor = {colorCode.SignupColorCode.InputPlaceholderColor} 
                         keyboardType="default"
@@ -249,7 +249,7 @@ export default function Signup({navigation}) {
                         onFocus= {() => OnFocusHandle(2)}
                     />
                     
-                    <TextInput style={[SignupStyle.InputStyle, {borderColor: re_passwordBorder ? colorCode.SignupColorCode.InputBorderColor : 'transparent'}]}
+                    <TextInput allowFontScaling={false} style={[SignupStyle.InputStyle, {borderColor: re_passwordBorder ? colorCode.SignupColorCode.InputBorderColor : 'transparent'}]}
                         placeholder="Re-password"
                         placeholderTextColor = {colorCode.SignupColorCode.InputPlaceholderColor} 
                         keyboardType="default"
@@ -270,7 +270,7 @@ export default function Signup({navigation}) {
                     <Pressable style={[SignupStyle.SendCode_Layout]}
                         android_ripple={{color:'#ffd100',foreground:false}}
                         onPress={Signup_Handler}>
-                        <Text style={SignupStyle.SendCode_Text}>Verify</Text>
+                        <Text allowFontScaling={false} style={SignupStyle.SendCode_Text}>Verify</Text>
                     </Pressable>
                     }
         
@@ -278,7 +278,7 @@ export default function Signup({navigation}) {
 
                 <Pressable 
                     onPress={AlreadyAccount_handler}>
-                    <Text style={SignupStyle.SigninInformation}>Already have account?</Text>
+                    <Text allowFontScaling={false} style={SignupStyle.SigninInformation}>Already have account?</Text>
                 </Pressable>
                        
             </KeyboardAvoidingView>

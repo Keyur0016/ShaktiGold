@@ -7,7 +7,7 @@
     "icon": "./assets/Logo.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/ShaktiGold.png",
+      "image": "./assets/SplashScreen.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -30,7 +30,8 @@
       "googleServicesFile": "./android/app/google-services.json"
     },
     "notification":{
-      "icon": "./assets/Logo.png"
+      "icon": "./assets/Notification.png",
+      "color": "#000000"
     },
     "extra": {
       "eas": {

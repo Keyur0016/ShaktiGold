@@ -615,7 +615,7 @@ export default function HomeProductList({navigation, route}){
 
                     </Pressable>
 
-                    <Text style={[ProductListStyle.PopularProductTitle, {marginTop:"auto", marginBottom:"auto"}]}>
+                    <Text allowFontScaling={false} style={[ProductListStyle.PopularProductTitle, {marginTop:"auto", marginBottom:"auto"}]}>
                         {Category_name}
                     </Text>
 
@@ -659,7 +659,7 @@ export default function HomeProductList({navigation, route}){
 
                                             {/* Product information  */}
 
-                                            <Text style={ProductListStyle.ProductInformation}>{element.Product_information}</Text>
+                                            <Text allowFontScaling={false} style={ProductListStyle.ProductInformation}>{element.Product_information}</Text>
                                                 
                                             {/* Weight and Size information layout   */}
 
@@ -669,9 +669,9 @@ export default function HomeProductList({navigation, route}){
 
                                                 <View style={ProductListStyle.WeightLayout}>
 
-                                                    <Text style={ProductListStyle.WeightSizeTitle}>Weight |</Text>
+                                                    <Text allowFontScaling={false} style={ProductListStyle.WeightSizeTitle}>Weight |</Text>
 
-                                                    <Text style={ProductListStyle.WeightSizeInformation}>{element.Product_weight}</Text>
+                                                    <Text allowFontScaling={false} style={ProductListStyle.WeightSizeInformation}>{element.Product_weight}</Text>
                                                 
                                                 </View>
                                                 
@@ -679,9 +679,9 @@ export default function HomeProductList({navigation, route}){
 
                                                 <View style={[ProductListStyle.SizeLayout]}>
                                                     
-                                                    <Text style={ProductListStyle.WeightSizeTitle}>Size |</Text>
+                                                    <Text allowFontScaling={false} style={ProductListStyle.WeightSizeTitle}>Size |</Text>
                                                 
-                                                    <Text style={ProductListStyle.WeightSizeInformation}>{element.Product_size}</Text>
+                                                    <Text allowFontScaling={false} style={ProductListStyle.WeightSizeInformation}>{element.Product_size}</Text>
                                                 
                                                 </View>
 
@@ -691,18 +691,18 @@ export default function HomeProductList({navigation, route}){
                                             
                                             <View style={ProductListStyle.PriceInformationLayout}>
                                                 
-                                                <Text style={[ProductListStyle.WeightLayout, 
+                                                <Text allowFontScaling={false} style={[ProductListStyle.WeightLayout, 
                                                     {marginRight: 0, 
                                                     fontFamily: "Mukta",
                                                     fontSize: 18}]}>Price</Text>
                                             
                                                 {/* Retail Price  */}
 
-                                                <Text style={ProductListStyle.RetailPrice}>₹{element.Product_retail_price}</Text>
+                                                <Text allowFontScaling={false} style={ProductListStyle.RetailPrice}>₹{element.Product_retail_price}</Text>
                                                 
                                                 {/* Discount Price  */}
 
-                                                <Text style={ProductListStyle.DiscountPrice}>₹{element.Product_discount_price}</Text>    
+                                                <Text allowFontScaling={false} style={ProductListStyle.DiscountPrice}>₹{element.Product_discount_price}</Text>    
                                             
                                             </View>
 
@@ -782,7 +782,7 @@ export default function HomeProductList({navigation, route}){
                                 )
                             })}
                             </>:<>
-                                <Text style={{fontFamily:"Ubuntu", fontSize:19, marginLeft:"auto", 
+                                <Text allowFontScaling={false} style={{fontFamily:"Ubuntu", fontSize:19, marginLeft:"auto", 
                                 marginRight:"auto", marginTop:"2%"}}>Not available any Product</Text>
                             </>} 
                             

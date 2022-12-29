@@ -302,7 +302,7 @@ export default function CartItem({navigation, route}){
                             style={CartItemStyle.BackImage}
                         />
                     
-                        <Text style={CartItemStyle.BackText}>
+                        <Text allowFontScaling={false} style={CartItemStyle.BackText}>
                             {cart_productData_information.length == 0?"Empty cart":"Your cart"}</Text>
                     
                     </Pressable>
@@ -319,9 +319,9 @@ export default function CartItem({navigation, route}){
 
                         <View style={CartItemStyle.SubTotalLayout}>
 
-                            <Text style={CartItemStyle.SubTotalTitle}>Subtotal:</Text>
+                            <Text allowFontScaling={false} style={CartItemStyle.SubTotalTitle}>Subtotal:</Text>
 
-                            <Text style={CartItemStyle.SubTotalPrice}>₹{cart_subtotal}/-</Text>
+                            <Text allowFontScaling={false} style={CartItemStyle.SubTotalPrice}>₹{cart_subtotal}/-</Text>
                         
                         </View> 
 
@@ -333,7 +333,7 @@ export default function CartItem({navigation, route}){
                             android_ripple={{color: colorCode.HomeScreenColor.PriceInformationTitleColor}}
                             onPress = {() => Proceed_To_checkout_option()}>
 
-                            <Text style={CartItemStyle.ProceedToBuyText}>Proceed to Buy ({cart_productData_information.length} Items)</Text>
+                            <Text allowFontScaling={false} style={CartItemStyle.ProceedToBuyText}>Proceed to Buy ({cart_productData_information.length} Items)</Text>
                         
                         </Pressable>
                         
@@ -366,7 +366,7 @@ export default function CartItem({navigation, route}){
                                                 <View style={CartItemStyle.ProductInfoData}>
 
                                                     {/* Product information  */}
-                                                    <Text style={CartItemStyle.ProductInformation}>{element.Product_information}</Text>
+                                                    <Text allowFontScaling={false} style={CartItemStyle.ProductInformation}>{element.Product_information}</Text>
                                                         
                                                     {/* Weight and Size information layout   */}
 
@@ -376,9 +376,9 @@ export default function CartItem({navigation, route}){
 
                                                         <View style={CartItemStyle.WeightLayout}>
 
-                                                            <Text style={CartItemStyle.WeightSizeTitle}>Weight |</Text>
+                                                            <Text allowFontScaling={false} style={CartItemStyle.WeightSizeTitle}>Weight |</Text>
 
-                                                            <Text style={CartItemStyle.WeightSizeInformation}>{element.Product_weight}</Text>
+                                                            <Text allowFontScaling={false} style={CartItemStyle.WeightSizeInformation}>{element.Product_weight}</Text>
                                                         
                                                         </View>
                                                         
@@ -386,9 +386,9 @@ export default function CartItem({navigation, route}){
 
                                                         <View style={[CartItemStyle.SizeLayout]}>
                                                             
-                                                            <Text style={CartItemStyle.WeightSizeTitle}>Size |</Text>
+                                                            <Text allowFontScaling={false} style={CartItemStyle.WeightSizeTitle}>Size |</Text>
                                                         
-                                                            <Text style={CartItemStyle.WeightSizeInformation}>{element.Product_size}</Text>
+                                                            <Text allowFontScaling={false} style={CartItemStyle.WeightSizeInformation}>{element.Product_size}</Text>
                                                         
                                                         </View>
 
@@ -398,14 +398,14 @@ export default function CartItem({navigation, route}){
                                                     
                                                     <View style={CartItemStyle.PriceInformationLayout}>
                                                         
-                                                        <Text style={[CartItemStyle.WeightLayout, 
+                                                        <Text allowFontScaling={false} style={[CartItemStyle.WeightLayout, 
                                                             {marginRight: 0, 
                                                             fontFamily: "Mukta",
                                                             fontSize: 18}]}>Price</Text>
 
-                                                        <Text style={CartItemStyle.RetailPrice}>₹{element.Product_retail_price}</Text>
+                                                        <Text allowFontScaling={false} style={CartItemStyle.RetailPrice}>₹{element.Product_retail_price}</Text>
                                                         
-                                                        <Text style={CartItemStyle.DiscountPrice}>₹{element.Product_discount_price}</Text>    
+                                                        <Text allowFontScaling={false} style={CartItemStyle.DiscountPrice}>₹{element.Product_discount_price}</Text>    
                                                     
                                                     </View>
 
@@ -414,7 +414,7 @@ export default function CartItem({navigation, route}){
                                                     <Pressable style={CartItemStyle.DeleteOptionLayout}
                                                         android_ripple={{color: '#ff6565'}}
                                                         onPress = {() => Delete_cart_item(element.Product_id, element.Category_id, index)}>
-                                                        <Text style={CartItemStyle.DeleteOptionText}>Delete</Text>
+                                                        <Text allowFontScaling={false} style={CartItemStyle.DeleteOptionText}>Delete</Text>
                                                     </Pressable>
 
                                                 </View>
@@ -436,7 +436,7 @@ export default function CartItem({navigation, route}){
                                 android_ripple={{color:colorCode.HomeScreenColor.PriceInformationTitleColor}}
                                 onPress={Cart_empty_Handler}>
                                 
-                                <Text style={{fontFamily: "Ubuntu", fontSize:18, color: 'white'}}>Back to Home</Text>
+                                <Text allowFontScaling={false} style={{fontFamily: "Ubuntu", fontSize:18, color: 'white'}}>Back to Home</Text>
                             
                             </Pressable>
 

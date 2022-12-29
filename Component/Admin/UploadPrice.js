@@ -279,13 +279,13 @@ export default function UploadPrice({navigation}){
                 </>:<></>}
 
                 {/* Update Price Title   */}
-                <Text style={UpdatePriceStyle.UpdatePriceTitle}>Insert Gold/Sliver Price</Text>
+                <Text allowFontScaling={false} style={UpdatePriceStyle.UpdatePriceTitle}>Insert Gold/Sliver Price</Text>
      
                 <View style={UpdatePriceStyle.InputLayout}>
                     
                     {/* 24K gold price input  */}
                     
-                    <TextInput style={[UpdatePriceStyle.InputStyle, {borderColor: price5Border ? colorCode.SignupColorCode.InputBorderColor : 'transparent'}]}
+                    <TextInput allowFontScaling={false} style={[UpdatePriceStyle.InputStyle, {borderColor: price5Border ? colorCode.SignupColorCode.InputBorderColor : 'transparent'}]}
                         placeholder="24K gold price"
                         placeholderTextColor = {colorCode.SignupColorCode.InputPlaceholderColor} 
                         keyboardType="number-pad"
@@ -297,7 +297,7 @@ export default function UploadPrice({navigation}){
 
                     {/* 22K gold price input  */}
 
-                    <TextInput style={[UpdatePriceStyle.InputStyle, {borderColor: price1Border ? colorCode.SignupColorCode.InputBorderColor : 'transparent'}]}
+                    <TextInput allowFontScaling={false} style={[UpdatePriceStyle.InputStyle, {borderColor: price1Border ? colorCode.SignupColorCode.InputBorderColor : 'transparent'}]}
                         placeholder="22K gold price"
                         placeholderTextColor = {colorCode.SignupColorCode.InputPlaceholderColor} 
                         keyboardType="number-pad"
@@ -309,7 +309,7 @@ export default function UploadPrice({navigation}){
 
                     {/* 18K gold price input  */}
 
-                    <TextInput style={[UpdatePriceStyle.InputStyle, {borderColor: price2Border ? colorCode.SignupColorCode.InputBorderColor : 'transparent'}]}
+                    <TextInput allowFontScaling={false} style={[UpdatePriceStyle.InputStyle, {borderColor: price2Border ? colorCode.SignupColorCode.InputBorderColor : 'transparent'}]}
                         placeholder="18K gold price"
                         placeholderTextColor = {colorCode.SignupColorCode.InputPlaceholderColor} 
                         keyboardType="number-pad"
@@ -321,7 +321,7 @@ export default function UploadPrice({navigation}){
                 
                     {/* 916 gold price input  */}
 
-                    <TextInput style={[UpdatePriceStyle.InputStyle, {borderColor: price3Border ? colorCode.SignupColorCode.InputBorderColor : 'transparent'}]}
+                    <TextInput allowFontScaling={false} style={[UpdatePriceStyle.InputStyle, {borderColor: price3Border ? colorCode.SignupColorCode.InputBorderColor : 'transparent'}]}
                         placeholder="916 gold price"
                         placeholderTextColor = {colorCode.SignupColorCode.InputPlaceholderColor} 
                         keyboardType="number-pad"
@@ -333,7 +333,7 @@ export default function UploadPrice({navigation}){
                     
                     {/* Silver price input  */}
 
-                    <TextInput style={[UpdatePriceStyle.InputStyle, {borderColor: price4Border ? colorCode.SignupColorCode.InputBorderColor : 'transparent'}]}
+                    <TextInput allowFontScaling={false} style={[UpdatePriceStyle.InputStyle, {borderColor: price4Border ? colorCode.SignupColorCode.InputBorderColor : 'transparent'}]}
                         placeholder="Silver price"
                         placeholderTextColor = {colorCode.SignupColorCode.InputPlaceholderColor} 
                         keyboardType="number-pad"
@@ -353,7 +353,7 @@ export default function UploadPrice({navigation}){
                     <Pressable style={[UpdatePriceStyle.SendCode_Layout]}
                         android_ripple={{color:'#ffd100',foreground:false}}
                         onPress={PriceInsert_Handler}>
-                        <Text style={UpdatePriceStyle.SendCode_Text}>Upload price</Text>
+                        <Text allowFontScaling={false} style={UpdatePriceStyle.SendCode_Text}>Upload price</Text>
                     </Pressable>
                     }
 

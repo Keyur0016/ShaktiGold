@@ -178,7 +178,7 @@ export default function Update_mobile({navigation, route}){
 
                     {/* Verification Title */}
 
-                    <Text style={ForgetVerificationStyle.ForgetVerificationTitle}>Update Mobilenumber</Text>
+                    <Text allowFontScaling={false} style={ForgetVerificationStyle.ForgetVerificationTitle}>Update Mobilenumber</Text>
                 
                 </View>                
             
@@ -209,7 +209,7 @@ export default function Update_mobile({navigation, route}){
                     <Pressable style={[ForgetVerificationStyle.SendCode_Layout]}
                         android_ripple={{color:colorCode.SignupColorCode.ButtonRippleColor,foreground:false}}
                         onPress={Verification_Handler}>
-                        <Text style={ForgetVerificationStyle.SendCode_Text}>Update number</Text>
+                        <Text allowFontScaling={false} style={ForgetVerificationStyle.SendCode_Text}>Update number</Text>
                     </Pressable>
                     
                     }

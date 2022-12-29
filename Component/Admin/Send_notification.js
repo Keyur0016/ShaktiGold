@@ -198,13 +198,13 @@ export default function Send_notification({navigation}){
                     </View>
                 </>:<></>}
     
-                <Text style={NotificationStyle.AdminTitle}>Send Notification</Text>
+                <Text allowFontScaling={false} style={NotificationStyle.AdminTitle}>Send Notification</Text>
 
                 {/* Input Layout  */}
 
                 <View style={NotificationStyle.InputLayout}>
                     
-                    <TextInput style={[NotificationStyle.InputStyle, {borderColor: notificationBorder ? colorCode.SignupColorCode.InputBorderColor : 'transparent'}]}
+                    <TextInput allowFontScaling={false} style={[NotificationStyle.InputStyle, {borderColor: notificationBorder ? colorCode.SignupColorCode.InputBorderColor : 'transparent'}]}
                         placeholder="Enter Notification value"
                         placeholderTextColor = {colorCode.SignupColorCode.InputPlaceholderColor} 
                         keyboardType="default"
@@ -224,7 +224,7 @@ export default function Send_notification({navigation}){
                     <Pressable style={[NotificationStyle.SendCode_Layout]}
                         android_ripple={{color:colorCode.SignupColorCode.ButtonRippleColor,foreground:false}}
                         onPress={Notification_send_handler}>
-                        <Text style={NotificationStyle.SendCode_Text}>Push notification</Text>
+                        <Text allowFontScaling={false} style={NotificationStyle.SendCode_Text}>Push notification</Text>
                     </Pressable>
                     }
  

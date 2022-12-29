@@ -239,38 +239,38 @@ export default function DeleteUpdateProduct({navigation, route}){
                                             
                                             {/* Product Information  */}
     
-                                            <Text style={[Product_list_Style.ProductInfo, {marginTop:0}]} >
+                                            <Text allowFontScaling={false} style={[Product_list_Style.ProductInfo, {marginTop:0}]} >
                                                 {element.Product_information}
                                             </Text>
 
                                             {/* Product Tag number  */}
                                             
-                                            <Text style={[Product_list_Style.ProductInfo, {marginTop:0}]}>
+                                            <Text allowFontScaling={false} style={[Product_list_Style.ProductInfo, {marginTop:0}]}>
                                                 Tag number = {element.Product_tag_number}
                                             </Text>
 
                                             {/* Product Weight  */}
 
-                                            <Text style={[Product_list_Style.ProductInfo, {fontFamily:"Sans"}]}>
+                                            <Text allowFontScaling={false} style={[Product_list_Style.ProductInfo, {fontFamily:"Sans"}]}>
                                                 Weight = {element.Product_weight}
                                             </Text>
                                             
                                             {/* Product size  */}
 
-                                            <Text style={[Product_list_Style.ProductInfo, {fontFamily:"Sans"}]}>
+                                            <Text allowFontScaling={false} style={[Product_list_Style.ProductInfo, {fontFamily:"Sans"}]}>
                                                 Size = {element.Product_size}
                                             </Text>
                                             
                                             {/* Product discount price  */}
 
-                                            <Text style={[Product_list_Style.ProductInfo, {fontFamily:"Sans"}]} 
-                                                allowFontScaling={false} numberOfLines={1}>
+                                            <Text allowFontScaling={false} style={[Product_list_Style.ProductInfo, {fontFamily:"Sans"}]} 
+                                                 numberOfLines={1}>
                                                 Discount price = {element.Product_discount_price}
                                             </Text>
 
                                             {/* Product retail price  */}
                                             
-                                            <Text style={[Product_list_Style.ProductInfo, {fontFamily:"Sans"}]}
+                                            <Text allowFontScaling={false} style={[Product_list_Style.ProductInfo, {fontFamily:"Sans"}]}
                                                 numberOfLines={1}>
                                                 Retail price = {element.Product_retail_price}
                                             </Text>
@@ -287,7 +287,7 @@ export default function DeleteUpdateProduct({navigation, route}){
                                             android_ripple={{color:'#ff2f37'}}
                                             onPress={() => DeleteProduct(element.Product_id, index)}>
                                         
-                                            <Text style={Product_list_Style.DeleteButtonText}>
+                                            <Text allowFontScaling={false} style={Product_list_Style.DeleteButtonText}>
                                                 Delete
                                             </Text>
                                         
@@ -299,7 +299,7 @@ export default function DeleteUpdateProduct({navigation, route}){
                                             android_ripple={{color:colorCode.SignupColorCode.OtherButtonRipplerColor}}
                                             onPress={() => UpdateProduct(element)}>
                                             
-                                            <Text style={[Product_list_Style.DeleteButtonText, {color:'white'}]}>
+                                            <Text allowFontScaling={false} style={[Product_list_Style.DeleteButtonText, {color:'white'}]}>
                                                 Update
                                             </Text>
                                         

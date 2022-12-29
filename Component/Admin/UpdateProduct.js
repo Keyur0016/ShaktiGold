@@ -386,7 +386,7 @@ export default function UpdateProduct({navigation, route}){
                     </View>
                 </>:<></>}
 
-                <Text style={UpdateProductStyle.UploadProductTitle}>Update Product in {Category_name}</Text>
+                <Text allowFontScaling={false} style={UpdateProductStyle.UploadProductTitle}>Update Product in {Category_name}</Text>
                 
                 <ScrollView>
                     
@@ -404,7 +404,7 @@ export default function UpdateProduct({navigation, route}){
                         <Pressable style={UpdateProductStyle.UploadProductImageSelect}
                             android_ripple={{color:colorCode.SignupColorCode.OtherButtonRipplerColor}}
                             onPress={() => Select_ProductImage_Selector(0)}>
-                            <Text style={UpdateProductStyle.UploadImageSelectText}>Select Product View1</Text>
+                            <Text allowFontScaling={false} style={UpdateProductStyle.UploadImageSelectText}>Select Product View1</Text>
                         </Pressable>
 
                     </View>
@@ -423,7 +423,7 @@ export default function UpdateProduct({navigation, route}){
                         <Pressable style={UpdateProductStyle.UploadProductImageSelect}
                             android_ripple={{color:colorCode.SignupColorCode.OtherButtonRipplerColor}}
                             onPress={() => Select_ProductImage_Selector(1)}>
-                            <Text style={UpdateProductStyle.UploadImageSelectText}>Select Product View2</Text>
+                            <Text allowFontScaling={false} style={UpdateProductStyle.UploadImageSelectText}>Select Product View2</Text>
                         </Pressable>
 
                     </View>
@@ -442,16 +442,16 @@ export default function UpdateProduct({navigation, route}){
                         <Pressable style={UpdateProductStyle.UploadProductImageSelect}
                             android_ripple={{color:colorCode.SignupColorCode.OtherButtonRipplerColor}}
                             onPress={() => Select_ProductImage_Selector(2)}>
-                            <Text style={UpdateProductStyle.UploadImageSelectText}>Select Product View3</Text>
+                            <Text allowFontScaling={false} style={UpdateProductStyle.UploadImageSelectText}>Select Product View3</Text>
                         </Pressable>
 
                     </View>
 
                     {/* Product Information input  */}
 
-                    <Text style={UpdateProductStyle.ProductOtherSubtitle}>Product information</Text>
+                    <Text allowFontScaling={false} style={UpdateProductStyle.ProductOtherSubtitle}>Product information</Text>
 
-                    <TextInput style={[UpdateProductStyle.ProductInputStyle, {borderColor: ProductInformation_border ? colorCode.SignupColorCode.InputBorderColor : 'transparent'}]}
+                    <TextInput allowFontScaling={false} style={[UpdateProductStyle.ProductInputStyle, {borderColor: ProductInformation_border ? colorCode.SignupColorCode.InputBorderColor : 'transparent'}]}
                         placeholder="Product information"
                         placeholderTextColor = {colorCode.SignupColorCode.InputPlaceholderColor} 
                         keyboardType="default"
@@ -463,9 +463,9 @@ export default function UpdateProduct({navigation, route}){
 
                     {/* Product Weight input  */}
 
-                    <Text style={UpdateProductStyle.ProductOtherSubtitle}>Product Weight in gm</Text>
+                    <Text allowFontScaling={false} style={UpdateProductStyle.ProductOtherSubtitle}>Product Weight in gm</Text>
 
-                    <TextInput style={[UpdateProductStyle.ProductInputStyle, {borderColor: ProductWeight_border ? colorCode.SignupColorCode.InputBorderColor : 'transparent'}]}
+                    <TextInput allowFontScaling={false} style={[UpdateProductStyle.ProductInputStyle, {borderColor: ProductWeight_border ? colorCode.SignupColorCode.InputBorderColor : 'transparent'}]}
                         placeholder="Product Weight"
                         placeholderTextColor = {colorCode.SignupColorCode.InputPlaceholderColor} 
                         keyboardType="number-pad"
@@ -477,9 +477,9 @@ export default function UpdateProduct({navigation, route}){
                      
                     {/* Product size input  */}
 
-                    <Text style={UpdateProductStyle.ProductOtherSubtitle}>Product size</Text>
+                    <Text allowFontScaling={false} style={UpdateProductStyle.ProductOtherSubtitle}>Product size</Text>
 
-                    <TextInput style={[UpdateProductStyle.ProductInputStyle, {borderColor: ProductSize_border ? colorCode.SignupColorCode.InputBorderColor : 'transparent'}]}
+                    <TextInput allowFontScaling={false} style={[UpdateProductStyle.ProductInputStyle, {borderColor: ProductSize_border ? colorCode.SignupColorCode.InputBorderColor : 'transparent'}]}
                         placeholder="Product size"
                         placeholderTextColor = {colorCode.SignupColorCode.InputPlaceholderColor} 
                         keyboardType="number-pad"
@@ -491,9 +491,9 @@ export default function UpdateProduct({navigation, route}){
 
                     {/* Product tag name information  */}
                   
-                    <Text style={UpdateProductStyle.ProductOtherSubtitle}>Tag number</Text>
+                    <Text allowFontScaling={false} style={UpdateProductStyle.ProductOtherSubtitle}>Tag number</Text>
                     
-                    <TextInput style={[UpdateProductStyle.ProductInputStyle, {borderColor: ProductTag_border ? colorCode.SignupColorCode.InputBorderColor : 'transparent'}]}
+                    <TextInput allowFontScaling={false} style={[UpdateProductStyle.ProductInputStyle, {borderColor: ProductTag_border ? colorCode.SignupColorCode.InputBorderColor : 'transparent'}]}
                         placeholder="Tag name"
                         placeholderTextColor = {colorCode.SignupColorCode.InputPlaceholderColor} 
                         keyboardType="default"
@@ -506,9 +506,9 @@ export default function UpdateProduct({navigation, route}){
 
                     {/* Product retail price information  */}
 
-                    <Text style={UpdateProductStyle.ProductOtherSubtitle}>Product retail price</Text>
+                    <Text allowFontScaling={false} style={UpdateProductStyle.ProductOtherSubtitle}>Product retail price</Text>
  
-                    <TextInput style={[UpdateProductStyle.ProductInputStyle, {borderColor: ProductRetailPrice_border ? colorCode.SignupColorCode.InputBorderColor : 'transparent'}]}
+                    <TextInput allowFontScaling={false} style={[UpdateProductStyle.ProductInputStyle, {borderColor: ProductRetailPrice_border ? colorCode.SignupColorCode.InputBorderColor : 'transparent'}]}
                         placeholder="Product retail price"
                         placeholderTextColor = {colorCode.SignupColorCode.InputPlaceholderColor} 
                         keyboardType="number-pad"
@@ -519,9 +519,9 @@ export default function UpdateProduct({navigation, route}){
                     />
                     {/* Product discount information  */}
 
-                    <Text style={UpdateProductStyle.ProductOtherSubtitle}>Product discount price</Text>
+                    <Text allowFontScaling={false} style={UpdateProductStyle.ProductOtherSubtitle}>Product discount price</Text>
  
-                    <TextInput style={[UpdateProductStyle.ProductInputStyle, {borderColor: ProductDiscountPrice_border ? colorCode.SignupColorCode.InputBorderColor : 'transparent'}]}
+                    <TextInput allowFontScaling={false} style={[UpdateProductStyle.ProductInputStyle, {borderColor: ProductDiscountPrice_border ? colorCode.SignupColorCode.InputBorderColor : 'transparent'}]}
                         placeholder="Product discount price"
                         placeholderTextColor = {colorCode.SignupColorCode.InputPlaceholderColor} 
                         keyboardType="number-pad"
@@ -542,7 +542,7 @@ export default function UpdateProduct({navigation, route}){
                     <Pressable style={[UpdateProductStyle.SendCode_Layout]}
                         android_ripple={{color:'#ffd100',foreground:false}}
                         onPress={Update_product_Handler}>
-                        <Text style={UpdateProductStyle.SendCode_Text}>Upload product</Text>
+                        <Text allowFontScaling={false} style={UpdateProductStyle.SendCode_Text}>Upload product</Text>
                     </Pressable>
                     }
 

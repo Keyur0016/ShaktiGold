@@ -9,46 +9,35 @@ import {WebView} from 'react-native-webview' ;
 import * as Notifications from "expo-notifications";
 import * as Device from "expo-device";
 
-
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: false,
-    shouldSetBadge: false,
-  }),
-});
-
-// ==== Create Notification token ==== //   
-
 async function registerForPushNotificationsAsync() {
     let token;
 
     if (Device.isDevice) {
-        const { status: existingStatus } = await Notifications.getPermissionsAsync();
+        const {
+            status: existingStatus,
+        } = await Notifications.getPermissionsAsync();
         let finalStatus = existingStatus;
 
-        if (existingStatus !== 'granted') {
+        if (existingStatus !== "granted") {
             const { status } = await Notifications.requestPermissionsAsync();
             finalStatus = status;
         }
 
-        if (finalStatus !== 'granted') {
-            alert('Failed to get push token for push notification!');
+        if (finalStatus !== "granted") {
+            alert("Failed to get push token for push notification!");
             return;
-            }
-
-            token = (await Notifications.getDevicePushTokenAsync()).data;
-        } 
-        else {
         }
 
-    if (Platform.OS === 'android') {
+        token = (await Notifications.getDevicePushTokenAsync()).data;
+    } else {
+    }
 
-        Notifications.setNotificationChannelAsync('default', {
-            name: 'default',
+    if (Platform.OS === "android") {
+        Notifications.setNotificationChannelAsync("default", {
+            name: "default",
             importance: Notifications.AndroidImportance.MAX,
             vibrationPattern: [0, 250, 250, 250],
-            lightColor: '#FF231F7C',
+            lightColor: "#FF231F7C",
         });
     }
 
@@ -62,12 +51,10 @@ export default function Signin({navigation}) {
     const [loadFontValue, setLoadFontValue] = useState(false);
     const [expoPushToken, setExpoPushToken] = useState("");
 
+
     useEffect(() => {
 
-        registerForPushNotificationsAsync().then((token) =>
-            setExpoPushToken(token)
-        );
-
+        registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
 
         const loadFont = async () => {
             await Font.loadAsync({
@@ -108,33 +95,29 @@ export default function Signin({navigation}) {
         }
     }
 
-    // **** Start update notification id Request Handler **** //
-    
-    const [notification_layout, set_notification_layout] = useState(true); 
-    const [notification_web_url, set_notification_web_url] = useState(''); 
-    const [notification_web_value, set_notification_web_value] = useState(0) ; 
+    // **** Start notification id update Request **** // 
+
+    const [notification_layout, set_notification_layout] = useState(true);
+    const [notification_web_url, set_notification_web_url] = useState("");
+    const [notification_web_value, set_notification_web_value] = useState(0);
 
     const Notification_message_handling = async (event) => {
-        let Temp_data = event.nativeEvent.data; 
+        let Temp_data = event.nativeEvent.data;
         set_notification_layout(true);
-        setActivityIndicator(false); 
-        
-        try{
-            
-            Temp_data = JSON.parse(Temp_data); 
+        setActivityIndicator(false);
 
-            if (Temp_data.Status == "Update"){
+        try {
+            Temp_data = JSON.parse(Temp_data);
 
-                navigation.navigate("Home") ; 
-
-                
+            if (Temp_data.Status == "Update") {
+                navigation.navigate("Home");
             }
-        }catch{
-            ToastAndroid.show("Network request failed", ToastAndroid.BOTTOM, ToastAndroid.SHORT); 
+        } catch {
+            ToastAndroid.show("Network request failed", ToastAndroid.BOTTOM, ToastAndroid.SHORT );
         }
-    }
+    };
 
-    // **** Stop update notification id Request Handler **** //
+    // **** Stop notification id update Request ***** // 
 
     // **** Start Signin Request Handler **** // 
 
@@ -148,7 +131,6 @@ export default function Signin({navigation}) {
 
         let Temp_data = event.nativeEvent.data ; 
         set_webview_layout(true) ; 
-        setActivityIndicator(false); 
 
         try{
 
@@ -157,7 +139,7 @@ export default function Signin({navigation}) {
             let Signin_response_status = Temp_data.Status ; 
 
             if (Signin_response_status == "Mobile number not register"){
-                          
+
                 ToastAndroid.show(Signin_response_status, ToastAndroid.BOTTOM, ToastAndroid.LONG); 
             }
             else if (Signin_response_status == "Invalid Password"){
@@ -165,19 +147,6 @@ export default function Signin({navigation}) {
                 ToastAndroid.show(Signin_response_status, ToastAndroid.BOTTOM, ToastAndroid.LONG); 
             }
             else if (Signin_response_status == "Signin"){
-
-                setActivityIndicator(true) ; 
-
-                // Store attributes in LocalStorage 
-
-                // 1. Username
-                await AsyncStorage.setItem("Username", Temp_data.Username); 
-                
-                // 2. Mobile number 
-                await AsyncStorage.setItem("Mobilenumber", mobilenumber); 
-                
-                // 3. Table name 
-                await AsyncStorage.setItem("Table", Temp_data.Tablename); 
 
                 let Signin_request_data = {
                     Check_status: "Update_notification_id",
@@ -192,14 +161,25 @@ export default function Signin({navigation}) {
                 let web_url = URL.RequestAPI + "?data=" + JSON.stringify(Signin_request_data);
                 set_notification_web_url(web_url);
 
+                // Store attributes in LocalStorage 
+
+                // 1. Username
+                await AsyncStorage.setItem("Username", Temp_data.Username); 
+                
+                // 2. Mobile number 
+                await AsyncStorage.setItem("Mobilenumber", mobilenumber); 
+                
+                // 3. Table name 
+                await AsyncStorage.setItem("Table", Temp_data.Tablename);  
+
             }
 
         }catch{
 
-            setActivityIndicator(false) ; 
             ToastAndroid.show("Network request failed", ToastAndroid.BOTTOM, ToastAndroid.SHORT) ; 
         }
 
+        setActivityIndicator(false) ; 
 
     }
 
@@ -286,7 +266,7 @@ export default function Signin({navigation}) {
                             ></WebView>
                     </View>
                 </>:<></>}
-                
+
                 {!notification_layout?<>
                     <View
                         style={{
@@ -304,7 +284,7 @@ export default function Signin({navigation}) {
               
                 {/* Signin Title  */}
 
-                <Text style={SigninStyle.SigninTitle}>Signin</Text>
+                <Text allowFontScaling={false} style={SigninStyle.SigninTitle}>Signin</Text>
 
                 {/* Input Widget  */}
                 
@@ -312,7 +292,7 @@ export default function Signin({navigation}) {
                     
                     {/* Mobilenumber input  */}
 
-                    <TextInput style={[SigninStyle.InputStyle, {borderColor: emailBorder? colorCode.SignupColorCode.InputBorderColor : 'transparent'}]}
+                    <TextInput allowFontScaling={false} style={[SigninStyle.InputStyle, {borderColor: emailBorder? colorCode.SignupColorCode.InputBorderColor : 'transparent'}]}
                         placeholder="Mobilenumber"
                         placeholderTextColor = {colorCode.SignupColorCode.InputPlaceholderColor} 
                         keyboardType="phone-pad"
@@ -324,7 +304,7 @@ export default function Signin({navigation}) {
 
                     {/* Password input  */}
 
-                    <TextInput style={[SigninStyle.InputStyle, {borderColor: passwordBorder ? colorCode.SignupColorCode.InputBorderColor : 'transparent'}]}
+                    <TextInput allowFontScaling={false} style={[SigninStyle.InputStyle, {borderColor: passwordBorder ? colorCode.SignupColorCode.InputBorderColor : 'transparent'}]}
                         placeholder="Password"
                         placeholderTextColor = {colorCode.SignupColorCode.InputPlaceholderColor} 
                         keyboardType="default"
@@ -345,7 +325,7 @@ export default function Signin({navigation}) {
                     <Pressable style={[SigninStyle.SendCode_Layout]}
                         android_ripple={{color:colorCode.SignupColorCode.ButtonRippleColor,foreground:false}}
                         onPress={Signin_Handler}>
-                        <Text style={SigninStyle.SendCode_Text}>Signin</Text>
+                        <Text allowFontScaling={false} style={SigninStyle.SendCode_Text}>Signin</Text>
                     </Pressable>
                     }
 
@@ -354,7 +334,7 @@ export default function Signin({navigation}) {
                 <Pressable
                     onPress={Signup_navigator}>
 
-                    <Text style={SigninStyle.AlreadyAccountInformation}>Create new account ? Signup</Text>
+                    <Text allowFontScaling={false} style={SigninStyle.AlreadyAccountInformation}>Create new account ? Signup</Text>
 
                 </Pressable>
 
@@ -362,7 +342,7 @@ export default function Signin({navigation}) {
 
                     onPress={Forget_navigator}>
                     
-                    <Text style={SigninStyle.ForgetInformation}>Forget Password ?</Text>
+                    <Text allowFontScaling={false} style={SigninStyle.ForgetInformation}>Forget Password ?</Text>
 
                 </Pressable>
 
@@ -381,7 +361,7 @@ const SigninStyle = StyleSheet.create({
     
     SigninTitle: {
         fontFamily: 'Mukta',
-        fontSize: "1.3rem",
+        fontSize: 24,
         color: 'black',
         marginLeft:'4%',
         marginTop:'5%'

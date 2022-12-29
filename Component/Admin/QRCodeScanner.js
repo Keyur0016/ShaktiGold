@@ -169,7 +169,7 @@ export default function QrCodeScanner({navigation}){
                     android_ripple={{color:colorCode.HomeScreenColor.PriceInformationTitleColor}}
                     onPress={() => navigation.goBack()}>
 
-                    <Text style={{fontFamily:"Ubuntu", fontSize: 18, color:"white"}}>Close scanner</Text>
+                    <Text allowFontScaling={false} style={{fontFamily:"Ubuntu", fontSize: 18, color:"white"}}>Close scanner</Text>
                 
                 </Pressable>
 
@@ -194,15 +194,15 @@ export default function QrCodeScanner({navigation}){
                             onPress = {Again_qr_code_opener}
                             >
 
-                            <Text style={{fontFamily:"Ubuntu", fontSize: 18, color:"white"}}>Open Scanner again</Text>
+                            <Text allowFontScaling={false} style={{fontFamily:"Ubuntu", fontSize: 18, color:"white"}}>Open Scanner again</Text>
                     
                         </Pressable>
 
-                        <Text style={{fontFamily: "Ubuntu", fontSize:19, 
+                        <Text allowFontScaling={false} style={{fontFamily: "Ubuntu", fontSize:19, 
                             marginLeft: "auto", marginRight: "auto",
                             marginTop: 80 , marginBottom: 12}}>Order id  = {Order_id}</Text>
 
-                        <Text style={{fontFamily: "Ubuntu", fontSize:19, 
+                        <Text allowFontScaling={false} style={{fontFamily: "Ubuntu", fontSize:19, 
                             marginLeft: "auto", marginRight: "auto",
                             marginTop: 12 , marginBottom: 12}}>Mobilenumber = {Mobile_number}</Text>
 
@@ -212,7 +212,7 @@ export default function QrCodeScanner({navigation}){
                             android_ripple={{color:colorCode.HomeScreenColor.PriceInformationTitleColor}}
                             onPress={Complete_Order_Handler}>
 
-                            <Text style={{fontFamily:"Ubuntu", fontSize: 18, color:"white"}}>Complete Order</Text>
+                            <Text allowFontScaling={false} style={{fontFamily:"Ubuntu", fontSize: 18, color:"white"}}>Complete Order</Text>
                     
                         </Pressable>
                         

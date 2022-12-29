@@ -243,13 +243,13 @@ export default function Verification({navigation, route}){
 
                     {/* Verification Title */}
 
-                    <Text style={VerificationStyle.VerificationTitle}>Verification</Text>
+                    <Text allowFontScaling={false} style={VerificationStyle.VerificationTitle}>Verification</Text>
                 
                 </View>
 
                 {/* Mobile Information  */}
 
-                <Text style={VerificationStyle.MobileInformation}>Mobilenumber: {Mobilenumber}</Text>
+                <Text allowFontScaling={false} style={VerificationStyle.MobileInformation}>Mobilenumber: {Mobilenumber}</Text>
             
                 {/* Input Layout  */}
 
@@ -275,7 +275,7 @@ export default function Verification({navigation, route}){
                     <Pressable style={[VerificationStyle.SendCode_Layout]}
                         android_ripple={{color:colorCode.SignupColorCode.ButtonRippleColor,foreground:false}}
                         onPress={Verification_Handler}>
-                        <Text style={VerificationStyle.SendCode_Text}>Signup</Text>
+                        <Text allowFontScaling={false} style={VerificationStyle.SendCode_Text}>Signup</Text>
                     </Pressable>
                     }
  

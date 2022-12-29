@@ -258,7 +258,7 @@ export default function AdminOption({navigation}){
                                         style={AdminOptionStyle.AdminOptionImage}
                                     />
     
-                                    <Text style={AdminOptionStyle.AdminOptionText}>{element.Title}</Text>
+                                    <Text allowFontScaling={false} style={AdminOptionStyle.AdminOptionText}>{element.Title}</Text>
                                 
                                 </View>
     

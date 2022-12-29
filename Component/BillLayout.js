@@ -228,14 +228,14 @@ export default function BillLayout({navigation, route}){
                 
                     <Pressable style={[BillLayoutStyle.BackImageContainer, 
                         {paddingLeft: 0 , paddingTop: 0 ,paddingBottom: 0  }]}
-                        >
+                        onPress={() => navigation.goBack()}>
                     
                         <Image
                             source={require('../assets/arrow.png')}
                             style={BillLayoutStyle.BackImage}
                         />
                     
-                        <Text style={BillLayoutStyle.BackText}>Your Order</Text>
+                        <Text allowFontScaling={false} style={BillLayoutStyle.BackText}>Your Order</Text>
                     
                     </Pressable>
             
@@ -250,15 +250,15 @@ export default function BillLayout({navigation, route}){
                         {/* Username information  */}
 
                         <View style={[BillLayoutStyle.BillDataLayout, {borderBottomColor: "#dedede", borderBottomWidth : 1}]}>
-                            <Text style={BillLayoutStyle.UsernameTitle}>Username : </Text>
-                            <Text style={BillLayoutStyle.UsernameData}>{Username}</Text>
+                            <Text allowFontScaling={false} style={BillLayoutStyle.UsernameTitle}>Username : </Text>
+                            <Text allowFontScaling={false} style={BillLayoutStyle.UsernameData}>{Username}</Text>
                         </View>
                         
                         {/* Price information */}
 
                         <View style={[BillLayoutStyle.BillDataLayout]}>
-                            <Text style={[BillLayoutStyle.UsernameTitle, {color: "#cd3838"}]}>Subtotal: </Text>
-                            <Text style={[BillLayoutStyle.UsernameData, 
+                            <Text allowFontScaling={false} style={[BillLayoutStyle.UsernameTitle, {color: "#cd3838"}]}>Subtotal: </Text>
+                            <Text allowFontScaling={false} style={[BillLayoutStyle.UsernameData, 
                                 {marginLeft: "auto", marginTop: "auto", marginBottom:"auto", fontSize: 20}]}>₹{cart_total}/-</Text>
                         </View>
                     
@@ -288,7 +288,7 @@ export default function BillLayout({navigation, route}){
                                     <View style={BillLayoutStyle.ProductInfoData}>
 
                                         {/* Product information  */}
-                                        <Text style={BillLayoutStyle.ProductInformation}>{element.Product_information}</Text>
+                                        <Text allowFontScaling={false} style={BillLayoutStyle.ProductInformation}>{element.Product_information}</Text>
                                             
                                         {/* Weight and Size information layout   */}
 
@@ -298,9 +298,9 @@ export default function BillLayout({navigation, route}){
 
                                             <View style={BillLayoutStyle.WeightLayout}>
 
-                                                <Text style={BillLayoutStyle.WeightSizeTitle}>Weight |</Text>
+                                                <Text allowFontScaling={false} style={BillLayoutStyle.WeightSizeTitle}>Weight |</Text>
 
-                                                <Text style={BillLayoutStyle.WeightSizeInformation}>{element.Product_weight}</Text>
+                                                <Text allowFontScaling={false} style={BillLayoutStyle.WeightSizeInformation}>{element.Product_weight}</Text>
                                             
                                             </View>
                                             
@@ -308,9 +308,9 @@ export default function BillLayout({navigation, route}){
 
                                             <View style={[BillLayoutStyle.SizeLayout]}>
                                                 
-                                                <Text style={BillLayoutStyle.WeightSizeTitle}>Size |</Text>
+                                                <Text allowFontScaling={false} style={BillLayoutStyle.WeightSizeTitle}>Size |</Text>
                                             
-                                                <Text style={BillLayoutStyle.WeightSizeInformation}>{element.Product_size}</Text>
+                                                <Text allowFontScaling={false} style={BillLayoutStyle.WeightSizeInformation}>{element.Product_size}</Text>
                                             
                                             </View>
 
@@ -320,14 +320,14 @@ export default function BillLayout({navigation, route}){
                                         
                                         <View style={BillLayoutStyle.PriceInformationLayout}>
                                             
-                                            <Text style={[BillLayoutStyle.WeightLayout, 
+                                            <Text allowFontScaling={false} style={[BillLayoutStyle.WeightLayout, 
                                                 {marginRight: 0, 
                                                 fontFamily: "Mukta",
                                                 fontSize: 18}]}>Price</Text>
 
-                                            <Text style={BillLayoutStyle.RetailPrice}>₹{element.Product_retail_price}/-</Text>
+                                            <Text allowFontScaling={false} style={BillLayoutStyle.RetailPrice}>₹{element.Product_retail_price}/-</Text>
                                             
-                                            <Text style={BillLayoutStyle.DiscountPrice}>₹{element.Product_discount_price}/-</Text>    
+                                            <Text allowFontScaling={false} style={BillLayoutStyle.DiscountPrice}>₹{element.Product_discount_price}/-</Text>    
                                         
                                         </View>
 
@@ -345,8 +345,8 @@ export default function BillLayout({navigation, route}){
                     <View style={[BillLayoutStyle.PriceLayout, 
                         {paddingTop: 12, marginTop: 6, paddingBottom: 12, paddingLeft: 12, paddingRight: 12, marginBottom: 8}]}>
 
-                        <Text style={[BillLayoutStyle.UsernameTitle]}>Mobile number</Text>
-                        <Text style={[BillLayoutStyle.PaymentMethodInformation, {marginTop: 10}]}>{mobile_number}</Text>
+                        <Text allowFontScaling={false} style={[BillLayoutStyle.UsernameTitle]}>Mobile number</Text>
+                        <Text allowFontScaling={false} style={[BillLayoutStyle.PaymentMethodInformation, {marginTop: 10}]}>{mobile_number}</Text>
                         
                     </View>
 
@@ -355,8 +355,8 @@ export default function BillLayout({navigation, route}){
                     <View style={[BillLayoutStyle.PriceLayout, 
                         {paddingTop: 12, marginTop: 6, paddingBottom: 12, paddingLeft: 12, paddingRight: 12}]}>
 
-                        <Text style={[BillLayoutStyle.UsernameTitle]}>Payment method</Text>
-                        <Text style={[BillLayoutStyle.PaymentMethodInformation, {marginTop: 10}]}>{payment_method}</Text>
+                        <Text allowFontScaling={false} style={[BillLayoutStyle.UsernameTitle]}>Payment method</Text>
+                        <Text allowFontScaling={false} style={[BillLayoutStyle.PaymentMethodInformation, {marginTop: 10}]}>{payment_method}</Text>
                         
                     </View>
 
@@ -365,10 +365,10 @@ export default function BillLayout({navigation, route}){
                     <View style={[BillLayoutStyle.PriceLayout, 
                         {paddingTop:12, marginTop:12, paddingBottom: 12, paddingLeft: 12, paddingRight: 12}]}>
                         
-                        <Text style={BillLayoutStyle.UsernameTitle}>Delivery Address:</Text>
-                        <Text style={BillLayoutStyle.AddressInformation}>{street_address}</Text>
-                        <Text style={BillLayoutStyle.AddressInformation}>{area}, {landmark}</Text>
-                        <Text style={BillLayoutStyle.AddressInformation}>Pincode = {pincode}</Text>
+                        <Text allowFontScaling={false} style={BillLayoutStyle.UsernameTitle}>Delivery Address:</Text>
+                        <Text allowFontScaling={false} style={BillLayoutStyle.AddressInformation}>{street_address}</Text>
+                        <Text allowFontScaling={false} style={BillLayoutStyle.AddressInformation}>{area}, {landmark}</Text>
+                        <Text allowFontScaling={false} style={BillLayoutStyle.AddressInformation}>Pincode = {pincode}</Text>
 
                     </View>
 
@@ -379,7 +379,7 @@ export default function BillLayout({navigation, route}){
                         android_ripple={{color: colorCode.SignupColorCode.ButtonRippleColor}}
                         onPress = {Place_order_Handler}>
 
-                        <Text style={BillLayoutStyle.PlaceOrderButtonText}>Place order</Text>
+                        <Text allowFontScaling={false} style={BillLayoutStyle.PlaceOrderButtonText}>Place order</Text>
                     
                     </Pressable>
 

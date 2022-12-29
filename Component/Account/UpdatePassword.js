@@ -168,7 +168,7 @@ export default function UpdatePassword({navigation, route}) {
   
         {/* Update Password Title  */}
 
-        <Text style={UpdatePasswordStyle.UpdatePasswordTitle}>Update Password</Text>
+        <Text allowFontScaling={false} style={UpdatePasswordStyle.UpdatePasswordTitle}>Update Password</Text>
   
         {/* Input option layout  */}
         
@@ -176,7 +176,7 @@ export default function UpdatePassword({navigation, route}) {
           
           {/* Password Input  */}
           
-          <TextInput style={[UpdatePasswordStyle.InputStyle, {borderColor: PasswordBorder ? colorCode.SignupColorCode.InputBorderColor : 'transparent'}]}
+          <TextInput allowFontScaling={false} style={[UpdatePasswordStyle.InputStyle, {borderColor: PasswordBorder ? colorCode.SignupColorCode.InputBorderColor : 'transparent'}]}
             placeholder="Password"
             placeholderTextColor = {colorCode.SignupColorCode.InputPlaceholderColor} 
             keyboardType="default"
@@ -189,7 +189,7 @@ export default function UpdatePassword({navigation, route}) {
           
           {/* RePassword Input  */}
           
-          <TextInput style={[UpdatePasswordStyle.InputStyle, {borderColor: RePasswordBorder ? colorCode.SignupColorCode.InputBorderColor : 'transparent'}]}
+          <TextInput allowFontScaling={false} style={[UpdatePasswordStyle.InputStyle, {borderColor: RePasswordBorder ? colorCode.SignupColorCode.InputBorderColor : 'transparent'}]}
             placeholder="Re-Password"
             placeholderTextColor = {colorCode.SignupColorCode.InputPlaceholderColor} 
             keyboardType="default"
@@ -210,7 +210,7 @@ export default function UpdatePassword({navigation, route}) {
               <Pressable style={[UpdatePasswordStyle.SendCode_Layout]}
                 android_ripple={{color:colorCode.SignupColorCode.ButtonRippleColor,foreground:false}}
                 onPress={UpdatePasswordHandle}>
-                  <Text style={UpdatePasswordStyle.SendCode_Text}>Update Password</Text>
+                  <Text allowFontScaling={false} style={UpdatePasswordStyle.SendCode_Text}>Update Password</Text>
               </Pressable>
             }
   

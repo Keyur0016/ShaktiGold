@@ -297,7 +297,7 @@ export default function SelectCategory({navigation, route}){
                     </View>
                 </>:<></>}
                  
-                <Text style={SelectCategoryStyle.SelectCategoryTitle}>Select category for {Option_title} </Text>
+                <Text allowFontScaling={false} style={SelectCategoryStyle.SelectCategoryTitle}>Select category for {Option_title} </Text>
                
                 {load_category_fetch_layout?<>
                     <LoadData/>
@@ -306,7 +306,7 @@ export default function SelectCategory({navigation, route}){
                         
                         {/* Gold Option category  */}
 
-                        <Text style={SelectCategoryStyle.Gold_silver_product_title}>Gold Product category</Text>
+                        <Text allowFontScaling={false} style={SelectCategoryStyle.Gold_silver_product_title}>Gold Product category</Text>
 
                         {gold.map((element) => {
                             return(
@@ -315,14 +315,14 @@ export default function SelectCategory({navigation, route}){
                                     style = {SelectCategoryStyle.SelectPressOption}
                                     android_ripple={{color:colorCode.HomeScreenColor.PriceInformationTitleColor}}
                                     onPress={() => Category_press_Handle(element.Category_name, element.Category_table, element.Category_option, element.Category_image )}>
-                                    <Text style={[SelectCategoryStyle.SelectCategory]}>{element.Category_name}</Text>
+                                    <Text allowFontScaling={false} style={[SelectCategoryStyle.SelectCategory]}>{element.Category_name}</Text>
                                 </Pressable>
                             )
                         })}
                         
                         {/* Silver Option category  */}
 
-                        <Text style={SelectCategoryStyle.Gold_silver_product_title}>Silver Product category </Text> 
+                        <Text allowFontScaling={false} style={SelectCategoryStyle.Gold_silver_product_title}>Silver Product category </Text> 
 
                         {silver.map((element) => {
                             return(
@@ -330,7 +330,7 @@ export default function SelectCategory({navigation, route}){
                                     style = {SelectCategoryStyle.SelectPressOption}
                                     android_ripple={{color:colorCode.HomeScreenColor.PriceInformationTitleColor}}
                                     onPress={() => Category_press_Handle(element.Category_name, element.Category_table, element.Category_option, element.Category_image )}>
-                                    <Text style={[SelectCategoryStyle.SelectCategory]}>{element.Category_name}</Text>
+                                    <Text allowFontScaling={false} style={[SelectCategoryStyle.SelectCategory]}>{element.Category_name}</Text>
                                 </Pressable>
                             )
                         })}

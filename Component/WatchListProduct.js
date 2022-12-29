@@ -604,7 +604,7 @@ export default function WatchListProduct({navigation, route}){
                             style={WatchListScreenStyle.BackImage}
                         />
                     
-                        <Text style={WatchListScreenStyle.BackText}>Watchlist Product</Text>
+                        <Text allowFontScaling={false} style={WatchListScreenStyle.BackText}>Watchlist Product</Text>
                     
                     </Pressable>
                 
@@ -646,7 +646,7 @@ export default function WatchListProduct({navigation, route}){
                                                 <View style={WatchListScreenStyle.ProductInfoData}>
 
                                                     {/* Product information  */}
-                                                    <Text style={WatchListScreenStyle.ProductInformation}>{element.Product_information}</Text>
+                                                    <Text allowFontScaling={false} style={WatchListScreenStyle.ProductInformation}>{element.Product_information}</Text>
                                                     
                                                     {/* Weight and Size information layout   */}
 
@@ -656,9 +656,9 @@ export default function WatchListProduct({navigation, route}){
 
                                                         <View style={WatchListScreenStyle.WeightLayout}>
 
-                                                            <Text style={WatchListScreenStyle.WeightSizeTitle}>Weight |</Text>
+                                                            <Text allowFontScaling={false} style={WatchListScreenStyle.WeightSizeTitle}>Weight |</Text>
 
-                                                            <Text style={WatchListScreenStyle.WeightSizeInformation}>{element.Product_weight}</Text>
+                                                            <Text allowFontScaling={false} style={WatchListScreenStyle.WeightSizeInformation}>{element.Product_weight}</Text>
                                                         
                                                         </View>
                                                         
@@ -666,9 +666,9 @@ export default function WatchListProduct({navigation, route}){
 
                                                         <View style={[WatchListScreenStyle.SizeLayout]}>
                                                             
-                                                            <Text style={WatchListScreenStyle.WeightSizeTitle}>Size |</Text>
+                                                            <Text allowFontScaling={false} style={WatchListScreenStyle.WeightSizeTitle}>Size |</Text>
                                                         
-                                                            <Text style={WatchListScreenStyle.WeightSizeInformation}>{element.Product_size}</Text>
+                                                            <Text allowFontScaling={false} style={WatchListScreenStyle.WeightSizeInformation}>{element.Product_size}</Text>
                                                         
                                                         </View>
 
@@ -678,14 +678,14 @@ export default function WatchListProduct({navigation, route}){
                                                     
                                                     <View style={WatchListScreenStyle.PriceInformationLayout}>
                                                         
-                                                        <Text style={[WatchListScreenStyle.WeightLayout, 
+                                                        <Text allowFontScaling={false} style={[WatchListScreenStyle.WeightLayout, 
                                                             {marginRight: 0, 
                                                             fontFamily: "Mukta",
                                                             fontSize: 18}]}>Price</Text>
 
-                                                        <Text style={WatchListScreenStyle.RetailPrice}>₹{element.Product_retail_price}</Text>
+                                                        <Text allowFontScaling={false} style={WatchListScreenStyle.RetailPrice}>₹{element.Product_retail_price}</Text>
                                                         
-                                                        <Text style={WatchListScreenStyle.DiscountPrice} numberOfLines={1}>₹{element.Product_discount_price}</Text>    
+                                                        <Text allowFontScaling={false} style={WatchListScreenStyle.DiscountPrice} numberOfLines={1}>₹{element.Product_discount_price}</Text>    
                                                     
                                                     </View>
 
@@ -765,7 +765,7 @@ export default function WatchListProduct({navigation, route}){
 
                             </>:<>
 
-                                <Text style={{fontFamily:"Ubuntu", fontSize:19, width:"100%", 
+                                <Text allowFontScaling={false} style={{fontFamily:"Ubuntu", fontSize:19, width:"100%", 
                                 marginLeft:"auto", marginRight:"auto", marginTop:20, textAlign:"center"}}>Not available any Product</Text>
                             </> }
                             

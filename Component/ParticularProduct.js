@@ -283,144 +283,6 @@ export default function ParticularProduct({navigation, route}){
 
     // ***** Close Add to Product watchlist Request Handler ***** // 
 
-
-    // ***** Start add to cart Request Handler ***** // 
-
-    const [add_cart_layout, set_add_cart_layout] = useState(true) ; 
-    const [add_cart_view_url, set_add_cart_view_url] = useState('') ; 
-    const [add_cart_view_value, set_add_cart_view_value] = useState(0) ; 
-
-    const Add_to_cart_handling = (event) => {
-
-        let Temp_data = event.nativeEvent.data ; 
-
-        try{
-
-            Temp_data = JSON.parse(Temp_data); 
-            set_add_cart_layout(true) ; 
-
-            if (Temp_data.Status == "Insert"){
-                
-                set_cart_item_value(false) ; 
-
-                Disable_loading_layout_handler() ;
-
-                ToastAndroid.show("Insert product into cart", ToastAndroid.BOTTOM, ToastAndroid.SHORT) ; 
-
-            }
-            else{
-
-                Disable_loading_layout_handler() ; 
-
-            }
-
-        }catch{
-            ToastAndroid.show("Network request failed", ToastAndroid.BOTTOM, ToastAndroid.SHORT) ; 
-
-        }
-
-        Disable_loading_layout_handler() ; 
-
-    }
-
-    const Add_To_cart_Handler = async () => {
-        Set_loading_layout_handler() ; 
-
-        try {
-            
-            let Insert_cart_data = {
-                "Check_status":"Insert_cart_item", 
-                "Table_name": Table_name, 
-                "Product_id": product_id,
-                "Category_id": category_id
-            }; 
-
-            // Set URL to webview 
-            set_add_cart_view_url("") ;
-            set_add_cart_layout(false) ; 
-            set_add_cart_view_value(add_cart_view_value + 1) ; 
-
-            let web_url = URL.RequestAPI + "?data=" + JSON.stringify(Insert_cart_data) ; 
-
-            set_add_cart_view_url(web_url) ; 
-             
-        } catch (error) {
-            
-            Disable_loading_layout_handler(); 
-
-            ToastAndroid.show("Network request failed", ToastAndroid.BOTTOM, ToastAndroid.SHORT) ; 
-        }
-
-    }
-
-    // ***** Close add to cart Request Handler ***** // 
-
-
-    // ***** Start Remove from cart Request Handler ***** // 
-
-    const [remove_cart_layout, set_remove_cart_layout] = useState(true) ; 
-    const [remove_cart_view_url, set_remove_cart_view_url] = useState('') ; 
-    const [remove_cart_view_value, set_remove_cart_view_value] = useState(0) ; 
-    
-    const Remove_to_cart_handling = (event) => {
-        let Temp_data = event.nativeEvent.data ; 
-
-        try{
-
-            Temp_data = JSON.parse(Temp_data) ; 
-            set_remove_cart_layout(true) ; 
-
-            if (Temp_data.Status == "Delete"){
-
-                Disable_loading_layout_handler() ; 
-                 
-                set_cart_item_value(true) ; 
-
-                ToastAndroid.show("Delete from cart", ToastAndroid.BOTTOM, ToastAndroid.SHORT) ;
-
-            }else{
-
-                Disable_loading_layout_handler() ; 
-            }
-
-    
-        }catch{
-            ToastAndroid.show("Network request failed", ToastAndroid.BOTTOM, ToastAndroid.SHORT) ; 
-        }
-    }
-    
-    const Remove_from_cart_Handler = async (Product_id) => {
-          
-        Set_loading_layout_handler() ; 
-
-        try {
-            
-            let Remove_cart_data = {
-                "Check_status":"Delete_cart_item", 
-                "Table_name": Table_name, 
-                "Product_id": product_id,
-                "Category_id":  category_id
-            };  
-
-            // Set URL to webview 
-            set_remove_cart_view_url("") ;
-            set_remove_cart_layout(false) ; 
-            set_remove_cart_view_value(remove_cart_view_value + 1) ; 
-
-            let web_url = URL.RequestAPI + "?data=" + JSON.stringify(Remove_cart_data) ; 
-
-            set_remove_cart_view_url(web_url) ; 
- 
-
-        } catch (error) {
-            
-            Disable_loading_layout_handler() ; 
-
-            ToastAndroid.show("Network request failed", ToastAndroid.BOTTOM, ToastAndroid.SHORT);
-        }
-    }
-
-    // ***** Close Remove from cart Request Handle ***** // 
     
     // === Back Handler === // 
 
@@ -487,37 +349,7 @@ export default function ParticularProduct({navigation, route}){
                     </View>
                 </>:<></>}
 
-                {/* Remove from cart request view  */}
-
-                {!add_cart_layout?<>
-                    <View
-                        style={{
-                            height: "0%", 
-                            width: "0%", 
-                            opacity: 0.90
-                        }}>
-                            <WebView
-                            key = {add_cart_view_value}
-                            source={{uri:add_cart_view_url}}
-                            onMessage={Add_to_cart_handling}
-                            ></WebView>
-                    </View>
-                </>:<></>}
-
-                {!remove_cart_layout?<>
-                    <View
-                        style={{
-                            height: "0%", 
-                            width: "0%", 
-                            opacity: 0.90
-                        }}>
-                            <WebView
-                            key = {remove_cart_view_value}
-                            source={{uri:remove_cart_view_url}}
-                            onMessage={Remove_to_cart_handling}
-                            ></WebView>
-                    </View>
-                </>:<></>}
+                
 
                 {/* ==== Start Back Image container ====  */}
 
@@ -532,7 +364,7 @@ export default function ParticularProduct({navigation, route}){
                             style={ParticularProductStyle.BackImage}
                         />
 
-                        <Text style={ParticularProductStyle.BackText}>Back</Text>
+                        <Text allowFontScaling={false} style={ParticularProductStyle.BackText}>Back</Text>
 
                     </Pressable>
                    
@@ -564,7 +396,7 @@ export default function ParticularProduct({navigation, route}){
 
                         {/* Product information  */}
 
-                        <Text style={ParticularProductStyle.ProductInformation}>
+                        <Text allowFontScaling={false} style={ParticularProductStyle.ProductInformation}>
                             {Product_information}
                         </Text>
                      
@@ -576,9 +408,9 @@ export default function ParticularProduct({navigation, route}){
 
                             <View style={ParticularProductStyle.WeightLayout}>
 
-                                <Text style={ParticularProductStyle.WeightSizeTitle}>Weight |</Text>
+                                <Text allowFontScaling={false} style={ParticularProductStyle.WeightSizeTitle}>Weight |</Text>
 
-                                <Text style={ParticularProductStyle.WeightSizeInformation}>{Product_weight}</Text>
+                                <Text allowFontScaling={false} style={ParticularProductStyle.WeightSizeInformation}>{Product_weight}</Text>
                              
                             </View>
                              
@@ -586,9 +418,9 @@ export default function ParticularProduct({navigation, route}){
 
                             <View style={[ParticularProductStyle.SizeLayout]}>
                                 
-                                <Text style={ParticularProductStyle.WeightSizeTitle}>Size |</Text>
+                                <Text allowFontScaling={false} style={ParticularProductStyle.WeightSizeTitle}>Size |</Text>
                              
-                                <Text style={ParticularProductStyle.WeightSizeInformation}>{Product_size}</Text>
+                                <Text allowFontScaling={false} style={ParticularProductStyle.WeightSizeInformation}>{Product_size}</Text>
                              
                             </View>
 
@@ -598,14 +430,14 @@ export default function ParticularProduct({navigation, route}){
 
                         <View style={ParticularProductStyle.PriceInformationLayout}>
                                                 
-                            <Text style={[ParticularProductStyle.WeightLayout, 
+                            <Text allowFontScaling={false} style={[ParticularProductStyle.WeightLayout, 
                                 {marginRight: 0, 
                                 fontFamily: "Mukta",
                                 fontSize: 18}]}>Price</Text>
 
-                            <Text style={ParticularProductStyle.RetailPrice}>₹{Product_retail_price}</Text>
+                            <Text allowFontScaling={false} style={ParticularProductStyle.RetailPrice}>₹{Product_retail_price}</Text>
                              
-                            <Text style={ParticularProductStyle.DiscountPrice}>₹{Product_discount_price}</Text>    
+                            <Text allowFontScaling={false} style={ParticularProductStyle.DiscountPrice}>₹{Product_discount_price}</Text>    
                                             
                         </View>
 
@@ -654,7 +486,7 @@ export default function ParticularProduct({navigation, route}){
                                     style = {ParticularProductStyle.OptionImage}
                                 />
 
-                                <Text style={{fontFamily: "Mukta", 
+                                <Text allowFontScaling={false} style={{fontFamily: "Mukta", 
                                     fontSize: 18, 
                                     color: 'white', 
                                     marginTop: "auto", 
@@ -668,32 +500,7 @@ export default function ParticularProduct({navigation, route}){
                             
 
                         </View>
-
-                        {/* Add to cart and buy now option  */}
-
-                        <View style={ParticularProductStyle.AddToCartBuyNow}>
-
-                            {cart_item_value?<>
-
-                                <Pressable  style={[ParticularProductStyle.AddToCartOptionLayout, 
-                                    {borderBottomLeftRadius: 5}]}
-                                    android_ripple={{color:colorCode.SignupColorCode.ButtonRippleColor}}
-                                    onPress={() => Add_To_cart_Handler()}>
-                                    <Text  style={ParticularProductStyle.AddToCartOptionText}>Add to cart</Text>
-                                </Pressable>
-                            </>:
-                            <>
-                                <Pressable  style={[ParticularProductStyle.AddToCartOptionLayout, 
-                                    {borderBottomLeftRadius: 5}]}
-                                    android_ripple={{color:colorCode.SignupColorCode.ButtonRippleColor}}
-                                    onPress={() => Remove_from_cart_Handler()}>
-                                    <Text  style={ParticularProductStyle.AddToCartOptionText}>Remove from cart</Text>
-                                </Pressable>
-                                
-                            </>}
-
-
-                        </View>
+                        
 
                     </View>
 

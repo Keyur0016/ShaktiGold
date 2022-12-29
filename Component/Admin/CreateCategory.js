@@ -1,5 +1,5 @@
 import { View, StyleSheet, StatusBar, Text, TextInput, Pressable, 
-Image, ActivityIndicator, ToastAndroid } from "react-native";
+Image, ActivityIndicator, ToastAndroid, PermissionsAndroid } from "react-native";
 import { useState, useEffect } from "react";
 import * as colorCode from '../Information/ColorCode'; 
 import * as URL from '../Information/RequestURL'; 
@@ -107,6 +107,19 @@ export default function CreateCategory({navigation, route}){
                     navigation.goBack() ; 
                 }
             }
+            else if (Create_category_STATUS == "Update"){
+                ToastAndroid.show(
+                  "Update Category successfully",
+                  ToastAndroid.BOTTOM,
+                  ToastAndroid.SHORT
+                );
+
+                if (Update == "1") {
+                  navigation.navigate("AdminOption");
+                } else {
+                  navigation.goBack();
+                }
+            }
 
 
         }catch{
@@ -145,17 +158,25 @@ export default function CreateCategory({navigation, route}){
 
                     try {
                         
-                        const ImageData = new FormData() ; 
-                        ImageData.append('file', ImagefileData); 
-                        ImageData.append('upload_preset', 'Shaktigold'); 
-                        ImageData.append('cloud_name', 'smartinfo'); 
+                        const ImageData = new FormData();
+                        ImageData.append("file", ImagefileData);
+                        ImageData.append("upload_preset", "Shaktigold");
+                        ImageData.append("cloud_name", "smartinfo"); 
+
+                        let Upload_image = await fetch(
+                          "https://api.cloudinary.com/v1_1/smartinfo/image/upload",
+                          {
+                            method: "post",
+                            headers: {
+                              "Content-Type": "multipart/form-data",
+                            },
+                            body: ImageData,
+                          }
+                        );
+
+                        let Upload_image_response = await Upload_image.json();
                         
-                        let Upload_image = await fetch('https://api.cloudinary.com/v1_1/smartinfo/image/upload', {
-                            method : 'post', 
-                            body   : ImageData
-                        }); 
-    
-                        let Upload_image_response = await Upload_image.json() ; 
+                        Image_url = Upload_image_response.url; 
 
                         ToastAndroid.show("Image upload successfully", ToastAndroid.BOTTOM, ToastAndroid.SHORT) ; 
                         
@@ -186,7 +207,7 @@ export default function CreateCategory({navigation, route}){
                     
                     } catch (error) {
                         
-                        ToastAndroid.show("Error in image uploading", ToastAndroid.BOTTOM, ToastAndroid.SHORT); 
+                        ToastAndroid.show(error, ToastAndroid.BOTTOM, ToastAndroid.SHORT); 
                     }
                 }
                 else{
@@ -201,7 +222,10 @@ export default function CreateCategory({navigation, route}){
                             ImageData.append('cloud_name', 'smartinfo'); 
                             
                             let Upload_image = await fetch('https://api.cloudinary.com/v1_1/smartinfo/image/upload', {
-                                method : 'post', 
+                                method : 'post',
+                                headers:{
+                                    'Content-Type': 'multipart/form-data' 
+                                }, 
                                 body   : ImageData
                             }); 
         
@@ -209,7 +233,7 @@ export default function CreateCategory({navigation, route}){
                             Image_url = Upload_image_response.url ; 
     
                             ToastAndroid.show("Image upload successfully", ToastAndroid.BOTTOM, ToastAndroid.SHORT) ; 
-                        }
+                        }    
                             
                         setActivityIndicator(true) ; 
                         
@@ -228,7 +252,6 @@ export default function CreateCategory({navigation, route}){
                         set_webview_value(webview_value + 1) ; 
                         
                         let web_url = URL.RequestAPI + "?data=" + JSON.stringify(Create_category_data) ; 
-                        
                         set_web_view_url(web_url) ;
                             
                     
@@ -287,15 +310,18 @@ export default function CreateCategory({navigation, route}){
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
             allowsEditing: false,
             aspect: [4, 3],
-            quality: 0.6,
+            quality: 0.6
         });
 
         if ( 'uri' in result){
-            let ImageFile = { uri: result.uri, 
-                type: `test/${result.uri.split('.')[1]}`,
-                name: `test.${result.uri.split(".")[1]}`}
+
+            let TempData = {
+              uri: result.uri,
+              type: `test/${result.uri.split(".")[1]}`,
+              name: `test.${result.uri.split(".")[1]}`,
+            };
             
-            set_ImagefileData(ImageFile) ; 
+            set_ImagefileData(TempData) ; 
             set_categoryImage(result.uri); 
         }
     }
@@ -389,7 +415,7 @@ export default function CreateCategory({navigation, route}){
 
                 {/* Create Category Title   */}
 
-                <Text style={CreateCategoryStyle.CreateCategoryTitle}>{Update == "1"?"Update":"Create"} Category</Text>
+                <Text allowFontScaling={false} style={CreateCategoryStyle.CreateCategoryTitle}>{Update == "1"?"Update":"Create"} Category</Text>
                  
                 {/* Input Option layout   */}
 
@@ -397,7 +423,7 @@ export default function CreateCategory({navigation, route}){
                     
                     {/* Mobilenumber input  */}
 
-                    <TextInput style={[CreateCategoryStyle.InputStyle, {borderColor: createBorder ? colorCode.SignupColorCode.InputBorderColor : 'transparent'}]}
+                    <TextInput allowFontScaling={false} style={[CreateCategoryStyle.InputStyle, {borderColor: createBorder ? colorCode.SignupColorCode.InputBorderColor : 'transparent'}]}
                         placeholder="Category name"
                         placeholderTextColor = {colorCode.SignupColorCode.InputPlaceholderColor} 
                         keyboardType="default"
@@ -413,7 +439,7 @@ export default function CreateCategory({navigation, route}){
 
                         {/* Select category Title  */}
  
-                        <Text style={CreateCategoryStyle.SelectCategoryTitle}>Select Category</Text>
+                        <Text allowFontScaling={false} style={CreateCategoryStyle.SelectCategoryTitle}>Select Category</Text>
                           
                         {/* Gold and Silver selection option  */}
 
@@ -423,14 +449,14 @@ export default function CreateCategory({navigation, route}){
 
                             <Pressable style={[CreateCategoryStyle.SelectionOptionLayout, {borderWidth: goldBorder? 1:0}]}
                                 onPress={() => CategorySelect_Handler("Gold")}>
-                                <Text style={CreateCategoryStyle.SelectionOptionText}>Gold</Text>
+                                <Text allowFontScaling={false} style={CreateCategoryStyle.SelectionOptionText}>Gold</Text>
                             </Pressable>
                         
                             {/* Silver Option  */}
 
                             <Pressable style={[CreateCategoryStyle.SelectionOptionLayout, {marginLeft:15, borderWidth: silverBorder ? 1:0}]}
                                 onPress={() => CategorySelect_Handler("Silver")}>
-                                <Text style={CreateCategoryStyle.SelectionOptionText}>Sliver</Text>
+                                <Text allowFontScaling={false} style={CreateCategoryStyle.SelectionOptionText}>Sliver</Text>
                             </Pressable>
 
                         </View>
@@ -439,7 +465,7 @@ export default function CreateCategory({navigation, route}){
                     
                     {/* Select Category Image Title  */}
      
-                    <Text style={CreateCategoryStyle.SelectCategoryTitle}>Select Category Image</Text>
+                    <Text allowFontScaling={false} style={CreateCategoryStyle.SelectCategoryTitle}>Select Category Image</Text>
                     
                     {categoryImage != ""?
                     <Image
@@ -456,7 +482,7 @@ export default function CreateCategory({navigation, route}){
                         android_ripple={{color:colorCode.SignupColorCode.OtherButtonRipplerColor}}
                         onPress={() => CategoryImage_Handler()}>
 
-                        <Text style={[CreateCategoryStyle.SelectionOptionText, {color:'white'}]}>Select</Text>
+                        <Text allowFontScaling={false} style={[CreateCategoryStyle.SelectionOptionText, {color:'white'}]}>Select</Text>
                     
                     </Pressable>
                     
@@ -472,7 +498,7 @@ export default function CreateCategory({navigation, route}){
                     <Pressable style={[CreateCategoryStyle.SendCode_Layout]}
                         android_ripple={{color:colorCode.SignupColorCode.ButtonRippleColor,foreground:false}}
                         onPress={CreateCategory_Handler}>
-                        <Text style={CreateCategoryStyle.SendCode_Text}>{Update == "1"?"Update":"Create"} category</Text>
+                        <Text allowFontScaling={false} style={CreateCategoryStyle.SendCode_Text}>{Update == "1"?"Update":"Create"} category</Text>
                     </Pressable>
                     }
 

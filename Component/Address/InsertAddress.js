@@ -204,7 +204,7 @@ export default function InsertAddress({navigation, route}){
                             style={InsertAddressStyle.BackImage}
                         />
                     
-                        <Text style={InsertAddressStyle.BackText}>Insert Address</Text>
+                        <Text allowFontScaling={false} style={InsertAddressStyle.BackText}>Insert Address</Text>
                     
                     </Pressable>
         
@@ -216,9 +216,9 @@ export default function InsertAddress({navigation, route}){
                      
                     {/* Username input   */}
 
-                    <Text style={InsertAddressStyle.AddressTitle}>Username</Text>
+                    <Text allowFontScaling={false} style={InsertAddressStyle.AddressTitle}>Username</Text>
                     
-                    <TextInput style={[InsertAddressStyle.AddressInput, {borderColor: username_border ? colorCode.SignupColorCode.InputBorderColor : 'transparent'}]}
+                    <TextInput allowFontScaling={false} style={[InsertAddressStyle.AddressInput, {borderColor: username_border ? colorCode.SignupColorCode.InputBorderColor : 'transparent'}]}
                         placeholder="Username"
                         placeholderTextColor = {colorCode.SignupColorCode.InputPlaceholderColor} 
                         keyboardType="default"
@@ -230,9 +230,9 @@ export default function InsertAddress({navigation, route}){
                     
                     {/* Street address input  */}
 
-                    <Text style={InsertAddressStyle.AddressTitle}>Flat, House no, Building, Apartment</Text>
+                    <Text allowFontScaling={false} style={InsertAddressStyle.AddressTitle}>Flat, House no, Building, Apartment</Text>
                     
-                    <TextInput style={[InsertAddressStyle.AddressInput, {borderColor: street_address_border ? colorCode.SignupColorCode.InputBorderColor : 'transparent'}]}
+                    <TextInput allowFontScaling={false} style={[InsertAddressStyle.AddressInput, {borderColor: street_address_border ? colorCode.SignupColorCode.InputBorderColor : 'transparent'}]}
                         placeholderTextColor = {colorCode.SignupColorCode.InputPlaceholderColor}
                         placeholder = "Street address " 
                         keyboardType="default"
@@ -244,9 +244,9 @@ export default function InsertAddress({navigation, route}){
                     
                     {/* Area input  */}
 
-                    <Text style={InsertAddressStyle.AddressTitle}>Area</Text>
+                    <Text allowFontScaling={false} style={InsertAddressStyle.AddressTitle}>Area</Text>
                     
-                    <TextInput style={[InsertAddressStyle.AddressInput , {borderColor: area_border ? colorCode.SignupColorCode.InputBorderColor : 'transparent'}]}
+                    <TextInput allowFontScaling={false} style={[InsertAddressStyle.AddressInput , {borderColor: area_border ? colorCode.SignupColorCode.InputBorderColor : 'transparent'}]}
                         placeholderTextColor = {colorCode.SignupColorCode.InputPlaceholderColor}
                         placeholder = "Eg. Mota varachha " 
                         keyboardType="default"
@@ -258,9 +258,9 @@ export default function InsertAddress({navigation, route}){
                     
                     {/* Landmark input  */}
 
-                    <Text style={InsertAddressStyle.AddressTitle}>Landmark</Text>
+                    <Text allowFontScaling={false} style={InsertAddressStyle.AddressTitle}>Landmark</Text>
                     
-                    <TextInput style={[InsertAddressStyle.AddressInput , {borderColor: landmark_border ? colorCode.SignupColorCode.InputBorderColor : 'transparent'}]}
+                    <TextInput allowFontScaling={false} style={[InsertAddressStyle.AddressInput , {borderColor: landmark_border ? colorCode.SignupColorCode.InputBorderColor : 'transparent'}]}
                         placeholderTextColor = {colorCode.SignupColorCode.InputPlaceholderColor} 
                         keyboardType="default"
                         placeholder="Eg. near ABC circle"
@@ -272,9 +272,9 @@ export default function InsertAddress({navigation, route}){
                     
                     {/* Pincode input  */}
 
-                    <Text style={InsertAddressStyle.AddressTitle}>Pincode</Text>
+                    <Text allowFontScaling={false} style={InsertAddressStyle.AddressTitle}>Pincode</Text>
                     
-                    <TextInput style={[InsertAddressStyle.AddressInput , {borderColor: pincode_border ? colorCode.SignupColorCode.InputBorderColor : 'transparent'}]}
+                    <TextInput allowFontScaling={false} style={[InsertAddressStyle.AddressInput , {borderColor: pincode_border ? colorCode.SignupColorCode.InputBorderColor : 'transparent'}]}
                         placeholder="6 digits [0-9] PIN Code "
                         placeholderTextColor = {colorCode.SignupColorCode.InputPlaceholderColor} 
                         keyboardType="default"
@@ -294,7 +294,7 @@ export default function InsertAddress({navigation, route}){
                     <Pressable style={[InsertAddressStyle.SendCode_Layout]}
                         android_ripple={{color:'#ffd100',foreground:false}}
                         onPress={Insert_address_Handler}>
-                        <Text style={InsertAddressStyle.SendCode_Text}>Add address</Text>
+                        <Text allowFontScaling={false} style={InsertAddressStyle.SendCode_Text}>Add address</Text>
                     </Pressable>
                     }
 

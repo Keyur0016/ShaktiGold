@@ -34,7 +34,7 @@ export default function SplashScreen({navigation}){
 
     const TableName = await AsyncStorage.getItem("Table"); 
     
-    if (TableName == null){
+    if (TableName != null){
           
       setTimeout(() => {
         navigation.navigate("Home"); 
@@ -57,17 +57,6 @@ export default function SplashScreen({navigation}){
 
   responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
     let Response_data = JSON.parse(JSON.stringify(response)) ; 
-    let Notification_data = Response_data['notification']['request']['content']['data']['Data'] ;
-     
-    if (Notification_data == "Home"){
-      navigation.navigate("Home") ; 
-    }
-    else if (Notification_data == "Status"){
-      navigation.navigate("StatusView") ; 
-    }
-    else if (Notification_data == "Price"){
-      navigation.navigate("Home") ; 
-    }
   });
 
   return () => {
@@ -76,7 +65,7 @@ export default function SplashScreen({navigation}){
   };
 
   }, [ScreenFocused]); 
-  
+
   return(
 
     <View style={SplashScreenStyle.SplashSCreen}>

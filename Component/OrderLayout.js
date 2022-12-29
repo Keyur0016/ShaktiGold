@@ -12,8 +12,7 @@ import { useIsFocused } from "@react-navigation/native";
 export default function OrderLayout({navigation, route}){
 
     // == Table name
-    // const {Table_name} = route.params ;
-    const Table_name = "hykqgaiuftcdwnr";
+    const {Table_name} = route.params ;
 
     // == Order Option Layout Width 
     const Order_option_layout_width = parseInt((Dimensions.get('window').width)*0.6) ; 
@@ -267,7 +266,7 @@ export default function OrderLayout({navigation, route}){
                             style={OrderLayoutStyle.BackImage}
                         />
                     
-                        <Text style={OrderLayoutStyle.BackText}>Order information</Text>
+                        <Text allowFontScaling={false} style={OrderLayoutStyle.BackText}>Order information</Text>
                     
                     </Pressable>
         
@@ -287,7 +286,7 @@ export default function OrderLayout({navigation, route}){
                             android_ripple={{color: pending_order_layout ? colorCode.HomeScreenColor.PriceInformationTitleColor:colorCode.HomeScreenColor.PriceLayoutColor }}
                             onPress={Pending_order_handler}>
 
-                            <Text style={[OrderLayoutStyle.OrderFetchText, {color:pending_order_layout?"white":"black"}]}>Pending order</Text>
+                            <Text allowFontScaling={false} style={[OrderLayoutStyle.OrderFetchText, {color:pending_order_layout?"white":"black"}]}>Pending order</Text>
                         
                         </Pressable>
 
@@ -298,7 +297,7 @@ export default function OrderLayout({navigation, route}){
                             android_ripple={{color: complete_order_layout ? colorCode.HomeScreenColor.PriceInformationTitleColor:colorCode.HomeScreenColor.PriceLayoutColor}}
                             onPress={Complete_order_handler}>
                         
-                            <Text style={[OrderLayoutStyle.OrderFetchText, {color:complete_order_layout?"white":"black"}]}>Complete order</Text>
+                            <Text allowFontScaling={false} style={[OrderLayoutStyle.OrderFetchText, {color:complete_order_layout?"white":"black"}]}>Complete order</Text>
                         
                         </Pressable>
 
@@ -309,7 +308,7 @@ export default function OrderLayout({navigation, route}){
                             android_ripple={{color: cancel_order_layout  ? colorCode.HomeScreenColor.PriceInformationTitleColor:colorCode.HomeScreenColor.PriceLayoutColor}}
                             onPress={Cancel_order_Handler}>
                         
-                            <Text style={[OrderLayoutStyle.OrderFetchText, {color: cancel_order_layout ?"white":"black"}]}>Cancel order</Text>
+                            <Text allowFontScaling={false} style={[OrderLayoutStyle.OrderFetchText, {color: cancel_order_layout ?"white":"black"}]}>Cancel order</Text>
                         
                         </Pressable>
 
@@ -328,7 +327,7 @@ export default function OrderLayout({navigation, route}){
                                 android_ripple={{color:"#a4a4a4"}}
                                 onPress = {QRCode_layout_closer}>
                             
-                            <Text style={OrderLayoutStyle.QRCodeText}>Close</Text>
+                            <Text allowFontScaling={false} style={OrderLayoutStyle.QRCodeText}>Close</Text>
                         
                         </Pressable>
 
@@ -358,8 +357,8 @@ export default function OrderLayout({navigation, route}){
                                         
                                         <View style={[OrderLayoutStyle.UserInformationStyle, {backgroundColor: colorCode.HomeScreenColor.PriceLayoutColor}]} >
                                             
-                                            <Text style={[OrderLayoutStyle.UserInformationTitle, {color: "white"}]}>Username : </Text>
-                                            <Text style={[OrderLayoutStyle.UserInformationData, {color: "white", fontFamily: "Ubuntu"}]}>{element.Data9}</Text>
+                                            <Text allowFontScaling={false} style={[OrderLayoutStyle.UserInformationTitle, {color: "white"}]}>Username : </Text>
+                                            <Text allowFontScaling={false} style={[OrderLayoutStyle.UserInformationData, {color: "white", fontFamily: "Ubuntu"}]}>{element.Data9}</Text>
                                         
                                         </View>
 
@@ -367,7 +366,7 @@ export default function OrderLayout({navigation, route}){
                                         {((cancel_order_layout == true) || (element.Data2 == "Server-cancel"))?<>
                                             <View style={[OrderLayoutStyle.UserInformationStyle, {paddingTop:8, paddingBottom:8} ]}>
 
-                                                <Text style={[OrderLayoutStyle.UserInformationTitle, {color:"#ff282f", fontSize:18}]}>Order cancel by Shree Shakti Gold </Text>
+                                                <Text allowFontScaling={false} style={[OrderLayoutStyle.UserInformationTitle, {color:"#ff282f", fontSize:18}]}>Order cancel by Shree Shakti Gold </Text>
 
                                             </View>
                                         </>:<></>}
@@ -376,7 +375,7 @@ export default function OrderLayout({navigation, route}){
                                         {element.Data2 == "Online payment pending"?<>
                                             <View style={[OrderLayoutStyle.UserInformationStyle, {paddingTop:8, paddingBottom:8} ]}>
 
-                                                <Text style={[OrderLayoutStyle.UserInformationTitle, {color:"#ff282f", fontSize:18}]}>Payment not complete</Text>
+                                                <Text allowFontScaling={false} style={[OrderLayoutStyle.UserInformationTitle, {color:"#ff282f", fontSize:18}]}>Payment not complete</Text>
 
                                             </View>
                                         </>:<></>}
@@ -385,8 +384,8 @@ export default function OrderLayout({navigation, route}){
 
                                         <View style={[OrderLayoutStyle.UserInformationStyle, {paddingTop:8, paddingBottom:8} ]}>
 
-                                            <Text style={[OrderLayoutStyle.UserInformationTitle]}>Order id :</Text>
-                                            <Text style={[OrderLayoutStyle.UserInformationData]}>{element.Data1}</Text>
+                                            <Text allowFontScaling={false} style={[OrderLayoutStyle.UserInformationTitle]}>Order id :</Text>
+                                            <Text allowFontScaling={false} style={[OrderLayoutStyle.UserInformationData]}>{element.Data1}</Text>
 
                                         </View>
 
@@ -394,8 +393,8 @@ export default function OrderLayout({navigation, route}){
 
                                         <View style={[OrderLayoutStyle.UserInformationStyle, {paddingTop:8, paddingBottom:8} ]}>
 
-                                            <Text style={[OrderLayoutStyle.UserInformationTitle]}>Order date :</Text>
-                                            <Text style={[OrderLayoutStyle.UserInformationData]}>{element.Data5}</Text>
+                                            <Text allowFontScaling={false} style={[OrderLayoutStyle.UserInformationTitle]}>Order date :</Text>
+                                            <Text allowFontScaling={false} style={[OrderLayoutStyle.UserInformationData]}>{element.Data5}</Text>
 
                                         </View>
                                         
@@ -404,8 +403,8 @@ export default function OrderLayout({navigation, route}){
                                         {complete_order_layout == true?<>
                                             <View style={[OrderLayoutStyle.UserInformationStyle, {paddingTop:8, paddingBottom:8} ]}>
 
-                                                <Text style={[OrderLayoutStyle.UserInformationTitle]}>Order Deliver date :</Text>
-                                                <Text style={[OrderLayoutStyle.UserInformationData]}>{element.Data5}</Text>
+                                                <Text allowFontScaling={false} style={[OrderLayoutStyle.UserInformationTitle]}>Order Deliver date :</Text>
+                                                <Text allowFontScaling={false} style={[OrderLayoutStyle.UserInformationData]}>{element.Data5}</Text>
 
                                             </View>
                                         </>:<></>}
@@ -415,8 +414,8 @@ export default function OrderLayout({navigation, route}){
                                         {cancel_order_layout == true?<>
                                             <View style={[OrderLayoutStyle.UserInformationStyle, {paddingTop:8, paddingBottom:8} ]}>
 
-                                                <Text style={[OrderLayoutStyle.UserInformationTitle]}>Order cancel date :</Text>
-                                                <Text style={[OrderLayoutStyle.UserInformationData]}>{element.Data6}</Text>
+                                                <Text allowFontScaling={false} style={[OrderLayoutStyle.UserInformationTitle]}>Order cancel date :</Text>
+                                                <Text allowFontScaling={false} style={[OrderLayoutStyle.UserInformationData]}>{element.Data6}</Text>
 
                                             </View>
                                         </>:<></>}
@@ -426,8 +425,8 @@ export default function OrderLayout({navigation, route}){
                                         {cancel_order_layout == true?<>
                                             <View style={[OrderLayoutStyle.UserInformationStyle, {paddingTop:8, paddingBottom:8} ]}>
 
-                                                <Text style={[OrderLayoutStyle.UserInformationTitle]}>Cancel reason :</Text>
-                                                <Text style={[OrderLayoutStyle.UserInformationData]}>{element.Data7 }</Text>
+                                                <Text allowFontScaling={false} style={[OrderLayoutStyle.UserInformationTitle]}>Cancel reason :</Text>
+                                                <Text allowFontScaling={false} style={[OrderLayoutStyle.UserInformationData]}>{element.Data7 }</Text>
 
                                             </View>
                                         </>:<></>}
@@ -438,16 +437,16 @@ export default function OrderLayout({navigation, route}){
 
                                         <View style={[OrderLayoutStyle.UserInformationStyle, {paddingTop:8, paddingBottom:8} ]}>
 
-                                            <Text style={[OrderLayoutStyle.UserInformationTitle]}>Payment method :</Text>
-                                            <Text style={[OrderLayoutStyle.UserInformationData]}>{element.Data3}</Text>
+                                            <Text allowFontScaling={false} style={[OrderLayoutStyle.UserInformationTitle]}>Payment method :</Text>
+                                            <Text allowFontScaling={false} style={[OrderLayoutStyle.UserInformationData]}>{element.Data3}</Text>
 
                                         </View>
 
                                         {(element.Data2 == "User-cancel") && (element.Data3 == "Payment success")?<>
                                             <View style={[OrderLayoutStyle.UserInformationStyle, {paddingTop:8, paddingBottom:8} ]}>
 
-                                                <Text style={[OrderLayoutStyle.UserInformationTitle]}>Refund status :</Text>
-                                                <Text style={[OrderLayoutStyle.UserInformationData]}>{element.Data15}</Text>
+                                                <Text allowFontScaling={false} style={[OrderLayoutStyle.UserInformationTitle]}>Refund status :</Text>
+                                                <Text allowFontScaling={false} style={[OrderLayoutStyle.UserInformationData]}>{element.Data15}</Text>
 
                                             </View>
                                         </>:<></>}
@@ -459,8 +458,8 @@ export default function OrderLayout({navigation, route}){
                                             
                                             <View style={[OrderLayoutStyle.UserInformationStyle, {paddingTop:8, paddingBottom:8} ]}>
 
-                                                <Text style={[OrderLayoutStyle.UserInformationTitle]}>Payment id :</Text>
-                                                <Text style={[OrderLayoutStyle.UserInformationData]}>{element.Data4}</Text>
+                                                <Text allowFontScaling={false} style={[OrderLayoutStyle.UserInformationTitle]}>Payment id :</Text>
+                                                <Text allowFontScaling={false} style={[OrderLayoutStyle.UserInformationData]}>{element.Data4}</Text>
 
                                             </View>
                                         
@@ -470,8 +469,8 @@ export default function OrderLayout({navigation, route}){
                                             
                                             <View style={[OrderLayoutStyle.UserInformationStyle, {paddingTop:8, paddingBottom:8} ]}>
 
-                                                <Text style={[OrderLayoutStyle.UserInformationTitle]}>Payment id :</Text>
-                                                <Text style={[OrderLayoutStyle.UserInformationData]}>{element.Data4}</Text>
+                                                <Text allowFontScaling={false} style={[OrderLayoutStyle.UserInformationTitle]}>Payment id :</Text>
+                                                <Text allowFontScaling={false} style={[OrderLayoutStyle.UserInformationData]}>{element.Data4}</Text>
 
                                             </View>
                                         
@@ -481,8 +480,8 @@ export default function OrderLayout({navigation, route}){
 
                                         <View style={[OrderLayoutStyle.UserInformationStyle, {paddingTop:8, paddingBottom:8, marginBottom: 6}]}>
                                             
-                                            <Text style={[OrderLayoutStyle.UserInformationTitle, {color:"#cd3838"}]}>Subtotal:</Text>
-                                            <Text style={[OrderLayoutStyle.UserInformationData, {marginLeft:"auto", fontSize: 19}]}>₹{element.Data8}/-</Text>
+                                            <Text allowFontScaling={false} style={[OrderLayoutStyle.UserInformationTitle, {color:"#cd3838"}]}>Subtotal:</Text>
+                                            <Text allowFontScaling={false} style={[OrderLayoutStyle.UserInformationData, {marginLeft:"auto", fontSize: 19}]}>₹{element.Data8}/-</Text>
                                         
                                         </View>
 
@@ -510,7 +509,7 @@ export default function OrderLayout({navigation, route}){
                                                         <View style={OrderLayoutStyle.ProductInfoData}>
 
                                                             {/* Product information  */}
-                                                            <Text style={OrderLayoutStyle.ProductInformation}>{product_element.Product_information}</Text>
+                                                            <Text allowFontScaling={false} style={OrderLayoutStyle.ProductInformation}>{product_element.Product_information}</Text>
                                                                 
                                                             {/* Weight and Size information layout   */}
 
@@ -520,9 +519,9 @@ export default function OrderLayout({navigation, route}){
 
                                                                 <View style={OrderLayoutStyle.WeightLayout}>
 
-                                                                    <Text style={OrderLayoutStyle.WeightSizeTitle}>Weight |</Text>
+                                                                    <Text allowFontScaling={false} style={OrderLayoutStyle.WeightSizeTitle}>Weight |</Text>
 
-                                                                    <Text style={OrderLayoutStyle.WeightSizeInformation}>{product_element.Product_weight}</Text>
+                                                                    <Text allowFontScaling={false} style={OrderLayoutStyle.WeightSizeInformation}>{product_element.Product_weight}</Text>
                                                                 
                                                                 </View>
                                                                 
@@ -530,9 +529,9 @@ export default function OrderLayout({navigation, route}){
 
                                                                 <View style={[OrderLayoutStyle.SizeLayout]}>
                                                                     
-                                                                    <Text style={OrderLayoutStyle.WeightSizeTitle}>Size |</Text>
+                                                                    <Text allowFontScaling={false} style={OrderLayoutStyle.WeightSizeTitle}>Size |</Text>
                                                                 
-                                                                    <Text style={OrderLayoutStyle.WeightSizeInformation}>{product_element.Product_size}</Text>
+                                                                    <Text allowFontScaling={false} style={OrderLayoutStyle.WeightSizeInformation}>{product_element.Product_size}</Text>
                                                                 
                                                                 </View>
 
@@ -542,14 +541,14 @@ export default function OrderLayout({navigation, route}){
                                                             
                                                             <View style={OrderLayoutStyle.PriceInformationLayout}>
                                                                 
-                                                                <Text style={[OrderLayoutStyle.WeightLayout, 
+                                                                <Text allowFontScaling={false} style={[OrderLayoutStyle.WeightLayout, 
                                                                     {marginRight: 0, 
                                                                     fontFamily: "Mukta",
                                                                     fontSize: 18}]}>Price</Text>
 
-                                                                <Text style={OrderLayoutStyle.RetailPrice}>₹{product_element.Product_retail_price}</Text>
+                                                                <Text allowFontScaling={false} style={OrderLayoutStyle.RetailPrice}>₹{product_element.Product_retail_price}</Text>
                                                                 
-                                                                <Text style={OrderLayoutStyle.DiscountPrice} numberOfLines={1} >₹{product_element.Product_discount_price}</Text>    
+                                                                <Text allowFontScaling={false} style={OrderLayoutStyle.DiscountPrice} numberOfLines={1} >₹{product_element.Product_discount_price}</Text>    
                                                             
                                                             </View>
 
@@ -567,16 +566,16 @@ export default function OrderLayout({navigation, route}){
                                         <View style={[OrderLayoutStyle.AddressLayout, 
                                             {borderTopWidth:1, borderTopColor:"#ececec", paddingTop:8, marginBottom: 5}]}>
                                         
-                                            <Text style={[OrderLayoutStyle.UserInformationTitle]}>Address :</Text>
-                                            <Text style={[OrderLayoutStyle.UserInformationData, {marginLeft:0, marginTop: 8}]}>
+                                            <Text allowFontScaling={false} style={[OrderLayoutStyle.UserInformationTitle]}>Address :</Text>
+                                            <Text allowFontScaling={false} style={[OrderLayoutStyle.UserInformationData, {marginLeft:0, marginTop: 8}]}>
                                                 {element.Data11}
                                             </Text>
                                             
-                                            <Text style={[OrderLayoutStyle.UserInformationData, {marginLeft:0, marginTop: 4}]}>
+                                            <Text allowFontScaling={false} style={[OrderLayoutStyle.UserInformationData, {marginLeft:0, marginTop: 4}]}>
                                                 {element.Data12}, {element.Data13}
                                             </Text>
                                             
-                                            <Text style={[OrderLayoutStyle.UserInformationData, {marginLeft:0, marginTop: 4}]}>
+                                            <Text allowFontScaling={false} style={[OrderLayoutStyle.UserInformationData, {marginLeft:0, marginTop: 4}]}>
                                                 Pincode = {element.Data14}
                                             </Text>
                                         
@@ -587,7 +586,7 @@ export default function OrderLayout({navigation, route}){
                                             android_ripple={{color:colorCode.HomeScreenColor.PriceInformationTitleColor}}
                                             onPress = {() => QrCode_layout_opener(element.Data1, element.Data10)}>
 
-                                            <Text style={[OrderLayoutStyle.QrCancelText]}> Show QR code</Text>
+                                            <Text allowFontScaling={false} style={[OrderLayoutStyle.QrCancelText]}> Show QR code</Text>
                                         
                                         </Pressable> 
 
@@ -597,7 +596,7 @@ export default function OrderLayout({navigation, route}){
                                                 android_ripple={{color:colorCode.HomeScreenColor.PriceInformationTitleColor}}
                                                 onPress={() => Cancel_order_request_handler(element)}>
                                             
-                                                <Text style={[OrderLayoutStyle.QrCancelText]}>Cancel order</Text>
+                                                <Text allowFontScaling={false} style={[OrderLayoutStyle.QrCancelText]}>Cancel order</Text>
                                             
                                             </Pressable>
                                         </>:<></>}
@@ -606,7 +605,7 @@ export default function OrderLayout({navigation, route}){
                                 )
                             })}
                         </>:<>
-                            <Text style={{fontFamily:"Ubuntu", fontSize: 19, 
+                            <Text allowFontScaling={false} style={{fontFamily:"Ubuntu", fontSize: 19, 
                             width:"80%", marginLeft:"auto", marginRight:"auto", marginTop:20}}>Not found any Order information</Text>
                         </>}
                     

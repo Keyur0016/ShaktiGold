@@ -171,19 +171,19 @@ export default function ChangeEmail({navigation}){
 
                     {/* Change Mobile number Title  */}
                     
-                    <Text style={ForgetPassStyle.ForgetPass_Title}>Forget Password</Text>
+                    <Text allowFontScaling={false} style={ForgetPassStyle.ForgetPass_Title}>Forget Password</Text>
 
                 </View>
 
                 {/* Mobile number related information  */}
 
-                <Text style={ForgetPassStyle.ForgetInformation}>Provide your account's Mobilenumber for which you want to reset your password</Text>
+                <Text allowFontScaling={false} style={ForgetPassStyle.ForgetInformation}>Provide your account's Mobilenumber for which you want to reset your password</Text>
 
                 <View style={ForgetPassStyle.InputLayout}>
                     
                     {/* Mobilenumber input  */}
 
-                    <TextInput style={[ForgetPassStyle.InputStyle, {borderColor: emailBorder ? colorCode.SignupColorCode.InputBorderColor : 'transparent'}]}
+                    <TextInput allowFontScaling={false} style={[ForgetPassStyle.InputStyle, {borderColor: emailBorder ? colorCode.SignupColorCode.InputBorderColor : 'transparent'}]}
                         placeholder="Mobilenumber"
                         placeholderTextColor = {colorCode.SignupColorCode.InputPlaceholderColor} 
                         keyboardType="email-address"
@@ -203,7 +203,7 @@ export default function ChangeEmail({navigation}){
                     <Pressable style={[ForgetPassStyle.SendCode_Layout]}
                         android_ripple={{color:colorCode.SignupColorCode.ButtonRippleColor,foreground:false}}
                         onPress={ForgetPassword_Handle}>
-                        <Text style={ForgetPassStyle.SendCode_Text}>Send code </Text>
+                        <Text allowFontScaling={false} style={ForgetPassStyle.SendCode_Text}>Send code </Text>
                     </Pressable>
                     }
 

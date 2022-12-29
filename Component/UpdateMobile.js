@@ -174,13 +174,13 @@ export default function Update_mobile_verification({navigation, route}){
 
                     {/* Verification Title */}
 
-                    <Text style={ForgetVerificationStyle.ForgetVerificationTitle}>Update MobileVerification</Text>
+                    <Text allowFontScaling={false} style={ForgetVerificationStyle.ForgetVerificationTitle}>Update MobileVerification</Text>
                 
                 </View>                
 
                 {/* Mobilenumber information  */}
                 
-                {/* <Text style={ForgetVerificationStyle.MobileInformation}>Mobilenumber: {Mobilenumber}</Text> */}
+                {/* <Text allowFontScaling={false} style={ForgetVerificationStyle.MobileInformation}>Mobilenumber: {Mobilenumber}</Text> */}
             
                 {/* Input Layout  */}
 
@@ -209,7 +209,7 @@ export default function Update_mobile_verification({navigation, route}){
                     <Pressable style={[ForgetVerificationStyle.SendCode_Layout]}
                         android_ripple={{color:colorCode.SignupColorCode.ButtonRippleColor,foreground:false}}
                         onPress={Verification_Handler}>
-                        <Text style={ForgetVerificationStyle.SendCode_Text}>Update Mobilenumber</Text>
+                        <Text allowFontScaling={false} style={ForgetVerificationStyle.SendCode_Text}>Update Mobilenumber</Text>
                     </Pressable>
                     
                     }

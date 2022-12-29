@@ -133,7 +133,7 @@ export default function AdminLogin({navigation, route}){
                    backgroundColor={colorCode.SignupColorCode.ButtonColor}
                 />
     
-                <Text style={AdminStyle.AdminTitle}>Admin Access</Text>
+                <Text allowFontScaling={false} style={AdminStyle.AdminTitle}>Admin Access</Text>
 
                 {!webview_layout?<>
                     <View
@@ -154,7 +154,7 @@ export default function AdminLogin({navigation, route}){
 
                 <View style={AdminStyle.InputLayout}>
                     
-                    <TextInput style={[AdminStyle.InputStyle, {borderColor: passwordBorder ? colorCode.SignupColorCode.InputBorderColor : 'transparent'}]}
+                    <TextInput allowFontScaling={false} style={[AdminStyle.InputStyle, {borderColor: passwordBorder ? colorCode.SignupColorCode.InputBorderColor : 'transparent'}]}
                         placeholder="Admin password"
                         placeholderTextColor = {colorCode.SignupColorCode.InputPlaceholderColor} 
                         keyboardType="default"
@@ -174,7 +174,7 @@ export default function AdminLogin({navigation, route}){
                     <Pressable style={[AdminStyle.SendCode_Layout]}
                         android_ripple={{color:colorCode.SignupColorCode.ButtonRippleColor,foreground:false}}
                         onPress={Admin_password_check_handler}>
-                        <Text style={AdminStyle.SendCode_Text}>Login to control panel</Text>
+                        <Text allowFontScaling={false} style={AdminStyle.SendCode_Text}>Login to control panel</Text>
                     </Pressable>
                     }
  

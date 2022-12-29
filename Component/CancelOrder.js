@@ -169,7 +169,7 @@ export default function CancelOrder({navigation, route}){
                             style={CancelOrderStyle.BackImage}
                         />
                     
-                        <Text style={CancelOrderStyle.BackText}>
+                        <Text allowFontScaling={false} style={CancelOrderStyle.BackText}>
                             Cancel order </Text>
                     
                     </Pressable>
@@ -201,7 +201,7 @@ export default function CancelOrder({navigation, route}){
                     <Pressable style={[CancelOrderStyle.SendCode_Layout]}
                         android_ripple={{color:colorCode.HomeScreenColor.PriceInformationTitleColor,foreground:false}}
                         onPress={Cancel_order}>
-                        <Text style={CancelOrderStyle.SendCode_Text}>Cancel order</Text>
+                        <Text allowFontScaling={false} style={CancelOrderStyle.SendCode_Text}>Cancel order</Text>
                     </Pressable></>
                 }
 
